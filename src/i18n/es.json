@@ -1,0 +1,199 @@
+{
+    "nav": {
+        "home": "Inicio",
+        "fashion": "Moda",
+        "tech": "Tech",
+        "searchPlaceholder": "Buscar tendencias...",
+        "categoryAll": "Todas"
+    },
+    "hero": {
+        "badge": "Tu feed de tendencias curado",
+        "titleLine1": "Descubre lo que es",
+        "titleHighlight": "trending",
+        "titleLine2": " ahora",
+        "subtitle": "Moda aesthetic y tech viral de TikTok — curado, verificado y listo para tu carrito. Sin buscar, solo elegir.",
+        "ctaFashion": "Explorar Moda",
+        "ctaTech": "Ver Tech"
+    },
+    "stats": {
+        "products": "Productos curados",
+        "platforms": "Plataformas",
+        "update": "Actualización"
+    },
+    "sections": {
+        "trendingTitle": "Tendencias Ahora",
+        "trendingSubtitle": "Los productos más buscados esta semana",
+        "newTitle": "Lo Más Nuevo",
+        "newTag": "NUEVO",
+        "newSubtitle": "Recién añadido a tu feed",
+        "filtered": "FILTRADO",
+        "trendsFor": "Tendencias de",
+        "browsingTag": "Productos curados de",
+        "categoriesTitle": "Explora por Categoría",
+        "emptyTitle": "Preparando algo increíble",
+        "emptyText": "Nuestro equipo está curando los mejores productos para ti."
+    },
+    "categories": {
+        "fashionTitle": "Moda Gen Z",
+        "fashionDesc": "Aesthetic · Streetwear · Coquette · Y más",
+        "fashionCta": "Explorar colección",
+        "techTitle": "Tech & Gadgets",
+        "techDesc": "Setups · Accesorios · Gadgets virales",
+        "techCta": "Explorar colección"
+    },
+    "fashionPage": {
+        "title": "Moda Gen Z",
+        "subtitle": "Aesthetic, streetwear, coquette, dark academia — encuentra tu estilo.",
+        "tabAll": "Todo",
+        "tabWomen": "Mujer",
+        "tabMen": "Hombre",
+        "empty": "Próximamente... ¡Nuevos looks cada semana!"
+    },
+    "techPage": {
+        "title": "Tech & Gadgets",
+        "subtitle": "Setups que rompen, accesorios aesthetic y la tech más viral de TikTok.",
+        "empty": "Próximamente... ¡Los gadgets más virales!"
+    },
+    "product": {
+        "categoryLabels": {
+            "moda-hombre": "Moda Hombre",
+            "moda-mujer": "Moda Mujer",
+            "tech": "Tech"
+        },
+        "viewOn": "Ver precio actual en",
+        "amazonCta": "Ver en Amazon",
+        "sheinCta": "Conseguir en Shein",
+        "quickView": "Vista Rápida",
+        "trending": "Tendencia",
+        "noDescription": "No hay descripción disponible para este artículo.",
+        "redirectNotice": "Serás redirigido a la tienda oficial."
+    },
+    "footer": {
+        "tagline": "Tu guía de tendencias Gen Z. Moda aesthetic y tech viral, curado para ti.",
+        "explore": "Explorar",
+        "home": "Inicio",
+        "fashion": "Moda",
+        "techGadgets": "Tech & Gadgets",
+        "legal": "Legal",
+        "affiliateNotice": "Aviso de Afiliados",
+        "privacy": "Privacidad",
+        "disclaimer": "Trendicore participa en programas de afiliados de Amazon y Shein. Como afiliado, obtenemos ingresos por compras elegibles realizadas a través de nuestros enlaces.",
+        "copyright": "Trendicore. Todos los derechos reservados.",
+        "dailyDrops": "Daily Drops",
+        "newsletterDesc": "Recibe las últimas tendencias directamente en tu feed.",
+        "subscribe": "Unirse"
+    },
+    "regionSelector": {
+        "title": "¿Dónde estás?",
+        "subtitle": "Te mostraremos productos disponibles en tu país",
+        "us": "Estados Unidos",
+        "es": "España",
+        "usDesc": "Shop in English",
+        "esDesc": "Comprar en Español"
+    },
+    "admin": {
+        "roles": {
+            "admin": "ADMIN",
+            "staff": "STAFF",
+            "me": "Tú"
+        },
+        "tabs": {
+            "published": "Publicados",
+            "my_published": "Mis Publicados",
+            "pending": "Pendientes de Revisión",
+            "my_pending": "Mis Pendientes"
+        },
+        "logout": "Cerrar Sesión",
+        "products_count": "{count} productos",
+        "search_placeholder": "🔍 Buscar producto...",
+        "all_categories": "Todas las categorías",
+        "all_platforms": "Todas las plataformas",
+        "all_staff": "Todo el personal",
+        "new_product": "Nuevo Producto",
+        "close": "Cerrar",
+        "edit_product_title": "✏️ Editar Producto",
+        "new_product_title": "📦 Nuevo Producto",
+        "form": {
+            "title": "Título del producto",
+            "title_placeholder": "Ej: Camiseta Oversize Aesthetic...",
+            "category": "Categoría",
+            "platform": "Plataforma",
+            "region": "Región / País",
+            "affiliate_link": "Enlace de Afiliado",
+            "link_placeholder": "https://amzn.to/...",
+            "image": "Imagen del producto",
+            "image_click": "Haz clic para seleccionar imagen",
+            "image_hint": "JPG, PNG o WebP",
+            "featured": "Producto destacado (aparece en la portada)",
+            "cancel": "Cancelar",
+            "save_new": "🚀 Publicar Producto",
+            "save_update": "💾 Actualizar Producto",
+            "saving": "Guardando...",
+            "error_image": "Debes seleccionar una imagen",
+            "send_review": "📨 Enviar a Revisión",
+            "preview": "Vista Previa"
+        },
+        "actions": {
+            "edit": "Editar",
+            "publish": "Publicar"
+        },
+        "loading": "Cargando productos...",
+        "empty_title": "No hay productos",
+        "empty_text": "Agrega tu primer producto usando el botón de arriba",
+        "edit_btn": "✏️ Editar",
+        "state_published": "✅ Publicado",
+        "state_pending": "⏳ En Revisión",
+        "featured_add_title": "Destacar producto",
+        "featured_remove_title": "Quitar destacado",
+        "bulk": {
+            "selected": "seleccionados",
+            "remove": "Quitar",
+            "delete": "Eliminar",
+            "deleting": "Borrando..."
+        },
+        "delete_confirm": "¿Eliminar \"{title}\"?",
+        "toast": {
+            "updated": "Producto actualizado",
+            "added": "Producto agregado",
+            "deleted": "Producto eliminado",
+            "error_delete": "Error al eliminar",
+            "published": "Producto publicado con éxito",
+            "featured_on": "Producto destacado",
+            "featured_off": "Producto quitado de destacados"
+        },
+        "stats": {
+            "total": "Total Productos",
+            "featured": "Destacados"
+        },
+        "modal": {
+            "delete_title": "Confirmar eliminación",
+            "delete_btn": "Eliminar definitivamente"
+        }
+    },
+    "affiliatePage": {
+        "title": "Aviso de Afiliados",
+        "subtitle": "Transparencia y honestidad en nuestro contenido.",
+        "intro": "En Trendicore, nos esforzamos por ser totalmente transparentes con nuestra audiencia. Queremos que sepas exactamente cómo monetizamos nuestro sitio y por qué puedes confiar en nuestras recomendaciones.",
+        "q1": "¿Qué es un enlace de afiliado?",
+        "a1": "Un enlace de afiliado es un enlace especial que, al ser pulsado por un usuario y realizar una compra en la tienda de destino (como Amazon o Shein), nos genera una pequeña comisión por la venta. Esto no incrementa el precio que tú pagas; el costo es exactamente el mismo para ti.",
+        "q2": "Nuestros Socios",
+        "a2": "Trendicore participa actualmente en los siguientes programas:",
+        "p1": "Programa de Afiliados de Amazon: Como afiliados de Amazon, obtenemos ingresos por compras elegibles.",
+        "p2": "Programa de Influencers de Shein: Colaboramos con Shein para mostrar las tendencias más actuales de la plataforma.",
+        "q3": "Nuestra Promesa",
+        "a3": "Solo recomendamos productos que consideramos interesantes, de tendencia o que aportan valor a nuestra comunidad Gen Z. Nuestra prioridad es siempre el estilo y la calidad de la tendencia, independientemente de la comisión."
+    },
+    "privacyPage": {
+        "title": "Política de Privacidad",
+        "subtitle": "Tu privacidad es nuestra prioridad.",
+        "intro": "En Trendicore, respetamos tu privacidad y nos comprometemos a proteger tus datos personales. Esta política explica cómo manejamos la información.",
+        "s1": "Recopilación de Datos",
+        "p1": "No recopilamos datos personales sensibles. Solo recogemos información técnica básica de forma anónima, como tu idioma de preferencia y región, para ofrecerte la mejor experiencia de navegación y productos disponibles en tu país.",
+        "s2": "Uso de Cookies",
+        "p2": "Utilizamos cookies esenciales y de análisis para recordar tus preferencias (como el modo oscuro o tu país) y para entender cómo se utiliza nuestro sitio. No vendemos tus datos a terceros.",
+        "s3": "Enlaces Externos",
+        "p3": "Trendicore contiene enlaces a otros sitios web (Amazon, Shein, etc.). Una vez que abandonas nuestro sitio, no tenemos control sobre las políticas de privacidad de esas plataformas externas.",
+        "s4": "Contacto",
+        "p4": "Si tienes preguntas sobre esta política, puedes contactarnos a través de nuestras redes sociales oficiales."
+    }
+}

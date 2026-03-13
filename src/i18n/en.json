@@ -1,0 +1,199 @@
+{
+    "nav": {
+        "home": "Home",
+        "fashion": "Fashion",
+        "tech": "Tech",
+        "searchPlaceholder": "Search trends...",
+        "categoryAll": "All"
+    },
+    "hero": {
+        "badge": "Your curated trend feed",
+        "titleLine1": "Discover what's",
+        "titleHighlight": "trending",
+        "titleLine2": " now",
+        "subtitle": "Aesthetic fashion and viral tech from TikTok — curated, verified, and ready for your cart. No searching, just choosing.",
+        "ctaFashion": "Explore Fashion",
+        "ctaTech": "See Tech"
+    },
+    "stats": {
+        "products": "Curated products",
+        "platforms": "Platforms",
+        "update": "Updated"
+    },
+    "sections": {
+        "trendingTitle": "Trending Now",
+        "trendingSubtitle": "The most searched products this week",
+        "newTitle": "What's New",
+        "newTag": "NEW",
+        "newSubtitle": "Just added to your feed",
+        "filtered": "FILTERED",
+        "trendsFor": "Trends for",
+        "browsingTag": "Curated items for",
+        "categoriesTitle": "Explore by Category",
+        "emptyTitle": "Something amazing is coming",
+        "emptyText": "Our team is curating the best products for you."
+    },
+    "categories": {
+        "fashionTitle": "Gen Z Fashion",
+        "fashionDesc": "Aesthetic · Streetwear · Coquette · & more",
+        "fashionCta": "Explore collection",
+        "techTitle": "Tech & Gadgets",
+        "techDesc": "Setups · Accessories · Viral gadgets",
+        "techCta": "Explore collection"
+    },
+    "fashionPage": {
+        "title": "Gen Z Fashion",
+        "subtitle": "Aesthetic, streetwear, coquette, dark academia — find your style.",
+        "tabAll": "All",
+        "tabWomen": "Women",
+        "tabMen": "Men",
+        "empty": "Coming soon... New looks every week!"
+    },
+    "techPage": {
+        "title": "Tech & Gadgets",
+        "subtitle": "Killer setups, aesthetic accessories, and TikTok's most viral tech.",
+        "empty": "Coming soon... The most viral gadgets!"
+    },
+    "product": {
+        "categoryLabels": {
+            "moda-hombre": "Men's Fashion",
+            "moda-mujer": "Women's Fashion",
+            "tech": "Tech"
+        },
+        "viewOn": "See current price on",
+        "amazonCta": "View on Amazon",
+        "sheinCta": "Get on Shein",
+        "quickView": "Quick View",
+        "trending": "Trending",
+        "noDescription": "No description available for this item.",
+        "redirectNotice": "You will be redirected to the affiliate store."
+    },
+    "footer": {
+        "tagline": "Your Gen Z trend guide. Aesthetic fashion and viral tech, curated for you.",
+        "explore": "Explore",
+        "home": "Home",
+        "fashion": "Fashion",
+        "techGadgets": "Tech & Gadgets",
+        "legal": "Legal",
+        "affiliateNotice": "Affiliate Disclosure",
+        "privacy": "Privacy",
+        "disclaimer": "Trendicore participates in Amazon and Shein affiliate programs. As an affiliate, we earn from qualifying purchases made through our links.",
+        "copyright": "Trendicore. All rights reserved.",
+        "dailyDrops": "Daily Drops",
+        "newsletterDesc": "Get the latest trends directly in your feed.",
+        "subscribe": "Join"
+    },
+    "regionSelector": {
+        "title": "Where are you?",
+        "subtitle": "We'll show you products available in your country",
+        "us": "United States",
+        "es": "Spain",
+        "usDesc": "Shop in English",
+        "esDesc": "Comprar en Español"
+    },
+    "admin": {
+        "roles": {
+            "admin": "ADMIN",
+            "staff": "STAFF",
+            "me": "Me"
+        },
+        "tabs": {
+            "published": "Published",
+            "my_published": "My Published",
+            "pending": "Pending Review",
+            "my_pending": "My Pending"
+        },
+        "logout": "Log Out",
+        "products_count": "{count} products",
+        "search_placeholder": "🔍 Search product...",
+        "all_categories": "All Categories",
+        "all_platforms": "All Platforms",
+        "all_staff": "All Staff",
+        "new_product": "New Product",
+        "close": "Close",
+        "edit_product_title": "✏️ Edit Product",
+        "new_product_title": "📦 New Product",
+        "form": {
+            "title": "Product Title",
+            "title_placeholder": "Ex: Aesthetic Oversize T-Shirt...",
+            "category": "Category",
+            "platform": "Platform",
+            "region": "Region / Country",
+            "affiliate_link": "Affiliate Link",
+            "link_placeholder": "https://amzn.to/...",
+            "image": "Product Image",
+            "image_click": "Click to select image",
+            "image_hint": "JPG, PNG or WebP",
+            "featured": "Featured product (appears on landing page)",
+            "cancel": "Cancel",
+            "save_new": "🚀 Publish Product",
+            "save_update": "💾 Update Product",
+            "saving": "Saving...",
+            "error_image": "You must select an image",
+            "send_review": "📨 Send for Review",
+            "preview": "Live Preview"
+        },
+        "actions": {
+            "edit": "Edit",
+            "publish": "Publish"
+        },
+        "loading": "Loading products...",
+        "empty_title": "No products found",
+        "empty_text": "Add your first product using the button above",
+        "edit_btn": "✏️ Edit",
+        "state_published": "✅ Published",
+        "state_pending": "⏳ In Review",
+        "featured_add_title": "Feature product",
+        "featured_remove_title": "Remove featured",
+        "bulk": {
+            "selected": "selected",
+            "remove": "Remove",
+            "delete": "Delete",
+            "deleting": "Deleting..."
+        },
+        "delete_confirm": "Delete \"{title}\"?",
+        "toast": {
+            "updated": "Product updated",
+            "added": "Product added",
+            "deleted": "Product deleted",
+            "error_delete": "Error deleting",
+            "published": "Product published successfully",
+            "featured_on": "Product featured",
+            "featured_off": "Product unfeatured"
+        },
+        "stats": {
+            "total": "Total Products",
+            "featured": "Featured"
+        },
+        "modal": {
+            "delete_title": "Confirm Deletion",
+            "delete_btn": "Delete Permanently"
+        }
+    },
+    "affiliatePage": {
+        "title": "Affiliate Disclosure",
+        "subtitle": "Transparency and honesty in our content.",
+        "intro": "At Trendicore, we strive to be fully transparent with our audience. We want you to know exactly how we monetize our site and why you can trust our recommendations.",
+        "q1": "What is an affiliate link?",
+        "a1": "An affiliate link is a special link that, when clicked by a user who then makes a purchase at the destination store (such as Amazon or Shein), generates a small commission for us. This does not increase the price you pay; the cost is exactly the same for you.",
+        "q2": "Our Partners",
+        "a2": "Trendicore currently participates in the following programs:",
+        "p1": "Amazon Associates Program: As an Amazon Associate, we earn from qualifying purchases.",
+        "p2": "Shein Influencer Program: We collaborate with Shein to showcase the platform's latest trends.",
+        "q3": "Our Promise",
+        "a3": "We only recommend products that we consider interesting, trending, or that bring value to our Gen Z community. Our priority is always style and trend quality, regardless of commission."
+    },
+    "privacyPage": {
+        "title": "Privacy Policy",
+        "subtitle": "Your privacy is our priority.",
+        "intro": "At Trendicore, we respect your privacy and are committed to protecting your personal data. This policy explains how we handle information.",
+        "s1": "Data Collection",
+        "p1": "We do not collect sensitive personal data. We only collect basic technical information anonymously, such as your language preference and region, to provide the best browsing experience and products available in your country.",
+        "s2": "Cookie Usage",
+        "p2": "We use essential and analytical cookies to remember your preferences (such as dark mode or your country) and to understand how our site is used. We do not sell your data to third parties.",
+        "s3": "External Links",
+        "p3": "Trendicore contains links to other websites (Amazon, Shein, etc.). Once you leave our site, we have no control over the privacy policies of those external platforms.",
+        "s4": "Contact",
+        "p4": "If you have questions about this policy, you can contact us through our official social media channels."
+    }
+}

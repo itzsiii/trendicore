@@ -1,0 +1,206 @@
+/* ==========================================
+   TRENDICORE — Premium Design System v2
+   ========================================== */
+
+/* Las fuentes ahora vienen inyectadas desde layout.js via CSS variables (--font-sans y --font-display) */
+
+:root {
+  /* Colors - Light Mode (Holographic & Frosted) */
+  --bg-primary: #f8f6fc;
+  --bg-secondary: #f0edf7;
+  --bg-card: rgba(255, 255, 255, 0.6);
+  --bg-card-hover: rgba(255, 255, 255, 0.8);
+  --text-primary: #120e1f;
+  --text-secondary: #5a5070;
+  --text-muted: #8c82a3;
+  --border: rgba(140, 100, 200, 0.12);
+  --border-hover: rgba(140, 100, 200, 0.25);
+
+  /* Brand Accent */
+  --accent: #7c3aed;
+  --accent-light: #a78bfa;
+  --accent-lighter: #ddd6fe;
+  --accent-dark: #6d28d9;
+  --accent-glow: rgba(124, 58, 237, 0.15);
+  --accent-glow-strong: rgba(124, 58, 237, 0.25);
+
+  /* Secondary Accent */
+  --pink: #f43f5e;
+  --pink-glow: rgba(244, 63, 94, 0.15);
+  --cyan: #0ea5e9;
+  --cyan-glow: rgba(14, 165, 233, 0.15);
+
+  /* CTA Colors */
+  --amazon: #f59e0b;
+  --amazon-hover: #fbbf24;
+  --amazon-bg: rgba(245, 158, 11, 0.1);
+  --shein: #ec4899;
+  --shein-hover: #f472b6;
+  --shein-bg: rgba(236, 72, 153, 0.1);
+
+  /* Status */
+  --success: #10b981;
+  --danger: #ef4444;
+
+  /* Fonts (Inyectadas pero definimos fallbacks seguros) */
+  --font-base: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-title: var(--font-display), var(--font-base);
+
+  /* Spacing & Radius */
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-pill: 50px;
+
+  /* Shadows (Glassmorphic) */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 24px 80px rgba(0, 0, 0, 0.08);
+  --shadow-glow: 0 0 30px var(--accent-glow);
+  --shadow-card: 0 8px 32px rgba(100, 60, 160, 0.05);
+
+  /* Transitions */
+  --transition-fast: 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition: 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition-slow: 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition-spring: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Dark Mode (Deep Space & Neon) */
+[data-theme="dark"] {
+  --bg-primary: #050508;
+  --bg-secondary: #0a0a11;
+  --bg-card: rgba(20, 20, 30, 0.4);
+  --bg-card-hover: rgba(30, 30, 45, 0.6);
+  --text-primary: #f4f2f9;
+  --text-secondary: #a39eb5;
+  --text-muted: #6b6680;
+  --border: rgba(160, 120, 255, 0.15);
+  --border-hover: rgba(180, 150, 255, 0.3);
+  
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 24px 80px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================
+   Reset & Base
+   ========================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans, 'Plus Jakarta Sans'), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  text-rendering: optimizeLegibility;
+  background: var(--bg-primary);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.08) 0px, transparent 80%),
+    radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.05) 0px, transparent 80%),
+    radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.08) 0px, transparent 80%);
+  background-size: 200% 200%;
+  animation: gradient-shift 15s ease infinite alternate;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+[data-theme="dark"] body {
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.15) 0px, transparent 80%),
+    radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.1) 0px, transparent 80%),
+    radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.12) 0px, transparent 80%);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img, svg {
+  max-width: 100%;
+  display: block;
+}
+
+svg {
+  flex-shrink: 0;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* Background noise removed for cleaner aesthetic */
+
+/* ==========================================
+   Scrollbar
+   ========================================== */
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--accent), var(--pink));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--accent-dark), var(--pink));
+}
+
+/* ==========================================
+   Selection
+   ========================================== */
+
+::selection {
+  background: rgba(139, 92, 246, 0.3);
+  color: #fff;
+}
+
+/* ==========================================
+   Animated Gradient Keyframes (shared)
+   ========================================== */
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

@@ -1,0 +1,154 @@
+.container {
+    position: relative;
+}
+
+.trigger {
+    height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    color: var(--text-primary);
+    transition: all var(--transition-spring);
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(8px);
+}
+
+.trigger:hover {
+    transform: scale(1.04);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-glow);
+}
+
+.active {
+    border-color: var(--accent);
+    background: rgba(157, 78, 221, 0.05);
+}
+
+.currentFlag {
+    width: 18px;
+    height: 14px;
+    object-fit: cover;
+    border-radius: 2px;
+}
+
+.regionName {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.chevron {
+    opacity: 0.5;
+    transition: transform 0.3s ease;
+}
+
+.chevronRotate {
+    transform: rotate(180deg);
+}
+
+/* Dropdown */
+.dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 240px;
+    background: rgba(15, 15, 25, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.dropdownHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+}
+
+.options {
+    padding: 0.5rem;
+}
+
+.option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0.75rem;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.option:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.optionSelected {
+    background: rgba(157, 78, 221, 0.1) !important;
+}
+
+.optionMain {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.optionFlag {
+    width: 24px;
+    height: 18px;
+    object-fit: cover;
+    border-radius: 3px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.optionInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.optionName {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.optionLang {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.checkIcon {
+    color: var(--accent);
+}
+
+[data-theme="light"] .dropdown {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .optionName {
+    color: #000;
+}
