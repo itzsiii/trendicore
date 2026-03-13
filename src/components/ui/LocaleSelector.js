@@ -54,41 +54,44 @@ export default function LocaleSelector() {
 
             <AnimatePresence>
                 {isOpen && (
-                    <motion.div
-                        className={styles.dropdown}
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-                    >
-                        <div className={styles.dropdownHeader}>
-                            <Globe size={14} />
-                            <span>Select Region & Language</span>
-                        </div>
+                    <>
+                        <div className={styles.backdrop} onClick={() => setIsOpen(false)} />
+                        <motion.div
+                            className={styles.dropdown}
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                            transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+                        >
+                            <div className={styles.dropdownHeader}>
+                                <Globe size={14} />
+                                <span>Select Region & Language</span>
+                            </div>
 
-                        <div className={styles.options}>
-                            {regions.map((r) => (
-                                <button
-                                    key={r.id}
-                                    className={`${styles.option} ${region === r.id ? styles.optionSelected : ''}`}
-                                    onClick={() => handleSelect(r.id)}
-                                >
-                                    <div className={styles.optionMain}>
-                                        <img
-                                            src={`/images/flags/${r.id}.svg`}
-                                            alt={r.name}
-                                            className={styles.optionFlag}
-                                        />
-                                        <div className={styles.optionInfo}>
-                                            <span className={styles.optionName}>{r.name}</span>
-                                            <span className={styles.optionLang}>{r.native}</span>
+                            <div className={styles.options}>
+                                {regions.map((r) => (
+                                    <button
+                                        key={r.id}
+                                        className={`${styles.option} ${region === r.id ? styles.optionSelected : ''}`}
+                                        onClick={() => handleSelect(r.id)}
+                                    >
+                                        <div className={styles.optionMain}>
+                                            <img
+                                                src={`/images/flags/${r.id}.svg`}
+                                                alt={r.name}
+                                                className={styles.optionFlag}
+                                            />
+                                            <div className={styles.optionInfo}>
+                                                <span className={styles.optionName}>{r.name}</span>
+                                                <span className={styles.optionLang}>{r.native}</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    {region === r.id && <Check size={16} className={styles.checkIcon} />}
-                                </button>
-                            ))}
-                        </div>
-                    </motion.div>
+                                        {region === r.id && <Check size={16} className={styles.checkIcon} />}
+                                    </button>
+                                ))}
+                            </div>
+                        </motion.div>
+                    </>
                 )}
             </AnimatePresence>
         </div>

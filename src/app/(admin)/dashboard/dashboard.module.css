@@ -626,3 +626,415 @@
 
 /* Checked State */
 .checked { opacity: 1 !important; border-color: var(--accent) !important; background: var(--accent) !important; }
+
+/* ==========================================
+   RESPONSIVE — DASHBOARD
+   ========================================== */
+
+@media (max-width: 768px) {
+  .main {
+    padding: 16px;
+  }
+
+  .header {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .headerTitle {
+    font-size: 1.2rem;
+  }
+
+  .headerRight {
+    gap: 8px;
+  }
+
+  .logoutBtn span,
+  .langLabel {
+    display: none;
+  }
+
+  .themeBtn, .langBtn, .logoutBtn {
+    padding: 8px;
+    min-width: 40px;
+    justify-content: center;
+  }
+
+  .statsRow {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .statCard {
+    padding: 16px;
+    border-radius: 18px;
+    min-height: 120px;
+    gap: 8px;
+  }
+
+  .statValue {
+    font-size: 1.8rem;
+  }
+
+  .statLabel {
+    font-size: 0.65rem;
+  }
+
+  /* Tabs */
+  .tabsContainer {
+    margin-bottom: 20px;
+    display: flex;
+    width: 100%;
+  }
+
+  .tabsRow {
+    width: 100%;
+  }
+
+  .navTab {
+    flex: 1;
+    padding: 10px 14px;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .tabLabel {
+    font-size: 0.72rem;
+  }
+
+  .tabCountBadge {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+  }
+
+  /* Action Bar */
+  .actionBar {
+    flex-direction: column;
+    padding: 14px;
+    gap: 12px;
+    border-radius: 18px;
+    margin-bottom: 20px;
+  }
+
+  .filtersGroup {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .searchWrapper {
+    max-width: 100%;
+    width: 100%;
+    grid-column: 1 / -1;
+  }
+
+  .filterSelect {
+    width: 100%;
+    min-width: 0;
+    font-size: 0.82rem !important;
+    padding: 0 10px !important;
+  }
+
+  .selectAllBtn {
+    font-size: 0.82rem !important;
+    padding: 0 12px !important;
+  }
+
+  .addBtn {
+    width: 100%;
+    justify-content: center;
+    height: 44px;
+    border-radius: 14px;
+  }
+
+  /* Products Grid */
+  .productsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .productCard {
+    border-radius: 18px;
+    min-height: auto;
+  }
+
+  .productCard:hover {
+    transform: translateY(-4px);
+  }
+
+  .productInfo {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .productTitle {
+    font-size: 0.9rem;
+  }
+
+  .productActions {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .editBtn, .deleteBtn, .publishBtn {
+    height: 38px;
+    border-radius: 10px;
+    font-size: 0.78rem;
+  }
+
+  .statusBadge {
+    padding: 5px 10px;
+    font-size: 0.65rem;
+    top: 10px;
+    right: 10px;
+  }
+
+  .regionFlag {
+    padding: 4px 8px;
+    font-size: 0.6rem;
+    top: 10px;
+    left: 10px;
+  }
+
+  .featuredToggle {
+    width: 32px;
+    height: 32px;
+    bottom: 10px;
+    right: 10px;
+    border-radius: 8px;
+  }
+
+  .sourceBadge {
+    padding: 4px 10px;
+    font-size: 0.65rem;
+    bottom: 10px;
+    left: 10px;
+  }
+
+  /* Form */
+  .formCard {
+    padding: 24px 16px;
+  }
+
+  .formTitle {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+  }
+
+  .formCloseBtn {
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .formInput {
+    height: 48px;
+    padding: 0 16px;
+    font-size: 0.95rem;
+  }
+
+  .categoryGrid, .platformSelector {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .selectorOption {
+    height: 48px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+  }
+
+  .regionOption {
+    height: 56px;
+  }
+
+  .formActions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cancelBtn, .saveBtn {
+    height: 48px;
+    font-size: 0.95rem;
+  }
+
+  /* Bulk Bar */
+  .bulkBar {
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    transform: none;
+    padding: 12px 20px;
+    gap: 16px;
+    border-radius: 20px;
+  }
+
+  .bulkCount {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .bulkActions {
+    gap: 8px;
+  }
+
+  .bulkActionBtn, .bulkDeleteBtn {
+    height: 36px;
+    padding: 0 14px;
+    font-size: 0.72rem;
+  }
+
+  /* Toast */
+  .toast {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    border-radius: 14px;
+    font-size: 0.85rem;
+  }
+
+  /* Modal */
+  .modalCard {
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+
+  .modalTitle {
+    font-size: 1.2rem;
+  }
+
+  /* Empty state */
+  .emptyState, .empty {
+    padding: 40px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 10px;
+  }
+
+  .header {
+    padding: 10px 12px;
+  }
+
+  .headerTitle {
+    font-size: 1.05rem;
+  }
+
+  .badge {
+    font-size: 0.58rem;
+    padding: 3px 8px;
+  }
+
+  .statsRow {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .statCard {
+    padding: 12px;
+    border-radius: 14px;
+    min-height: 100px;
+  }
+
+  .statValue {
+    font-size: 1.5rem;
+  }
+
+  .statIcon {
+    font-size: 1.1rem;
+  }
+
+  .productsGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .productImageCover {
+    aspect-ratio: 1;
+  }
+
+  .productInfo {
+    padding: 10px;
+  }
+
+  .productTitle {
+    font-size: 0.8rem;
+    -webkit-line-clamp: 2;
+  }
+
+  .productCategory {
+    font-size: 0.65rem;
+  }
+
+  .productActions {
+    padding: 10px;
+    flex-wrap: wrap;
+  }
+
+  .editBtn, .publishBtn {
+    font-size: 0.72rem;
+    height: 34px;
+  }
+
+  .deleteBtn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .formCard {
+    padding: 20px 12px;
+  }
+
+  .formTitle {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+
+  .categoryGrid, .platformSelector {
+    grid-template-columns: 1fr;
+  }
+
+  .regionSelector {
+    grid-template-columns: 1fr;
+  }
+
+  .uploadLabel {
+    height: 140px;
+  }
+
+  .imagePreviewBox {
+    height: 160px;
+  }
+
+  .tabsContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .navTab {
+    padding: 8px 12px;
+  }
+
+  .tabIcon {
+    display: none;
+  }
+
+  .bulkBar {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 14px;
+  }
+
+  .bulkLabel {
+    font-size: 0.72rem;
+  }
+}
+

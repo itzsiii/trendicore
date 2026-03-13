@@ -170,14 +170,60 @@
   box-shadow: 0 4px 12px var(--accent-glow-strong);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .inner {
     flex-direction: column;
     gap: 2rem;
-    padding: 2rem 1rem 1.5rem;
+    padding: 2rem 1.2rem 1.5rem;
+  }
+
+  .brand {
+    max-width: 100%;
   }
 
   .columns {
-    gap: 2rem;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+  }
+
+  .newsletter {
+    max-width: 100%;
+  }
+
+  .newsletterForm {
+    flex-direction: column;
+  }
+
+  .newsletterSubmit {
+    width: 100%;
+  }
+
+  .bottom {
+    padding: 1.2rem 1rem 1.5rem;
   }
 }
+
+@media (max-width: 480px) {
+  .inner {
+    padding: 1.5rem 1rem 1rem;
+    gap: 1.5rem;
+  }
+
+  .logo {
+    font-size: 1.1rem;
+  }
+
+  .tagline {
+    font-size: 0.8rem;
+  }
+
+  .bottom {
+    padding: 1rem 0.8rem 1.2rem;
+  }
+
+  .disclaimer {
+    font-size: 0.65rem;
+  }
+}
+

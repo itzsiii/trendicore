@@ -1,10 +1,11 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/components/ui/ThemeProvider';
 import { useLocale } from '@/components/providers/LocaleProvider';
-import { Zap, Sun, Moon } from 'lucide-react';
+import { Zap, Sun, Moon, Menu, X } from 'lucide-react';
 import LocaleSelector from './LocaleSelector';
 import styles from './Navbar.module.css';
 
@@ -12,6 +13,22 @@ export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const { t } = useLocale();
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Close menu on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
 
   const NAV_LINKS = [
     { href: '/', label: t('nav.home') },
@@ -27,6 +44,7 @@ export default function Navbar() {
           <span className={styles.logoText}>Trendicore</span>
         </Link>
 
+        {/* Desktop links */}
         <div className={styles.links}>
           {NAV_LINKS.map((link) => (
             <Link
@@ -39,7 +57,44 @@ export default function Navbar() {
           ))}
         </div>
 
+        {/* Desktop actions */}
         <div className={styles.actions}>
+          <LocaleSelector />
+          <button
+            onClick={toggleTheme}
+            className={styles.themeToggle}
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+        </div>
+
+        {/* Hamburger button (mobile only) */}
+        <button
+          className={styles.hamburger}
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+        >
+          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Mobile menu overlay */}
+      {menuOpen && <div className={styles.mobileBackdrop} onClick={() => setMenuOpen(false)} />}
+      <div className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ''}`}>
+        <div className={styles.mobileLinks}>
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`${styles.mobileLink} ${pathname === link.href ? styles.mobileLinkActive : ''}`}
+              onClick={() => setMenuOpen(false)}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+        <div className={styles.mobileActions}>
           <LocaleSelector />
           <button
             onClick={toggleTheme}
