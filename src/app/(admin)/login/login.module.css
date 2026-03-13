@@ -200,3 +200,88 @@
   cursor: not-allowed;
   transform: none;
 }
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+    align-items: flex-start;
+    padding-top: 15vh;
+  }
+
+  .bgGlow {
+    width: 350px;
+    height: 350px;
+  }
+
+  .card {
+    padding: 2.5rem 2rem 2rem;
+    max-width: 100%;
+    border-radius: 22px;
+  }
+
+  .title {
+    font-size: 1.9rem;
+  }
+
+  .input {
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    min-height: 48px;
+  }
+
+  .button {
+    min-height: 48px;
+    font-size: 0.95rem;
+  }
+
+  .backLink {
+    margin-top: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.8rem;
+    padding-top: 10vh;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .card {
+    padding: 2rem 1.5rem 1.5rem;
+    border-radius: 20px;
+  }
+
+  .logo {
+    margin-bottom: 2rem;
+  }
+
+  .title {
+    font-size: 1.7rem;
+  }
+
+  .subtitle {
+    font-size: 0.7rem;
+  }
+
+  .form {
+    gap: 1.2rem;
+  }
+
+  .label {
+    font-size: 0.75rem;
+  }
+
+  .button {
+    padding: 0.85rem;
+    font-size: 0.9rem;
+  }
+
+  .backLink {
+    font-size: 0.8rem;
+  }
+
+  .bgGlow {
+    width: 280px;
+    height: 280px;
+  }
+}

@@ -607,15 +607,38 @@
    RESPONSIVE
    ========================================== */
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .hero {
-    padding: 5rem 1rem 3rem;
-    min-height: 75vh;
+    padding: 5rem 1.5rem 3rem;
+    min-height: 80vh;
   }
 
-  .orb1 { width: 300px; height: 300px; }
-  .orb2 { width: 250px; height: 250px; }
-  .orb3 { width: 180px; height: 180px; }
+  .orb1 { width: 400px; height: 400px; }
+  .orb2 { width: 320px; height: 320px; }
+  .orb3 { width: 220px; height: 220px; }
+
+  .section {
+    padding: 2.5rem 1.5rem 3rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 4rem 1rem 2.5rem;
+    min-height: 70vh;
+  }
+
+  .orb1 { width: 280px; height: 280px; }
+  .orb2 { width: 220px; height: 220px; }
+  .orb3 { width: 160px; height: 160px; }
+
+  .heroContent {
+    max-width: 100%;
+  }
 
   .heroCtas {
     flex-direction: column;
@@ -627,38 +650,129 @@
   .ctaPrimary, .ctaSecondary {
     width: 100%;
     justify-content: center;
+    padding: 0.85rem 1.8rem;
   }
 
   .statsBar {
-    gap: 1.2rem;
+    gap: 1.5rem;
     padding: 1.2rem 1.8rem;
     flex-wrap: wrap;
+    justify-content: center;
   }
 
-  .statNumber { font-size: 1.2rem; }
-  .statDivider { height: 25px; }
+  .statNumber { font-size: 1.3rem; }
+  .statDivider { display: none; }
 
-  .grid, .loadingGrid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1.2rem;
+  .grid {
+    columns: 2 160px;
+    column-gap: 1rem;
+  }
+
+  .grid > * {
+    margin-bottom: 1rem;
+  }
+
+  .loadingGrid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
   }
 
   .section {
-    padding: 2.5rem 1rem 3rem;
+    padding: 2rem 1rem 2.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.5rem;
+  }
+
+  .sectionSubtitle {
+    font-size: 0.9rem;
   }
 
   .categoryGrid {
     grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .categoryCard {
+    min-height: 200px;
+    padding: 2rem 1.5rem;
+  }
+
+  .categoryTitle {
+    font-size: 1.4rem;
+  }
+
+  .heroTags {
+    gap: 0.4rem;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.7rem;
   }
 }
 
 @media (max-width: 480px) {
+  .hero {
+    padding: 3rem 0.8rem 2rem;
+    min-height: auto;
+  }
+
   .heroTitle {
-    font-size: 2.4rem;
+    font-size: 2rem;
+  }
+
+  .heroSubtitle {
+    font-size: 0.92rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .heroBadge {
+    font-size: 0.72rem;
+    padding: 0.35rem 0.9rem;
   }
 
   .statsBar {
-    gap: 1.2rem;
-    padding: 1rem 1.5rem;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    margin-top: 2rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    min-width: 60px;
+  }
+
+  .statNumber { font-size: 1.1rem; }
+  .statLabel { font-size: 0.62rem; }
+
+  .grid {
+    columns: 2 140px;
+    column-gap: 0.8rem;
+  }
+
+  .grid > * {
+    margin-bottom: 0.8rem;
+  }
+
+  .loadingGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+
+  .empty {
+    padding: 3rem 1.5rem;
+  }
+
+  .emptyTitle {
+    font-size: 1.2rem;
+  }
+
+  .categoryCard {
+    min-height: 180px;
+    padding: 1.5rem 1.2rem;
   }
 }
+

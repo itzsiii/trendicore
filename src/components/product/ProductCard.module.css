@@ -264,9 +264,14 @@
 }
 
 /* Responsive */
-@media (max-width: 480px) {
-  .imageWrap {
-    aspect-ratio: 1;
+@media (max-width: 768px) {
+  .card:hover {
+    transform: translateY(-4px) scale(1.005);
+  }
+
+  /* Hide overlay on mobile — tap the card to go to the store */
+  .overlay {
+    display: none;
   }
 
   .info {
@@ -275,9 +280,69 @@
 
   .title {
     font-size: 0.88rem;
+    margin-bottom: 0.6rem;
   }
 
   .price {
     font-size: 1.1rem;
   }
 }
+
+@media (max-width: 480px) {
+  .imageWrap {
+    aspect-ratio: 3 / 4;
+  }
+
+  .info {
+    padding: 0.8rem;
+  }
+
+  .category {
+    font-size: 0.6rem;
+  }
+
+  .title {
+    font-size: 0.82rem;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .price {
+    font-size: 1rem;
+  }
+
+  .bottom {
+    gap: 0.3rem;
+  }
+
+  .ctaMini {
+    font-size: 0.68rem;
+  }
+
+  .overlayButtons {
+    padding: 0 0.8rem;
+    gap: 0.5rem;
+  }
+
+  .ctaButton {
+    padding: 0.55rem 1rem;
+    font-size: 0.75rem;
+  }
+
+  .quickViewBtn {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.72rem;
+    max-width: 130px;
+  }
+
+  .featuredBadge {
+    font-size: 0.6rem;
+    padding: 0.25rem 0.6rem;
+  }
+
+  .sourcePill {
+    font-size: 0.55rem;
+    padding: 0.2rem 0.5rem;
+  }
+}
+

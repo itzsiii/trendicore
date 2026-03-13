@@ -131,4 +131,39 @@
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 0.8rem;
   }
+
+  .tabs {
+    margin-top: 1.2rem;
+  }
+
+  .content {
+    padding: 1.5rem 1rem;
+  }
 }
+
+@media (max-width: 480px) {
+  .header {
+    padding: 2rem 0.8rem 1rem;
+  }
+
+  .headerIcon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+  }
+
+  .grid, .loadingGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+  }
+
+  .tab {
+    padding: 0.45rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .content {
+    padding: 1rem 0.8rem;
+  }
+}
+
