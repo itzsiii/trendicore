@@ -36,11 +36,13 @@ export function LocaleProvider({ children }) {
     const setLocale = useCallback((l) => {
         setLocaleState(l);
         localStorage.setItem('trendicore-locale', l);
+        document.cookie = `trendicore-locale=${l}; path=/; max-age=31536000`;
     }, []);
 
     const setRegion = useCallback((r) => {
         setRegionState(r);
         localStorage.setItem('trendicore-region', r);
+        document.cookie = `trendicore-region=${r}; path=/; max-age=31536000`;
     }, []);
 
     const selectCountry = useCallback((country) => {
