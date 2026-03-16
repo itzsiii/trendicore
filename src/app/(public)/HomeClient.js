@@ -35,7 +35,6 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], s
         .from('products')
         .select('*')
         .eq('featured', true)
-        .eq('status', 'published')
         .eq('region', region)
         .order('created_at', { ascending: false })
         .limit(6);
@@ -43,7 +42,6 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], s
       let latestQuery = supabase
         .from('products')
         .select('*')
-        .eq('status', 'published')
         .eq('region', region)
         .order('created_at', { ascending: false });
       

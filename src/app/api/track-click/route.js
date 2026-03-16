@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
 export async function GET(request) {
@@ -11,7 +12,7 @@ export async function GET(request) {
 
   try {
     // 1. Fetch the product to get current clicks and the real link
-    const { data: product, error: fetchError } = await supabaseAdmin
+    const { data: product, error: fetchError } = await supabase
       .from('products')
       .select('affiliate_link, clicks')
       .eq('id', id)
@@ -19,13 +20,19 @@ export async function GET(request) {
 
     if (fetchError || !product) {
       console.error('Error fetching product for tracking:', fetchError);
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+      
+      // Fallback: Check if Supabase client is initialized successfully
+      const isClientReady = !!supabase && !!supabase.from;
+      
+      return NextResponse.json({ 
+        error: 'Product not found', 
+        details: fetchError?.message || 'No product data returned',
+        id_received: id,
+        supabase_ready: isClientReady
+      }, { status: 404 });
     }
 
     // 2. Increment clicks asynchronously (don't block the redirect)
-    // We use a small background task conceptually, or just await it if we want to be safe
-    // Since Vercel servers might kill the process after response, it's safer to await it
-    // If 'clicks' column doesn't exist yet, this will fail but the redirect still happens
     try {
       const currentClicks = product.clicks || 0;
       await supabaseAdmin
@@ -33,7 +40,7 @@ export async function GET(request) {
         .update({ clicks: currentClicks + 1 })
         .eq('id', id);
     } catch (updateError) {
-      console.error('Failed to update clicks (column might be missing):', updateError);
+      console.error('Failed to update clicks:', updateError);
     }
 
     // 3. Redirect to the real affiliate link

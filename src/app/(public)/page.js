@@ -11,7 +11,6 @@ export default async function HomePage() {
     .from('products')
     .select('*')
     .eq('featured', true)
-    .eq('status', 'published')
     .eq('region', region)
     .order('created_at', { ascending: false })
     .limit(6);
@@ -19,7 +18,6 @@ export default async function HomePage() {
   let latestQuery = supabase
     .from('products')
     .select('*')
-    .eq('status', 'published')
     .eq('region', region)
     .order('created_at', { ascending: false })
     .limit(12);

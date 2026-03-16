@@ -6,6 +6,7 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   transition: transform var(--transition-spring), box-shadow var(--transition), border-color var(--transition);
+  position: relative;
 }
 
 .card:hover {
@@ -14,10 +15,16 @@
   border-color: var(--accent-glow-strong);
 }
 
-.link {
-  display: block;
+.mainLink {
   text-decoration: none;
   color: inherit;
+}
+
+.mainLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 /* Image */
@@ -51,6 +58,8 @@
   transition: opacity var(--transition);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+  z-index: 2;
+  pointer-events: none;
 }
 
 .overlayButtons {
@@ -117,6 +126,8 @@
   opacity: 0;
   width: 100%;
   max-width: 200px;
+  position: relative;
+  pointer-events: auto;
 }
 
 .card:hover .quickViewBtn {

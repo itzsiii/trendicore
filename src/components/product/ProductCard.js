@@ -41,12 +41,6 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.4, delay: index * 0.06 }}
     >
-      <a
-        href={`/api/track-click?id=${product.id}`}
-        target="_blank"
-        rel="noopener noreferrer nofollow"
-        className={styles.link}
-      >
         {/* Image */}
         <div className={styles.imageWrap}>
           <Image
@@ -80,14 +74,22 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
         {/* Info */}
         <div className={styles.info}>
           <span className={styles.category}>{categoryLabel}</span>
-          <h3 className={styles.title}>{product.title}</h3>
+          <h3 className={styles.title}>
+            <a
+              href={`/api/track-click?id=${product.id}`}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className={styles.mainLink}
+            >
+              {product.title}
+            </a>
+          </h3>
           <div className={styles.bottom}>
             <span className={`${styles.ctaMini} ${styles[source.class]}`}>
               {t('product.viewOn')} {product.affiliate_source === 'shein' ? 'Shein' : 'Amazon'} <LinkIcon size={14} className={styles.miniIcon} />
             </span>
           </div>
         </div>
-      </a>
     </motion.article>
   );
 }
