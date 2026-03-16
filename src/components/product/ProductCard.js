@@ -39,7 +39,7 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
       transition={{ duration: 0.4, delay: index * 0.06 }}
     >
       <a
-        href={product.affiliate_link}
+        href={`/api/track-click?id=${product.id}`}
         target="_blank"
         rel="noopener noreferrer nofollow"
         className={styles.link}

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import { useTheme } from '@/components/ui/ThemeProvider';
-import { Globe, Plus, Search, LogOut, Package, Star, Trash2, AlertCircle, CheckCircle2, Clock, X, Sun, Moon } from 'lucide-react';
+import { Globe, Plus, Search, LogOut, Package, Star, Trash2, AlertCircle, CheckCircle2, Clock, X, Sun, Moon, MousePointerClick } from 'lucide-react';
 import styles from './dashboard.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -100,7 +100,7 @@ export default function DashboardPage() {
 
   const stats = {
     total: products.length,
-    featured: products.filter(p => p.featured).length,
+    clicks: products.reduce((sum, p) => sum + (p.clicks || 0), 0),
     es: products.filter(p => p.region === 'es').length,
     us: products.filter(p => p.region === 'us').length,
   };
@@ -446,13 +446,13 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className={styles.statCard}>
-            <span className={styles.statIcon}>⭐</span>
-            <span className={styles.statLabel}>{t('admin.stats.featured')}</span>
-            <span className={styles.statValue}>{stats.featured}</span>
+            <span className={styles.statIcon}><MousePointerClick size={24} color="#9d4edd" /></span>
+            <span className={styles.statLabel}>Total Clicks</span>
+            <span className={styles.statValue}>{stats.clicks}</span>
             <div className={styles.statGraph}>
               <div 
                 className={styles.statBar} 
-                style={{ width: `${stats.total > 0 ? (stats.featured / stats.total) * 100 : 0}%`, background: '#9d4edd' }}
+                style={{ width: `${stats.clicks > 0 ? 100 : 0}%`, background: '#9d4edd' }}
               ></div>
             </div>
           </div>
@@ -900,6 +900,10 @@ export default function DashboardPage() {
                   <div className={styles.productMeta}>
                     <span className={styles.productCategory}>
                       {CATEGORIES.find((c) => c.value === product.category)?.icon} {CATEGORIES.find((c) => c.value === product.category)?.label}
+                    </span>
+                    <span className={styles.productAuthor}>
+                      <MousePointerClick size={14} style={{ marginRight: '4px' }} />
+                      {product.clicks || 0} clics
                     </span>
                     {product.created_by && (
                       <span className={styles.productAuthor}>
