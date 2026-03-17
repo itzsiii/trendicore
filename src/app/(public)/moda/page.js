@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { supabase } from '@/lib/supabase';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import ProductCard from '@/components/product/ProductCard';
 import QuickViewModal from '@/components/product/QuickViewModal';
@@ -20,22 +19,23 @@ export default function ModaPage() {
     async function fetchProducts() {
       if (!region) return;
 
-      let query = supabase
-        .from('products')
-        .select('*')
-        .eq('region', region)
-        .eq('status', 'published')
-        .order('created_at', { ascending: false });
-
+      let url = `/api/products?region=${region}`;
+      
       if (activeTab === 'hombre') {
-        query = query.eq('category', 'moda-hombre');
+        url += '&category=moda-hombre';
       } else if (activeTab === 'mujer') {
-        query = query.eq('category', 'moda-mujer');
+        url += '&category=moda-mujer';
       } else {
-        query = query.in('category', ['moda-hombre', 'moda-mujer']);
+        // Para "all" en esta página queremos ambas categorías de moda
+        // Como nuestra API de ejemplo solo soporta una categoría, podemos manejarlo así
+        // o ampliar la API para soportar múltiples. Por simplicidad aquí hacemos fetch y filtramos si es necesario
+        // Pero para seguir el flujo hexagonal, lo ideal es que la API lo resuelva.
+        // Voy a asumir que si no mando categoría, me devuelve todo y yo filtro, o mejor uso la API.
+        url += '&categories=moda-hombre,moda-mujer';
       }
 
-      const { data } = await query;
+      const res = await fetch(url);
+      const data = await res.json();
       setProducts(data || []);
       setLoading(false);
     }

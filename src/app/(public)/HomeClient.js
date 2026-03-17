@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { supabase } from '@/lib/supabase';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import ProductCard from '@/components/product/ProductCard';
 import QuickViewModal from '@/components/product/QuickViewModal';
@@ -31,44 +30,40 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], s
 
       setLoading(true);
 
-      let featuredQuery = supabase
-        .from('products')
-        .select('*')
-        .eq('featured', true)
-        .eq('region', region)
-        .order('created_at', { ascending: false })
-        .limit(6);
+      const tagMap = {
+        'aesthetic': 'moda-mujer',
+        'coquette': 'moda-mujer',
+        'dark academia': 'moda-hombre',
+        'tech setup': 'tech',
+        'viral': null
+      };
 
-      let latestQuery = supabase
-        .from('products')
-        .select('*')
-        .eq('region', region)
-        .order('created_at', { ascending: false });
-      
+      let featuredUrl = `/api/products?featured=true&region=${region}&limit=6`;
+      let latestUrl = `/api/products?region=${region}&limit=12`;
+
       if (activeTag) {
-        const tagMap = {
-          'aesthetic': 'moda-mujer',
-          'coquette': 'moda-mujer',
-          'dark academia': 'moda-hombre',
-          'tech setup': 'tech',
-          'viral': null
-        };
-        
-        if (tagMap[activeTag] !== undefined && tagMap[activeTag] !== null) {
-          latestQuery = latestQuery.eq('category', tagMap[activeTag]);
-        } else if (tagMap[activeTag] === null) {
-          // 'viral' = all categories, no extra filter
-        } else {
-          latestQuery = latestQuery.ilike('title', `%${activeTag}%`);
+        if (tagMap[activeTag]) {
+          latestUrl += `&category=${tagMap[activeTag]}`;
+        } else if (tagMap[activeTag] === undefined) {
+          // If not in map, maybe search by title
+          latestUrl += `&search=${activeTag}`;
         }
       }
 
-      latestQuery = latestQuery.limit(12);
+      try {
+        const [featuredRes, latestRes] = await Promise.all([
+          fetch(featuredUrl),
+          fetch(latestUrl)
+        ]);
 
-      const [featuredRes, latestRes] = await Promise.all([featuredQuery, latestQuery]);
+        const featuredData = featuredRes.ok ? await featuredRes.json() : [];
+        const latestData = latestRes.ok ? await latestRes.json() : [];
 
-      setFeatured(featuredRes.data || []);
-      setLatest(latestRes.data || []);
+        setFeatured(featuredData);
+        setLatest(latestData);
+      } catch (err) {
+        console.error('Error fetching home products:', err);
+      }
       setLoading(false);
     }
 

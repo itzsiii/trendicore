@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { SupabaseStorageAdapter } from '@/core/storage/infrastructure/adapters/SupabaseStorageAdapter';
+import { UploadProductImageUseCase } from '@/core/storage/application/UploadProductImageUseCase';
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -18,37 +21,23 @@ async function getUser(request) {
 }
 
 export async function POST(request) {
-  const user = await getUser(request);
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  try {
+    const user = await getUser(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const formData = await request.formData();
+    const file = formData.get('file');
+
+    const storageAdapter = new SupabaseStorageAdapter(supabaseAdmin);
+    const uploadUseCase = new UploadProductImageUseCase(storageAdapter);
+
+    const result = await uploadUseCase.execute(file);
+
+    return NextResponse.json({ url: result.url });
+  } catch (err) {
+    return NextResponse.json({ error: err.message || 'Error uploading file' }, { status: 400 });
   }
-
-  const formData = await request.formData();
-  const file = formData.get('file');
-
-  if (!file) {
-    return NextResponse.json({ error: 'No file provided' }, { status: 400 });
-  }
-
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-
-  const { error } = await supabaseAdmin.storage
-    .from('product-images')
-    .upload(fileName, buffer, {
-      contentType: file.type,
-    });
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  const { data } = supabaseAdmin.storage
-    .from('product-images')
-    .getPublicUrl(fileName);
-
-  return NextResponse.json({ url: data.publicUrl });
 }
+

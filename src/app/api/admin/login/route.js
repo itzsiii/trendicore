@@ -1,24 +1,22 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { SupabaseAuthRepository } from '@/core/user/infrastructure/adapters/SupabaseAuthRepository';
+import { LoginUseCase } from '@/core/user/application/LoginUseCase';
 
 export async function POST(request) {
   try {
     const { email, password } = await request.json();
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const authRepository = new SupabaseAuthRepository(supabase);
+    const loginUseCase = new LoginUseCase(authRepository);
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 401 });
-    }
+    const result = await loginUseCase.execute(email, password);
 
     // Supabase client filters automatically handle session cookies if configured,
     // but in Next.js App Router we often need to manage them or use the middleware.
     // For now, since we are refactoring, we'll return the session.
-    return NextResponse.json({ success: true, user: data.user });
+    return NextResponse.json({ success: true, user: result.user });
   } catch (err) {
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    return NextResponse.json({ error: err.message || 'Server error' }, { status: 401 });
   }
 }

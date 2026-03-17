@@ -1,12 +1,17 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { SupabaseAuthRepository } from '@/core/user/infrastructure/adapters/SupabaseAuthRepository';
+import { CheckSessionUseCase } from '@/core/user/application/CheckSessionUseCase';
 
 export async function GET() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const authRepository = new SupabaseAuthRepository(supabase);
+  const checkSessionUseCase = new CheckSessionUseCase(authRepository);
+  
+  const result = await checkSessionUseCase.execute();
 
-  if (!session) {
+  if (!result.authenticated) {
     return NextResponse.json({ authenticated: false }, { status: 401 });
   }
 
-  return NextResponse.json({ authenticated: true, user: session.user });
+  return NextResponse.json(result);
 }

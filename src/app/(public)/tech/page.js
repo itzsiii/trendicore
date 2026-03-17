@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { supabase } from '@/lib/supabase';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import ProductCard from '@/components/product/ProductCard';
 import QuickViewModal from '@/components/product/QuickViewModal';
@@ -19,14 +18,9 @@ export default function TechPage() {
     async function fetchProducts() {
       if (!region) return;
 
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('category', 'tech')
-        .eq('status', 'published')
-        .eq('region', region)
-        .order('created_at', { ascending: false });
-
+      const res = await fetch(`/api/products?category=tech&region=${region}`);
+      const data = await res.json();
+      
       setProducts(data || []);
       setLoading(false);
     }

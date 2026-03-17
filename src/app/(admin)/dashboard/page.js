@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import { useTheme } from '@/components/ui/ThemeProvider';
 import { Globe, Plus, Search, LogOut, Package, Star, Trash2, AlertCircle, CheckCircle2, Clock, X, Sun, Moon, MousePointerClick } from 'lucide-react';
@@ -52,6 +51,7 @@ export default function DashboardPage() {
   const [selectedIds, setSelectedIds] = useState([]);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
   const [activeTab, setActiveTab] = useState('published'); // 'published' o 'pending'
 
   const showToast = (message, type = 'success') => {
@@ -59,38 +59,40 @@ export default function DashboardPage() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const fetchProducts = useCallback(async () => {
+  const fetchProducts = useCallback(async (token = accessToken) => {
+    if (!token) return;
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
+      const res = await fetch('/api/admin/products', {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error al cargar productos');
       setProducts(data || []);
     } catch (err) {
       console.error('Error fetching products:', err);
       showToast('Error al cargar productos', 'error');
     }
     setLoading(false);
-  }, []);
+  }, [accessToken]);
 
   const checkAuth = useCallback(async () => {
     setLoading(true);
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      router.push('/login');
-    } else {
-      // Obtener el perfil con el rol
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
+    try {
+      const res = await fetch('/api/admin/check');
+      const data = await res.json();
       
-      setCurrentUser({ ...session.user, role: profile?.role || 'worker' });
-      fetchProducts();
+      if (!res.ok || !data.authenticated || !data.user) {
+        router.push('/login');
+        return;
+      }
+      
+      setCurrentUser(data.user);
+      setAccessToken(data.token);
+      fetchProducts(data.token);
+    } catch (err) {
+      console.error('Auth check error:', err);
+      router.push('/login');
     }
   }, [router, fetchProducts]);
 
@@ -137,16 +139,15 @@ export default function DashboardPage() {
     setSaving(true);
 
     try {
-      // Get auth token for API calls
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) {
+      // Use stored accessToken for API calls
+      if (!accessToken) {
         showToast('Sesión expirada, inicia sesión de nuevo', 'error');
         setSaving(false);
         return;
       }
       const authHeaders = {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`,
+        'Authorization': `Bearer ${accessToken}`,
       };
 
       let imageUrl = editingId
@@ -154,7 +155,7 @@ export default function DashboardPage() {
         : '';
 
       if (imageFile) {
-        imageUrl = await uploadImage(imageFile, session.access_token);
+        imageUrl = await uploadImage(imageFile, accessToken);
       }
 
       if (!imageUrl) {
@@ -233,12 +234,13 @@ export default function DashboardPage() {
     const { id } = deleteConfirm;
 
     try {
-      const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
+      const res = await fetch(`/api/admin/products?id=${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${accessToken}` },
+      });
+      
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Error al borrar producto');
       
       showToast(t('admin.toast.deleted'));
       fetchProducts();
@@ -274,11 +276,18 @@ export default function DashboardPage() {
 
   const handleToggleFeatured = async (id, currentStatus) => {
     try {
-      const { error } = await supabase
-        .from('products')
-        .update({ featured: !currentStatus })
-        .eq('id', id);
-      if (error) throw error;
+      const res = await fetch('/api/admin/products', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ id, featured: !currentStatus }),
+      });
+      
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error);
+      
       showToast(!currentStatus ? t('admin.toast.featured_on') : t('admin.toast.featured_off'));
       fetchProducts();
     } catch (err) {
@@ -293,12 +302,13 @@ export default function DashboardPage() {
 
     setIsBulkDeleting(true);
     try {
-      const { error } = await supabase
-        .from('products')
-        .delete()
-        .in('id', selectedIds);
-
-      if (error) throw error;
+      for (const id of selectedIds) {
+        const res = await fetch(`/api/admin/products?id=${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${accessToken}` },
+        });
+        if (!res.ok) throw new Error('Error en borrado masivo');
+      }
 
       showToast(`${selectedIds.length} ${t('admin.toast.deleted')}`);
       setSelectedIds([]);
@@ -316,12 +326,17 @@ export default function DashboardPage() {
     setSaving(true);
     try {
       console.log('Actualizando destacados masivamente:', status, selectedIds);
-      const { error } = await supabase
-        .from('products')
-        .update({ featured: status })
-        .in('id', selectedIds);
-
-      if (error) throw error;
+      for (const id of selectedIds) {
+        const res = await fetch('/api/admin/products', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ id, featured: status }),
+        });
+        if (!res.ok) throw new Error('Error en actualización masiva');
+      }
 
       showToast(`Estado actualizado para ${selectedIds.length} productos`);
       setSelectedIds([]);
@@ -336,12 +351,18 @@ export default function DashboardPage() {
 
   const handlePublish = async (id) => {
     try {
-      const { error } = await supabase
-        .from('products')
-        .update({ status: 'published' })
-        .eq('id', id);
+      const res = await fetch('/api/admin/products', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ id, status: 'published' }),
+      });
       
-      if (error) throw error;
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error);
+      
       showToast(t('admin.toast.published'));
       fetchProducts();
     } catch (err) {
@@ -351,8 +372,13 @@ export default function DashboardPage() {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push('/login');
+    try {
+      await fetch('/api/admin/logout', { method: 'POST' });
+      // No need for supabase.auth.signOut() if we are decoupled
+      router.push('/login');
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
   };
 
   const toggleLanguage = () => {

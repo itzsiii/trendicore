@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { SupabaseProductRepository } from '@/core/product/infrastructure/adapters/SupabaseProductRepository';
+import { GetProductsUseCase } from '@/core/product/application/GetProductsUseCase';
+import { CreateProductUseCase } from '@/core/product/application/CreateProductUseCase';
+import { UpdateProductUseCase } from '@/core/product/application/UpdateProductUseCase';
+import { DeleteProductUseCase } from '@/core/product/application/DeleteProductUseCase';
 
 // Create a Supabase client that can verify any user's token
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -30,13 +35,14 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { data, error } = await supabaseAdmin
-    .from('products')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data);
+  try {
+    const repository = new SupabaseProductRepository(supabaseAdmin);
+    const getProductsUseCase = new GetProductsUseCase(repository);
+    const products = await getProductsUseCase.execute();
+    return NextResponse.json(products);
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
 
 // POST create product
@@ -46,18 +52,20 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const body = await request.json();
-  const { error } = await supabaseAdmin
-    .from('products')
-    .insert([{ ...body, created_by: user.id }]);
-
-  if (error) {
-    if (error.code === '23505') {
-      return NextResponse.json({ error: 'Ya existe un producto con este nombre.' }, { status: 409 });
+  try {
+    const body = await request.json();
+    const repository = new SupabaseProductRepository(supabaseAdmin);
+    const createProductUseCase = new CreateProductUseCase(repository);
+    
+    await createProductUseCase.execute({ ...body, created_by: user.id });
+    
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    if (error.message.includes('Ya existe')) {
+      return NextResponse.json({ error: error.message }, { status: 409 });
     }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  return NextResponse.json({ success: true });
 }
 
 // PUT update product
@@ -67,17 +75,19 @@ export async function PUT(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const body = await request.json();
-  const { id, ...productData } = body;
-
-  // Use supabaseAdmin (service role) to bypass any RLS/trigger issues
-  const { error } = await supabaseAdmin
-    .from('products')
-    .update(productData)
-    .eq('id', id);
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ success: true });
+  try {
+    const body = await request.json();
+    const { id, ...productData } = body;
+    
+    const repository = new SupabaseProductRepository(supabaseAdmin);
+    const updateProductUseCase = new UpdateProductUseCase(repository);
+    
+    await updateProductUseCase.execute(id, productData);
+    
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
 
 // DELETE product
@@ -87,14 +97,17 @@ export async function DELETE(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get('id');
-
-  const { error } = await supabaseAdmin
-    .from('products')
-    .delete()
-    .eq('id', id);
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ success: true });
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    
+    const repository = new SupabaseProductRepository(supabaseAdmin);
+    const deleteProductUseCase = new DeleteProductUseCase(repository);
+    
+    await deleteProductUseCase.execute(id);
+    
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
