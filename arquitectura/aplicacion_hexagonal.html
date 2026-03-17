@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación de Arquitectura Hexagonal: Trendicore</title>
+    <style>
+        :root {
+            --primary: #9d4edd;
+            --primary-light: #c77dff;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        h1 {
+            color: var(--primary-light);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-top: 2.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #334155;
+        }
+
+        .folder-structure {
+            background-color: #0d1117;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--accent);
+            white-space: pre;
+            overflow-x: auto;
+            border: 1px solid #30363d;
+        }
+
+        .folder { color: #8b949e; }
+        .file { color: #c9d1d9; }
+        .highlight { color: var(--success); font-weight: bold; }
+
+        pre {
+            background-color: #0d1117;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid #30363d;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #e6edf3;
+        }
+
+        .keyword { color: #ff7b72; }
+        .string { color: #a5d6ff; }
+        .comment { color: #8b949e; font-style: italic; }
+        .type { color: #79c0ff; }
+        .function { color: #d2a8ff; }
+
+        p {
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Aplicación de Arquitectura Hexagonal</h1>
+            <p>Guía de refactorización y ejemplos de código para el core de Trendicore</p>
+        </header>
+
+        <section class="card">
+            <h2>1. Nueva Estructura de Carpetas Propuesta</h2>
+            <p>Para aplicar el análisis, debemos mover la lógica de negocio fuera de los componentes de React y de las rutas de API. Se propone crear una carpeta <code>src/core/</code> completamente agnóstica de Next.js.</p>
+            <div class="folder-structure">
+<span class="folder">src/</span>
+├── <span class="folder">app/</span> <span class="comment">(Adaptadores Primarios - Framework Next.js)</span>
+│   ├── <span class="folder">(admin)/dashboard/</span>
+│   │   └── <span class="file">page.js</span> <span class="comment"># UI Tonta, solo llama a Casos de Uso</span>
+│   └── <span class="folder">api/admin/products/</span>
+│       └── <span class="file">route.js</span> <span class="comment"># Controlador REST, inyecta dependencias a Casos de Uso</span>
+│
+├── <span class="folder">core/</span> <span class="highlight">(El Hexágono - Lógica de Negocio)</span>
+│   └── <span class="folder">product/</span>
+│       ├── <span class="folder">domain/</span> <span class="comment">(Centro del hexágono)</span>
+│       │   ├── <span class="file">Product.js</span> <span class="comment"># Entidad de dominio</span>
+│       │   └── <span class="file">ProductErrors.js</span> <span class="comment"># Errores específicos del negocio</span>
+│       │
+│       ├── <span class="folder">application/</span> <span class="comment">(Casos de Uso)</span>
+│       │   ├── <span class="file">CreateProductUseCase.js</span>
+│       │   ├── <span class="file">GetProductsUseCase.js</span>
+│       │   └── <span class="file">Ports.js</span> <span class="comment"># Contratos (ej. IProductRepository)</span>
+│       │
+│       └── <span class="folder">infrastructure/</span> <span class="comment">(Adaptadores Secundarios)</span>
+│           └── <span class="folder">adapters/</span>
+│               ├── <span class="file">SupabaseProductRepository.js</span> <span class="comment"># Implementación Supabase</span>
+│               └── <span class="file">InMemoryProductRepository.js</span> <span class="comment"># Implementación para testing</span>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>2. Entidad de Dominio (Domain)</h2>
+            <p>El núcleo de la aplicación. Contiene los datos y las reglas invariantes de un Producto. No sabe qué es una base de datos ni qué es JSON.</p>
+            <pre><code><span class="comment">// src/core/product/domain/Product.js</span>
+<span class="keyword">export class</span> <span class="type">Product</span> {
+  <span class="keyword">constructor</span>({ id, title, category, affiliateLink, affiliateSource, region, featured, status, createdBy }) {
+    <span class="keyword">this</span>.id = id;
+    <span class="keyword">this</span>.title = title;
+    <span class="keyword">this</span>.category = category;
+    <span class="keyword">this</span>.affiliateLink = affiliateLink;
+    <span class="keyword">this</span>.affiliateSource = affiliateSource;
+    <span class="keyword">this</span>.region = region;
+    <span class="keyword">this</span>.featured = featured || <span class="keyword">false</span>;
+    <span class="keyword">this</span>.status = status || <span class="string">'draft'</span>;
+    <span class="keyword">this</span>.createdBy = createdBy;
+    
+    <span class="keyword">this</span>.<span class="function">validate</span>();
+  }
+
+  <span class="comment">// Reglas de negocio intrínsecas del modelo</span>
+  <span class="function">validate</span>() {
+    <span class="keyword">if</span> (!<span class="keyword">this</span>.title || <span class="keyword">this</span>.title.trim().length === <span class="string">0</span>) {
+      <span class="keyword">throw new</span> <span class="type">Error</span>(<span class="string">'El producto debe tener un título válido'</span>);
+    }
+    <span class="keyword">if</span> (![<span class="string">'amazon'</span>, <span class="string">'shein'</span>].includes(<span class="keyword">this</span>.affiliateSource)) {
+      <span class="keyword">throw new</span> <span class="type">Error</span>(<span class="string">'Fuente de afiliado no soportada'</span>);
+    }
+    <span class="comment">// Validar que la URL sea correcta (sin regex complicadas aquí para brevedad)</span>
+    <span class="keyword">if</span> (!<span class="keyword">this</span>.affiliateLink.startsWith(<span class="string">'http'</span>)) {
+      <span class="keyword">throw new</span> <span class="type">Error</span>(<span class="string">'El enlace de afiliado debe ser una URL válida'</span>);
+    }
+  }
+
+  <span class="comment">// Comportamiento de dominio</span>
+  <span class="function">publish</span>() {
+    <span class="keyword">this</span>.status = <span class="string">'published'</span>;
+  }
+}</code></pre>
+        </section>
+
+        <section class="card">
+            <h2>3. El Caso de Uso (Application)</h2>
+            <p>Orquesta el flujo. Recibe datos (del controlador), instancia la entidad, y le dice al Repositorio (puerto) que guarde. Nótese que aquí inyectamos la dependencia (inversión de control).</p>
+            <pre><code><span class="comment">// src/core/product/application/CreateProductUseCase.js</span>
+<span class="keyword">import</span> { Product } <span class="keyword">from</span> <span class="string">'../domain/Product.js'</span>;
+
+<span class="keyword">export class</span> <span class="type">CreateProductUseCase</span> {
+  <span class="comment">// Inyectamos el puerto (interfaz del repositorio)</span>
+  <span class="keyword">constructor</span>(productRepository) {
+    <span class="keyword">this</span>.productRepository = productRepository;
+  }
+
+  <span class="keyword">async</span> <span class="function">execute</span>(productData) {
+    <span class="comment">// 1. Instanciar y validar regla de negocio (arroja error si algo está mal)</span>
+    <span class="keyword">const</span> product = <span class="keyword">new</span> <span class="type">Product</span>(productData);
+
+    <span class="comment">// 2. Comprobar si ya existe uno con el mismo enlace (Regla de aplicación)</span>
+    <span class="keyword">const</span> existingProduct = <span class="keyword">await this</span>.productRepository.<span class="function">findByLink</span>(product.affiliateLink);
+    <span class="keyword">if</span> (existingProduct) {
+      <span class="keyword">throw new</span> <span class="type">Error</span>(<span class="string">'Ya existe un producto con este enlace de afiliado'</span>);
+    }
+
+    <span class="comment">// 3. Persistir usando la abstracción, NO supabase directamente</span>
+    <span class="keyword">const</span> savedProduct = <span class="keyword">await this</span>.productRepository.<span class="function">save</span>(product);
+    
+    <span class="keyword">return</span> savedProduct;
+  }
+}</code></pre>
+        </section>
+
+        <section class="card">
+            <h2>4. Adaptador Secundario (Infrastructure)</h2>
+            <p>Esta es la única parte del sistema que conoce a Supabase. Implementa los métodos que el Caso de Uso necesita (<code>save</code>, <code>findByLink</code>).</p>
+            <pre><code><span class="comment">// src/core/product/infrastructure/adapters/SupabaseProductRepository.js</span>
+<span class="comment">// Este archivo adapta nuestro modelo de Dominio (Product) al modelo de BD (Filas de Supabase)</span>
+
+<span class="keyword">export class</span> <span class="type">SupabaseProductRepository</span> {
+  <span class="keyword">constructor</span>(supabaseClient) {
+    <span class="keyword">this</span>.client = supabaseClient;
+  }
+
+  <span class="keyword">async</span> <span class="function">save</span>(productEntity) {
+    <span class="comment">// Mapear de Dominio a Supabase (Data Transfer Object)</span>
+    <span class="keyword">const</span> payload = {
+      title: productEntity.title,
+      category: productEntity.category,
+      affiliate_link: productEntity.affiliateLink,
+      affiliate_source: productEntity.affiliateSource,
+      region: productEntity.region,
+      featured: productEntity.featured,
+      status: productEntity.status,
+      created_by: productEntity.createdBy
+      <span class="comment">// Omitimos image_url por simplicidad aquí</span>
+    };
+
+    <span class="keyword">const</span> { data, error } = <span class="keyword">await this</span>.client
+      .<span class="function">from</span>(<span class="string">'products'</span>)
+      .<span class="function">insert</span>([payload])
+      .<span class="function">select</span>()
+      .<span class="function">single</span>();
+
+    <span class="keyword">if</span> (error) <span class="keyword">throw new</span> <span class="type">Error</span>(error.message);
+
+    <span class="comment">// Devolver una entidad de dominio reconstituida</span>
+    productEntity.id = data.id;
+    <span class="keyword">return</span> productEntity;
+  }
+
+  <span class="keyword">async</span> <span class="function">findByLink</span>(link) {
+    <span class="keyword">const</span> { data, error } = <span class="keyword">await this</span>.client
+      .<span class="function">from</span>(<span class="string">'products'</span>)
+      .<span class="function">select</span>(<span class="string">'*'</span>)
+      .<span class="function">eq</span>(<span class="string">'affiliate_link'</span>, link)
+      .<span class="function">single</span>();
+      
+    <span class="keyword">if</span> (error && error.code !== <span class="string">'PGRST116'</span>) <span class="keyword">throw</span> error;
+    <span class="keyword">return</span> data ? <span class="keyword">true</span> : <span class="keyword">null</span>; <span class="comment">// Retorna verdadero si existe</span>
+  }
+}</code></pre>
+        </section>
+
+        <section class="card">
+            <h2>5. Adaptador Primario (Framework - Next.js API)</h2>
+            <p>La ruta de la API actúa como punto de entrada. Su única responsabilidad es recibir HTTP, inyectar el repositorio de Supabase en el Caso de Uso, y devolver respuestas HTTP.</p>
+            <pre><code><span class="comment">// src/app/api/admin/products/route.js</span>
+<span class="keyword">import</span> { NextResponse } <span class="keyword">from</span> <span class="string">'next/server'</span>;
+<span class="keyword">import</span> { supabaseAdmin } <span class="keyword">from</span> <span class="string">'@/lib/supabase-admin'</span>;
+<span class="keyword">import</span> { CreateProductUseCase } <span class="keyword">from</span> <span class="string">'@/core/product/application/CreateProductUseCase'</span>;
+<span class="keyword">import</span> { SupabaseProductRepository } <span class="keyword">from</span> <span class="string">'@/core/product/infrastructure/adapters/SupabaseProductRepository'</span>;
+
+<span class="keyword">export async function</span> <span class="function">POST</span>(request) {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> body = <span class="keyword">await</span> request.<span class="function">json</span>();
+    
+    <span class="comment">// Configuración de Inyección de Dependencias (Idealmente hecho en un Container)</span>
+    <span class="keyword">const</span> repository = <span class="keyword">new</span> <span class="type">SupabaseProductRepository</span>(supabaseAdmin);
+    <span class="keyword">const</span> createProductUseCase = <span class="keyword">new</span> <span class="type">CreateProductUseCase</span>(repository);
+
+    <span class="comment">// Ejecución del Caso de Uso (La API no conoce lógica de negocio)</span>
+    <span class="keyword">const</span> newProduct = <span class="keyword">await</span> createProductUseCase.<span class="function">execute</span>({
+      title: body.title,
+      category: body.category,
+      affiliateLink: body.affiliate_link,
+      affiliateSource: body.affiliate_source,
+      region: body.region,
+      featured: body.featured,
+      status: body.status,
+      createdBy: request.user.id <span class="comment">// Asumiendo que obtienes esto del middleware</span>
+    });
+
+    <span class="keyword">return</span> NextResponse.<span class="function">json</span>(newProduct, { status: <span class="string">201</span> });
+    
+  } <span class="keyword">catch</span> (error) {
+    <span class="keyword">return</span> NextResponse.<span class="function">json</span>(
+      { error: error.message }, 
+      { status: error.message.includes(<span class="string">'Ya existe'</span>) ? <span class="string">409</span> : <span class="string">400</span> }
+    );
+  }
+}</code></pre>
+        </section>
+        
+        <section class="card">
+            <h2>Resumen</h2>
+            <p>Con estos cambios:</p>
+            <ul>
+                <li>Si cambias Next.js por Express, solo reescribes la <strong>Sección 5</strong>.</li>
+                <li>Si cambias Supabase por MongoDB, solo creas un <code>MongoProductRepository</code> (similar a la <strong>Sección 4</strong>) y lo inyectas en el caso de uso y el resto del programa no cambia.</li>
+                <li>Si un producto ahora requiere tener 3 imágenes obligatorias, añades la regla en <code>Product.validate()</code> (<strong>Sección 2</strong>) y <em>automáticamente</em> la API y la UI se ven afectadas y respetan la regla de negocio.</li>
+            </ul>
+        </section>
+    </div>
+
+</body>
+</html>

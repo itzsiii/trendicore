@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Arquitectura: Trendicore</title>
+    <style>
+        :root {
+            --primary: #9d4edd;
+            --primary-light: #c77dff;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        h1 {
+            color: var(--primary-light);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-top: 2.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #334155;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background-color: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        strong {
+            color: var(--text-main);
+        }
+
+        .diagram-container {
+            background-color: #ffffff; /* Fondo blanco para que Mermaid se lea bien */
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .mermaid {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Análisis de Arquitectura: Trendicore</h1>
+            <p>Evaluación técnica interactiva sobre el estado actual y propuesta Hexagonal</p>
+        </header>
+
+        <section class="card">
+            <h2>1. Evaluación Actual de la Arquitectura</h2>
+            <div class="status-badge">Estado: Arquitectura fuertemente acoplada (No Hexagonal)</div>
+            <p>Tras analizar el código fuente de la aplicación Next.js, se determina que <strong>no sigue el patrón de Arquitectura Hexagonal (Puertos y Adaptadores)</strong>.</p>
+            <p><strong>Hallazgos clave:</strong></p>
+            <ul>
+                <li><strong>Acoplamiento de Lógica de Negocio y UI:</strong> Los componentes de React (ej. <code>dashboard/page.js</code>) contienen lógica de negocio directa, llamadas de red mediante <code>fetch</code> a la API y manipulación de estado complejo, mezclando presentación y negocio.</li>
+                <li><strong>Dependencia Directa de Infraestructura:</strong> Tanto el cliente como las rutas de API (<code>app/api/admin/products</code>) importan y usan el cliente de <code>supabase</code> de forma directa y explícita.</li>
+                <li><strong>Falta de Capa de Dominio:</strong> No existen entidades, reglas de negocio ni casos de uso aislados. Las estructuras de datos están dictadas por lo que devuelve la base de datos o lo que se necesita mostrar en pantalla.</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>2. ¿Qué es la Arquitectura Hexagonal?</h2>
+            <p>La Arquitectura Hexagonal (también conocida como Puertos y Adaptadores), propuesta por Alistair Cockburn, es un patrón de diseño cuyo objetivo fundamental es lograr una separación estricta entre la <strong>lógica central de la aplicación (el Dominio)</strong> y las <strong>tecnologías que la rodean (Infraestructura, UI, Bases de Datos)</strong>.</p>
+            <p>Se compone de:</p>
+            <ul>
+                <li><strong>Dominio (El centro del hexágono):</strong> Entidades y reglas de negocio puras. No conoce nada sobre frameworks (React, Next.js) ni repositorios (Supabase).</li>
+                <li><strong>Casos de Uso (Aplicación):</strong> Orquestan la lógica de negocio. Toman datos de entrada, aplican reglas de dominio y devuelven resultados.</li>
+                <li><strong>Puertos:</strong> Interfaces (contratos) definidos por el centro. 
+                    <ul>
+                        <li><em>Puertos de Entrada (Inbound):</em> Cómo el mundo exterior (ej. un controlador de API en Next.js) interactúa con la aplicación.</li>
+                        <li><em>Puertos de Salida (Outbound):</em> Cómo la aplicación interactúa con el exterior (ej. una interfaz <code>ProductRepository</code>).</li>
+                    </ul>
+                </li>
+                <li><strong>Adaptadores:</strong> Implementaciones concretas de los puertos.
+                    <ul>
+                        <li><em>Adaptador Primario (UI/API):</em> Componentes de React o rutas de Next.js que llaman a los puertos de entrada.</li>
+                        <li><em>Adaptador Secundario (Infraestructura):</em> Implementación de <code>SupabaseProductRepository</code> que habla con Supabase cumpliendo el contrato del puerto de salida.</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>3. Beneficios y Fundamentación para Trendicore</h2>
+            <p>Implementar Arquitectura Hexagonal en Trendicore aportaría beneficios cruciales de mantenibilidad y escalabilidad a largo plazo:</p>
+            <ul>
+                <li><strong>Reemplazo de Infraestructura sin dolor (Agnosticismo):</strong> Si mañana Trendicore decide migrar de Supabase a MongoDB, PostgreSQL nativo o Firebase, solo se necesita crear un nuevo <em>Adaptador Secundario</em>. La lógica de negocio y la UI permanecen intactas.</li>
+                <li><strong>Testabilidad Extrema:</strong> Al estar el Dominio y los Casos de Uso aislados de Supabase y del DOM de React, se pueden escribir pruebas unitarias rápidas y fiables inyectando "Adaptadores falsos" (Mocks en memoria) en los puertos de salida, sin necesidad de levantar bases de datos ni navegadores.</li>
+                <li><strong>Mantenibilidad de la Interfaz (UI):</strong> Los componentes de React (como el Dashboard) se volverían "tontos". Solo se encargarían de renderizar estados y enviar eventos a los Casos de Uso, reduciendo drásticamente su tamaño y complejidad actual (ej. archivos de casi 1000 líneas).</li>
+                <li><strong>Escalabilidad del Equipo:</strong> La separación clara permite que desarrolladores frontend se enfoquen en los componentes React (Adaptadores Primarios) mientras backend/core enriquece el Dominio y los Adaptadores Secundarios sin conflictos en los mismos archivos.</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>4. Diagrama de la Arquitectura Actual</h2>
+            <p>Se observa cómo el Framework de UI (Next.js/React) y las rutas API están altamente acopladas con el acceso a la base de datos externa (Supabase) sin una capa intermedia abstracta.</p>
+            <div class="diagram-container">
+                <div class="mermaid">
+                    graph TD
+                        subgraph Client App "Frontend (React / Next.js Client)"
+                            Dashboard[Dashboard Component\n UI + Lógica de Vista + Llamadas API]
+                            ProductCard[Product Card Component]
+                        end
+
+                        subgraph Next.js Server "Backend for Frontend (API Routes)"
+                            APIRoute[API /api/admin/products\n Lógica de Negocio + Data Fetching]
+                        end
+
+                        subgraph External Services "Infraestructura"
+                            SupabaseClient[/Supabase SDK/Client\]
+                            SupabaseDB[(Supabase PostgreSQL)]
+                            SupabaseStorage[Supabase Storage]
+                        end
+
+                        Dashboard --&gt;|fetch REST| APIRoute
+                        Dashboard --&gt;|Direct Fetch| SupabaseClient
+                        ProductCard --&gt;|Direct Fetch| SupabaseClient
+                        
+                        APIRoute --&gt;|Import Directo| SupabaseClient
+                        
+                        SupabaseClient --&gt; SupabaseDB
+                        SupabaseClient --&gt; SupabaseStorage
+                        
+                        classDef ui fill:#3b82f6,stroke:#1e3a8a,color:#fff;
+                        classDef api fill:#8b5cf6,stroke:#4c1d95,color:#fff;
+                        classDef infra fill:#ef4444,stroke:#7f1d1d,color:#fff;
+                        
+                        class Dashboard,ProductCard ui;
+                        class APIRoute api;
+                        class SupabaseClient,SupabaseDB,SupabaseStorage infra;
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>5. Diagrama Propuesto: Arquitectura Hexagonal</h2>
+            <p>En este modelo, el "Hexágono" interior contiene únicamente el Dominio y los Casos de Uso. Las flechas (dependencias) siempre apuntan <strong>hacia adentro</strong>. La base de datos es solo un detalle de implementación (Adaptador Secundario).</p>
+            <div class="diagram-container">
+                <div class="mermaid">
+                    graph TD
+                        subgraph Primary Adapters "Adaptadores Primarios (UI / API)"
+                            UI[React Components\nTrendicore UI]
+                            NextAPI[Next.js API Routes]
+                        end
+
+                        subgraph Hexagon "Capa de Aplicación y Dominio (El Hexágono)"
+                            subgraph Ports "Puertos"
+                                InboundPort((Puerto de Entrada\nIProductService))
+                                OutboundPort((Puerto de Salida\nIProductRepository))
+                            end
+                            
+                            subgraph Core "Core / Lógica de Negocio"
+                                UseCases[Casos de Uso\nEj: CreateProductUseCase]
+                                Domain[Entidades de Dominio\nProduct, User]
+                            end
+                        end
+
+                        subgraph Secondary Adapters "Adaptadores Secundarios (Infraestructura)"
+                            SupabaseAdapter[SupabaseProductRepository\nImplementa IProductRepository]
+                            MockAdapter[InMemoryProductRepository\nPara Testing]
+                        end
+                        
+                        subgraph Infrastructure "Servicios Externos"
+                            SupabaseDB[(Supabase DB)]
+                        end
+
+                        UI --&gt;|Llama a| InboundPort
+                        NextAPI --&gt;|Llama a| InboundPort
+                        
+                        InboundPort --&gt;|Implementado por| UseCases
+                        UseCases --&gt;|Usa| Domain
+                        
+                        UseCases --&gt;|Usa contrato| OutboundPort
+                        
+                        SupabaseAdapter -.-&gt;|Implementa| OutboundPort
+                        MockAdapter -.-&gt;|Implementa| OutboundPort
+                        
+                        SupabaseAdapter --&gt;|Consulta| SupabaseDB
+
+                        classDef ui fill:#3b82f6,stroke:#1e3a8a,color:#fff;
+                        classDef core fill:#10b981,stroke:#064e3b,color:#fff;
+                        classDef port fill:#f59e0b,stroke:#78350f,color:#fff,shape:circle;
+                        classDef infra fill:#ef4444,stroke:#7f1d1d,color:#fff;
+                        
+                        class UI,NextAPI ui;
+                        class UseCases,Domain core;
+                        class InboundPort,OutboundPort port;
+                        class SupabaseAdapter,MockAdapter,SupabaseDB infra;
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Carga de Mermaid.js como módulo ES -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#e2e8f0',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#64748b',
+                lineColor: '#3b82f6',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#ffffff'
+            }
+        });
+    </script>
+</body>
+</html>

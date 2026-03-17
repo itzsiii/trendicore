@@ -115,12 +115,15 @@ export default function DashboardPage() {
     }
   };
 
-  const uploadImage = async (file) => {
+  const uploadImage = async (file, token) => {
     const formData = new FormData();
     formData.append('file', file);
 
     const res = await fetch('/api/admin/upload', {
       method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
       body: formData,
     });
 
@@ -151,7 +154,7 @@ export default function DashboardPage() {
         : '';
 
       if (imageFile) {
-        imageUrl = await uploadImage(imageFile);
+        imageUrl = await uploadImage(imageFile, session.access_token);
       }
 
       if (!imageUrl) {

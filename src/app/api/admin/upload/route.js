@@ -1,15 +1,25 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-async function isAuthenticated() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('admin-token');
-  return token && token.value;
+async function getUser(request) {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader?.startsWith('Bearer ')) return null;
+  const token = authHeader.replace('Bearer ', '');
+  
+  const supabaseAuth = createClient(supabaseUrl || '', supabaseAnonKey || '', {
+    global: { headers: { Authorization: `Bearer ${token}` } }
+  });
+  
+  const { data: { user } } = await supabaseAuth.auth.getUser(token);
+  return user;
 }
 
 export async function POST(request) {
-  if (!(await isAuthenticated())) {
+  const user = await getUser(request);
+  if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
