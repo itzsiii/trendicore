@@ -9,7 +9,7 @@ CREATE TABLE products (
   title TEXT NOT NULL,
   image_url TEXT NOT NULL,
   price DECIMAL(10,2) NOT NULL,
-  category TEXT NOT NULL CHECK (category IN ('moda-hombre', 'moda-mujer', 'tech')),
+  category TEXT NOT NULL CHECK (category IN ('moda-hombre', 'moda-mujer', 'tech', 'entretenimiento')),
   affiliate_link TEXT NOT NULL,
   affiliate_source TEXT DEFAULT 'amazon' CHECK (affiliate_source IN ('amazon', 'shein')),
   region TEXT DEFAULT 'es' CHECK (region IN ('us', 'es')),

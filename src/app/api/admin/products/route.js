@@ -10,6 +10,7 @@ import { User } from '@/core/user/domain/User';
 import { PERMISSIONS } from '@/core/user/domain/Permissions';
 import { CheckPermissionUseCase } from '@/core/user/application/CheckPermissionUseCase';
 import { SupabaseAuthRepository } from '@/core/user/infrastructure/adapters/SupabaseAuthRepository';
+import { SupabasePermissionRepository } from '@/core/user/infrastructure/adapters/SupabasePermissionRepository';
 
 // Create a Supabase client that can verify any user's token
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -45,8 +46,9 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const checkPermission = new CheckPermissionUseCase();
-  if (!checkPermission.execute(user, PERMISSIONS.VIEW_PENDING)) {
+  const permissionRepository = new SupabasePermissionRepository(supabaseAdmin);
+  const checkPermission = new CheckPermissionUseCase(permissionRepository);
+  if (!await checkPermission.execute(user, PERMISSIONS.VIEW_PENDING)) {
     // Si no puede ver pendientes, tal vez solo pueda ver publicados. 
     // Por ahora, Co-Admin y Admin pueden ver todo. Staff no tiene VIEW_PENDING?
     // User dijo: "staff no puede ver lo que hay en revisiones".
@@ -59,7 +61,7 @@ export async function GET(request) {
     let products = await getProductsUseCase.execute();
 
     // Filtro dinámico basado en permisos
-    if (!checkPermission.execute(user, PERMISSIONS.VIEW_PENDING)) {
+    if (!await checkPermission.execute(user, PERMISSIONS.VIEW_PENDING)) {
       products = products.filter(p => p.status === 'published' || p.created_by === user.id);
     }
 
@@ -76,8 +78,9 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const checkPermission = new CheckPermissionUseCase();
-  if (!checkPermission.execute(user, PERMISSIONS.CREATE_PRODUCT)) {
+  const permissionRepository = new SupabasePermissionRepository(supabaseAdmin);
+  const checkPermission = new CheckPermissionUseCase(permissionRepository);
+  if (!await checkPermission.execute(user, PERMISSIONS.CREATE_PRODUCT)) {
     return NextResponse.json({ error: 'No tienes permiso para subir productos' }, { status: 403 });
   }
 
@@ -119,15 +122,16 @@ export async function PUT(request) {
     const product = await repository.findById(id);
     if (!product) return NextResponse.json({ error: 'Product not found' }, { status: 404 });
 
-    const checkPermission = new CheckPermissionUseCase();
+    const permissionRepository = new SupabasePermissionRepository(supabaseAdmin);
+    const checkPermission = new CheckPermissionUseCase(permissionRepository);
     
     // Regla: Si intenta publicar y no es Admin, denegar
-    if (productData.status === 'published' && !checkPermission.execute(user, PERMISSIONS.PUBLISH_PRODUCT)) {
+    if (productData.status === 'published' && !await checkPermission.execute(user, PERMISSIONS.PUBLISH_PRODUCT)) {
        return NextResponse.json({ error: 'No tienes permiso para publicar productos' }, { status: 403 });
     }
 
     // Regla: Edición de otros
-    const canEditOther = checkPermission.execute(user, PERMISSIONS.EDIT_ANY_PRODUCT);
+    const canEditOther = await checkPermission.execute(user, PERMISSIONS.EDIT_ANY_PRODUCT);
     const isOwner = product.created_by === user.id;
 
     if (!canEditOther && !isOwner) {
@@ -158,8 +162,9 @@ export async function DELETE(request) {
     const product = await repository.findById(id);
     if (!product) return NextResponse.json({ error: 'Product not found' }, { status: 404 });
 
-    const checkPermission = new CheckPermissionUseCase();
-    const canDeleteAny = checkPermission.execute(user, PERMISSIONS.DELETE_ANY_PRODUCT);
+    const permissionRepository = new SupabasePermissionRepository(supabaseAdmin);
+    const checkPermission = new CheckPermissionUseCase(permissionRepository);
+    const canDeleteAny = await checkPermission.execute(user, PERMISSIONS.DELETE_ANY_PRODUCT);
     const isOwner = product.created_by === user.id;
 
     if (!canDeleteAny && !isOwner) {

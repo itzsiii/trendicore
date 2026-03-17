@@ -9,7 +9,8 @@ export const PERMISSIONS = {
   MANAGE_ROLES: 'manage_roles',
 };
 
-export const ROLE_PERMISSIONS = {
+// Matriz estática inicial (Fallback)
+export const STATIC_ROLE_PERMISSIONS = {
   admin: [
     PERMISSIONS.VIEW_PENDING,
     PERMISSIONS.CREATE_PRODUCT,
@@ -33,18 +34,24 @@ export const ROLE_PERMISSIONS = {
 };
 
 export class PermissionManager {
+  static currentPermissions = STATIC_ROLE_PERMISSIONS;
+
+  static setPermissions(permissionsMap) {
+    this.currentPermissions = { ...STATIC_ROLE_PERMISSIONS, ...permissionsMap };
+  }
+
   static can(role, permission) {
-    const permissions = ROLE_PERMISSIONS[role] || [];
+    const permissions = this.currentPermissions[role] || [];
     return permissions.includes(permission);
   }
 
   static canPerformOnResource(user, permission, resource) {
     const role = user.role;
     
-    // Admin always can
+    // Admin always can (Hardcoded for safety)
     if (role === 'admin') return true;
 
-    const permissions = ROLE_PERMISSIONS[role] || [];
+    const permissions = this.currentPermissions[role] || [];
     
     // Check global permission
     if (permissions.includes(permission)) {

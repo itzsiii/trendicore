@@ -1,22 +1,26 @@
 {
     "nav": {
         "home": "Inicio",
+        "store": "Tienda",
         "fashion": "Moda",
         "tech": "Tech",
         "searchPlaceholder": "Buscar tendencias...",
-        "categoryAll": "Todas"
+        "categoryAll": "Todas",
+        "about": "Sobre Nosotros",
+        "services": "Servicios",
+        "entertainment": "Entretenimiento"
     },
     "hero": {
-        "badge": "Tu feed de tendencias curado",
+        "badge": "Curación de tendencias verificadas",
         "titleLine1": "Descubre lo que es",
         "titleHighlight": "trending",
         "titleLine2": " ahora",
-        "subtitle": "Moda aesthetic y tech viral de TikTok — curado, verificado y listo para tu carrito. Sin buscar, solo elegir.",
+        "subtitle": "Moda y tecnología seleccionadas de las principales plataformas — verificadas, curadas y listas para ti.",
         "ctaFashion": "Explorar Moda",
         "ctaTech": "Ver Tech"
     },
     "stats": {
-        "products": "Productos curados",
+        "products": "Productos verificados",
         "platforms": "Plataformas",
         "update": "Actualización"
     },
@@ -25,13 +29,13 @@
         "trendingSubtitle": "Los productos más buscados esta semana",
         "newTitle": "Lo Más Nuevo",
         "newTag": "NUEVO",
-        "newSubtitle": "Recién añadido a tu feed",
+        "newSubtitle": "Recién añadido a nuestro catálogo",
         "filtered": "FILTRADO",
         "trendsFor": "Tendencias de",
-        "browsingTag": "Productos curados de",
+        "browsingTag": "Selección de",
         "categoriesTitle": "Explora por Categoría",
         "emptyTitle": "Preparando algo increíble",
-        "emptyText": "Nuestro equipo está curando los mejores productos para ti."
+        "emptyText": "Nuestro equipo está seleccionando los mejores productos para ti."
     },
     "categories": {
         "fashionTitle": "Moda Gen Z",
@@ -51,14 +55,36 @@
     },
     "techPage": {
         "title": "Tech & Gadgets",
-        "subtitle": "Setups que rompen, accesorios aesthetic y la tech más viral de TikTok.",
-        "empty": "Próximamente... ¡Los gadgets más virales!"
+        "subtitle": "Los mejores setups, accesorios y gadgets tecnológicos seleccionados de las tendencias actuales.",
+        "empty": "Próximamente — nuevos gadgets en selección."
+    },
+    "shop": {
+        "title": "Catálogo de Tendencias",
+        "subtitle": "Explora toda nuestra selección viral en un solo lugar.",
+        "searchPlaceholder": "Busca un producto o estilo...",
+        "filters": {
+            "title": "Filtros",
+            "clear": "Limpiar todo",
+            "category": "Categoría",
+            "allCategories": "Todas las categorías",
+            "source": "Plataforma",
+            "allSources": "Todas las tiendas",
+            "sort": "Ordenar por",
+            "newest": "Novedades",
+            "popular": "Más populares"
+        },
+        "results": {
+            "found": "productos encontrados",
+            "noResults": "No encontramos lo que buscas",
+            "tryAgain": "Prueba con otros filtros o términos de búsqueda."
+        }
     },
     "product": {
         "categoryLabels": {
             "moda-hombre": "Moda Hombre",
             "moda-mujer": "Moda Mujer",
-            "tech": "Tech"
+            "tech": "Tech",
+            "entretenimiento": "Entretenimiento"
         },
         "viewOn": "Ver precio actual en",
         "amazonCta": "Ver en Amazon",
@@ -69,9 +95,9 @@
         "redirectNotice": "Serás redirigido a la tienda oficial."
     },
     "footer": {
-        "tagline": "Tu guía de tendencias Gen Z. Moda aesthetic y tech viral, curado para ti.",
+        "tagline": "Trendicore es la plataforma de referencia para descubrir tendencias en moda y tecnología. Curación experta, estilo real.",
         "explore": "Explorar",
-        "home": "Inicio",
+        "home": "Empresa",
         "fashion": "Moda",
         "techGadgets": "Tech & Gadgets",
         "legal": "Legal",
@@ -79,7 +105,7 @@
         "privacy": "Privacidad",
         "disclaimer": "Trendicore participa en programas de afiliados de Amazon y Shein. Como afiliado, obtenemos ingresos por compras elegibles realizadas a través de nuestros enlaces.",
         "copyright": "Trendicore. Todos los derechos reservados.",
-        "dailyDrops": "Daily Drops",
+        "dailyDrops": "Novedades Diarias",
         "newsletterDesc": "Recibe las últimas tendencias directamente en tu feed.",
         "subscribe": "Unirse"
     },
@@ -100,19 +126,23 @@
         "tabs": {
             "published": "Publicados",
             "my_published": "Mis Publicados",
-            "pending": "Pendientes de Revisión",
-            "my_pending": "Mis Pendientes"
+            "pending": "Revisiones",
+            "my_pending": "Mis Revisiones",
+            "overview": "Resumen",
+            "roles": "Permisos y Roles"
         },
         "logout": "Cerrar Sesión",
         "products_count": "{count} productos",
         "search_placeholder": "🔍 Buscar producto...",
         "all_categories": "Todas las categorías",
-        "all_platforms": "Todas las plataformas",
+        "all_platforms": "Todas las tiendas",
         "all_staff": "Todo el personal",
         "new_product": "Nuevo Producto",
         "close": "Cerrar",
         "edit_product_title": "✏️ Editar Producto",
         "new_product_title": "📦 Nuevo Producto",
+        "magic_btn": "Auto-completar",
+        "extracting": "Extrayendo...",
         "form": {
             "title": "Título del producto",
             "title_placeholder": "Ej: Camiseta Oversize Aesthetic...",
@@ -152,6 +182,17 @@
             "deleting": "Borrando..."
         },
         "delete_confirm": "¿Eliminar \"{title}\"?",
+        "stats": {
+            "total": "Total Productos",
+            "featured": "Destacados",
+            "clicks": "Total Clics"
+        },
+        "modal": {
+            "delete_title": "Confirmar eliminación",
+            "delete_btn": "Eliminar definitivamente",
+            "bulk_delete_title": "Confirmar eliminación masiva",
+            "bulk_delete_text": "¿Eliminar {count} productos seleccionados definitivamente?"
+        },
         "toast": {
             "updated": "Producto actualizado",
             "added": "Producto agregado",
@@ -159,15 +200,30 @@
             "error_delete": "Error al eliminar",
             "published": "Producto publicado con éxito",
             "featured_on": "Producto destacado",
-            "featured_off": "Producto quitado de destacados"
+            "featured_off": "Producto quitado de destacados",
+            "error_load": "Error al cargar productos",
+            "session_expired": "Sesión expirada, inicia sesión de nuevo",
+            "extract_success": "¡Datos extraídos con éxito!",
+            "duplicate": "Ya existe un producto con este enlace",
+            "perms_success": "Permisos actualizados correctamente",
+            "perms_error": "Error al cargar permisos",
+            "bulk_featured_success": "Estado actualizado para {count} productos",
+            "bulk_error": "Error al actualizar productos. (Solo administradores)",
+            "new_review": "🚀 Nueva revisión: {title}"
         },
-        "stats": {
-            "total": "Total Productos",
-            "featured": "Destacados"
-        },
-        "modal": {
-            "delete_title": "Confirmar eliminación",
-            "delete_btn": "Eliminar definitivamente"
+        "permissions": {
+            "title": "{role} - Configuración de Permisos",
+            "save": "Guardar Cambios",
+            "saving": "Guardando...",
+            "hint_admin": "* Los permisos de Admin son globales y no editables por seguridad.",
+            "hint_other": "* Activa o desactiva los permisos y pulsa 'Guardar' para aplicar los cambios.",
+            "view_pending": "Ver Revisiones / Pendientes",
+            "create_product": "Subir nuevos productos",
+            "publish_product": "Publicar productos (Estado Live)",
+            "edit_any_product": "Editar productos de otros",
+            "delete_any_product": "Borrar productos de otros",
+            "delete_own_product": "Borrar sus propios productos",
+            "manage_roles": "Gestionar Roles y Permisos"
         }
     },
     "affiliatePage": {
@@ -195,5 +251,49 @@
         "p3": "Trendicore contiene enlaces a otros sitios web (Amazon, Shein, etc.). Una vez que abandonas nuestro sitio, no tenemos control sobre las políticas de privacidad de esas plataformas externas.",
         "s4": "Contacto",
         "p4": "Si tienes preguntas sobre esta política, puedes contactarnos a través de nuestras redes sociales oficiales."
+    },
+    "aboutUsPage": {
+        "title": "Sobre Nosotros",
+        "subtitle": "El equipo de curación detrás de Trendicore",
+        "intro": "Trendicore nació con el objetivo de simplificar el descubrimiento de tendencias. En un ecosistema digital saturado de contenido, nuestro equipo selecciona y verifica cada producto que llega a la plataforma.",
+        "missionTitle": "Nuestra Misión",
+        "missionText": "Conectar a nuestra comunidad con productos que definan su estilo personal, eliminando las horas de búsqueda innecesarias.",
+        "visionTitle": "Nuestra Visión",
+        "visionText": "Consolidarnos como la plataforma de referencia para el descubrimiento de tendencias antes de que se conviertan en mainstream."
+    },
+    "servicesPage": {
+        "title": "Nuestros Servicios",
+        "subtitle": "Soluciones de curación y descubrimiento de tendencias",
+        "curationTitle": "Curación Experta",
+        "curationDesc": "Seleccionamos manualmente cada producto basándonos en el análisis de tendencias reales en TikTok, Pinterest e Instagram.",
+        "trackingTitle": "Comparación de Precios",
+        "trackingDesc": "Mostramos dónde encontrar el mejor precio disponible en Amazon y Shein de forma inmediata.",
+        "globalTitle": "Alcance Internacional",
+        "globalDesc": "Adaptamos nuestro catálogo para mostrar productos disponibles en cada región (España / EE.UU.)."
+    },
+    "entertainmentPage": {
+        "title": "Entretenimiento",
+        "subtitle": "Cultura visual, lifestyle y tendencias más allá del shopping",
+        "viralTitle": "Tendencias Virales",
+        "viralDesc": "Análisis de los sonidos, retos y estéticas que están marcando tendencia en redes sociales.",
+        "lifestyleTitle": "Lifestyle",
+        "lifestyleDesc": "Recomendaciones seleccionadas de cine, música y series alineadas con las tendencias actuales.",
+        "comingSoon": "Próximamente — más contenido interactivo en desarrollo."
+    },
+    "termsPage": {
+        "title": "Términos y Condiciones",
+        "subtitle": "Condiciones de uso del sitio web.",
+        "lastUpdated": "Última actualización: Marzo 2026",
+        "intro": "Al acceder y utilizar el sitio web Trendicore (trendicore.net), usted acepta cumplir y estar sujeto a los siguientes términos y condiciones de uso. Si no está de acuerdo con alguno de estos términos, le rogamos que no utilice este sitio.",
+        "s1": "1. Aceptación de los Términos",
+        "p1": "El uso continuado de este sitio web constituye la aceptación plena de estos términos y condiciones, así como de nuestra Política de Privacidad.",
+        "s2": "2. Propiedad Intelectual",
+        "p2": "Todo el contenido publicado en Trendicore (textos, diseño, logotipos, selección de productos) es propiedad de Trendicore o sus licenciantes. Queda prohibida la reproducción total o parcial sin autorización previa por escrito.",
+        "s3": "3. Enlaces de Afiliados",
+        "p3": "Trendicore contiene enlaces de afiliado a plataformas externas como Amazon y Shein. Al hacer clic en estos enlaces y realizar una compra, Trendicore puede recibir una comisión sin coste adicional para el usuario. Trendicore no es responsable de los productos, servicios ni políticas de las plataformas externas.",
+        "s4": "4. Limitación de Responsabilidad",
+        "p4": "Trendicore actúa como plataforma de curación y recomendación de productos. No vendemos productos directamente ni garantizamos la disponibilidad, precio o calidad de los artículos enlazados. Toda transacción se realiza directamente con la tienda externa correspondiente.",
+        "s5": "5. Modificaciones",
+        "p5": "Trendicore se reserva el derecho de modificar estos términos en cualquier momento. Los cambios serán efectivos desde su publicación en esta página. Se recomienda revisar periódicamente estos términos."
     }
 }

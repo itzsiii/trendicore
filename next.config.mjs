@@ -4,12 +4,24 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'knpuquzmgwbcltaxilfp.supabase.co',
       },
       {
-        protocol: 'http',
-        hostname: '**',
+        protocol: 'https',
+        hostname: 'm.media-amazon.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'ir-na.amazon-adsystem.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.ltwebstatic.com', // Shein
+      },
+      {
+         protocol: 'https',
+         hostname: 'sheinsz.ltwebstatic.com',
+      }
     ],
   },
 };

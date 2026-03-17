@@ -32,8 +32,9 @@ export default function Navbar() {
 
   const NAV_LINKS = [
     { href: '/', label: t('nav.home') },
-    { href: '/moda', label: t('nav.fashion') },
-    { href: '/tech', label: t('nav.tech') },
+    { href: '/tienda', label: t('nav.store') },
+    { href: '/servicios', label: t('nav.services') },
+    { href: '/sobre-nosotros', label: t('nav.about') },
   ];
 
   return (
@@ -50,7 +51,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`${styles.link} ${pathname === link.href ? styles.active : ''}`}
+              className={`${styles.link} ${pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href)) ? styles.active : ''}`}
             >
               {link.label}
             </Link>
@@ -87,7 +88,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`${styles.mobileLink} ${pathname === link.href ? styles.mobileLinkActive : ''}`}
+              className={`${styles.mobileLink} ${pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href)) ? styles.mobileLinkActive : ''}`}
               onClick={() => setMenuOpen(false)}
             >
               {link.label}

@@ -1,15 +1,8 @@
-'use client';
-
-import { motion } from 'framer-motion';
+export const metadata = {
+  title: 'Aviso Legal — Trendicore',
+  description: 'Información legal de Trendicore: aviso de afiliados, política de privacidad y términos y condiciones.',
+};
 
 export default function LegalLayout({ children }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      {children}
-    </motion.div>
-  );
+  return children;
 }

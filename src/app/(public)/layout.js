@@ -5,6 +5,7 @@ import { LocaleProvider } from '@/components/providers/LocaleProvider';
 import RegionSelector from '@/components/ui/RegionSelector';
 import Navbar from '@/components/ui/Navbar';
 import Footer from '@/components/ui/Footer';
+import CookieBanner from '@/components/ui/CookieBanner';
 
 export default function PublicLayout({ children }) {
   return (
@@ -13,6 +14,7 @@ export default function PublicLayout({ children }) {
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <CookieBanner />
       </LocaleProvider>
     </ThemeProvider>
   );

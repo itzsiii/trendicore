@@ -6,9 +6,12 @@ import { GetProductsUseCase } from '@/core/product/application/GetProductsUseCas
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   
+  const categories = searchParams.get('categories');
+  
   const filters = {
     region: searchParams.get('region'),
     category: searchParams.get('category'),
+    categories: categories ? categories.split(',') : undefined,
     featured: searchParams.get('featured') === 'true' ? true : searchParams.get('featured') === 'false' ? false : undefined,
     limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')) : undefined,
     status: 'published' // La API pública solo devuelve productos publicados

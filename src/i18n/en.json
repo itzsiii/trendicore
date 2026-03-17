@@ -1,22 +1,26 @@
 {
     "nav": {
         "home": "Home",
+        "store": "Store",
         "fashion": "Fashion",
         "tech": "Tech",
         "searchPlaceholder": "Search trends...",
-        "categoryAll": "All"
+        "categoryAll": "All",
+        "about": "About Us",
+        "services": "Services",
+        "entertainment": "Entertainment"
     },
     "hero": {
-        "badge": "Your curated trend feed",
+        "badge": "Verified trend curation",
         "titleLine1": "Discover what's",
         "titleHighlight": "trending",
         "titleLine2": " now",
-        "subtitle": "Aesthetic fashion and viral tech from TikTok — curated, verified, and ready for your cart. No searching, just choosing.",
+        "subtitle": "Fashion and technology curated from top platforms — verified, selected, and ready for you.",
         "ctaFashion": "Explore Fashion",
         "ctaTech": "See Tech"
     },
     "stats": {
-        "products": "Curated products",
+        "products": "Verified products",
         "platforms": "Platforms",
         "update": "Updated"
     },
@@ -25,13 +29,13 @@
         "trendingSubtitle": "The most searched products this week",
         "newTitle": "What's New",
         "newTag": "NEW",
-        "newSubtitle": "Just added to your feed",
+        "newSubtitle": "Just added to our catalog",
         "filtered": "FILTERED",
         "trendsFor": "Trends for",
-        "browsingTag": "Curated items for",
+        "browsingTag": "Top items for",
         "categoriesTitle": "Explore by Category",
         "emptyTitle": "Something amazing is coming",
-        "emptyText": "Our team is curating the best products for you."
+        "emptyText": "Our team is selecting the best products for you."
     },
     "categories": {
         "fashionTitle": "Gen Z Fashion",
@@ -51,14 +55,36 @@
     },
     "techPage": {
         "title": "Tech & Gadgets",
-        "subtitle": "Killer setups, aesthetic accessories, and TikTok's most viral tech.",
-        "empty": "Coming soon... The most viral gadgets!"
+        "subtitle": "Top setups, accessories, and tech gadgets curated from current trends.",
+        "empty": "Coming soon — new gadgets in curation."
+    },
+    "shop": {
+        "title": "Trend Catalog",
+        "subtitle": "Explore our entire viral selection in one place.",
+        "searchPlaceholder": "Search for a product or style...",
+        "filters": {
+            "title": "Filters",
+            "clear": "Clear all",
+            "category": "Category",
+            "allCategories": "All categories",
+            "source": "Platform",
+            "allSources": "All stores",
+            "sort": "Sort by",
+            "newest": "Newest",
+            "popular": "Most popular"
+        },
+        "results": {
+            "found": "products found",
+            "noResults": "We couldn't find what you're looking for",
+            "tryAgain": "Try with other filters or search terms."
+        }
     },
     "product": {
         "categoryLabels": {
             "moda-hombre": "Men's Fashion",
             "moda-mujer": "Women's Fashion",
-            "tech": "Tech"
+            "tech": "Tech",
+            "entretenimiento": "Entertainment"
         },
         "viewOn": "See current price on",
         "amazonCta": "View on Amazon",
@@ -69,9 +95,9 @@
         "redirectNotice": "You will be redirected to the affiliate store."
     },
     "footer": {
-        "tagline": "Your Gen Z trend guide. Aesthetic fashion and viral tech, curated for you.",
+        "tagline": "Trendicore is the go-to platform for discovering trends in fashion and technology. Expert curation, real style.",
         "explore": "Explore",
-        "home": "Home",
+        "home": "Company",
         "fashion": "Fashion",
         "techGadgets": "Tech & Gadgets",
         "legal": "Legal",
@@ -89,7 +115,7 @@
         "us": "United States",
         "es": "Spain",
         "usDesc": "Shop in English",
-        "esDesc": "Comprar en Español"
+        "esDesc": "Shop in Spanish"
     },
     "admin": {
         "roles": {
@@ -100,19 +126,23 @@
         "tabs": {
             "published": "Published",
             "my_published": "My Published",
-            "pending": "Pending Review",
-            "my_pending": "My Pending"
+            "pending": "Reviews",
+            "my_pending": "My Reviews",
+            "overview": "Overview",
+            "roles": "Permissions & Roles"
         },
         "logout": "Log Out",
         "products_count": "{count} products",
         "search_placeholder": "🔍 Search product...",
         "all_categories": "All Categories",
-        "all_platforms": "All Platforms",
-        "all_staff": "All Staff",
+        "all_platforms": "All platforms",
+        "all_staff": "All staff",
         "new_product": "New Product",
         "close": "Close",
         "edit_product_title": "✏️ Edit Product",
         "new_product_title": "📦 New Product",
+        "magic_btn": "Auto-fill",
+        "extracting": "Extracting...",
         "form": {
             "title": "Product Title",
             "title_placeholder": "Ex: Aesthetic Oversize T-Shirt...",
@@ -152,22 +182,48 @@
             "deleting": "Deleting..."
         },
         "delete_confirm": "Delete \"{title}\"?",
+        "stats": {
+            "total": "Total Products",
+            "featured": "Featured",
+            "clicks": "Total Clicks"
+        },
+        "modal": {
+            "delete_title": "Confirm deletion",
+            "delete_btn": "Permanently delete",
+            "bulk_delete_title": "Confirm bulk deletion",
+            "bulk_delete_text": "Permanently delete {count} selected products?"
+        },
         "toast": {
             "updated": "Product updated",
             "added": "Product added",
             "deleted": "Product deleted",
             "error_delete": "Error deleting",
-            "published": "Product published successfully",
+            "published": "Product successfully published",
             "featured_on": "Product featured",
-            "featured_off": "Product unfeatured"
+            "featured_off": "Product unfeatured",
+            "error_load": "Error loading products",
+            "session_expired": "Session expired, please log in again",
+            "extract_success": "Data extracted successfully!",
+            "duplicate": "A product with this link already exists",
+            "perms_success": "Permissions updated successfully",
+            "perms_error": "Error loading permissions",
+            "bulk_featured_success": "Status updated for {count} products",
+            "bulk_error": "Error updating products. (Admins only)",
+            "new_review": "🚀 New review: {title}"
         },
-        "stats": {
-            "total": "Total Products",
-            "featured": "Featured"
-        },
-        "modal": {
-            "delete_title": "Confirm Deletion",
-            "delete_btn": "Delete Permanently"
+        "permissions": {
+            "title": "{role} - Permission Configuration",
+            "save": "Save Changes",
+            "saving": "Saving...",
+            "hint_admin": "* Admin permissions are global and non-editable for security.",
+            "hint_other": "* Toggle permissions and click 'Save' to apply changes.",
+            "view_pending": "View Reviews / Pending",
+            "create_product": "Upload new products",
+            "publish_product": "Publish products (Live status)",
+            "edit_any_product": "Edit others' products",
+            "delete_any_product": "Delete others' products",
+            "delete_own_product": "Delete own products",
+            "manage_roles": "Manage Roles & Permissions"
         }
     },
     "affiliatePage": {
@@ -194,6 +250,50 @@
         "s3": "External Links",
         "p3": "Trendicore contains links to other websites (Amazon, Shein, etc.). Once you leave our site, we have no control over the privacy policies of those external platforms.",
         "s4": "Contact",
-        "p4": "If you have questions about this policy, you can contact us through our official social media channels."
+        "p4": "If you have questions about this policy, you can contact us through our official social media."
+    },
+    "aboutUsPage": {
+        "title": "About Us",
+        "subtitle": "The curation team behind Trendicore",
+        "intro": "Trendicore was built to simplify trend discovery. In a digital ecosystem saturated with content, our team selects and verifies every product that reaches the platform.",
+        "missionTitle": "Our Mission",
+        "missionText": "Connect our community with products that define their personal style, eliminating unnecessary hours of searching.",
+        "visionTitle": "Our Vision",
+        "visionText": "Establish ourselves as the go-to platform for trend discovery before they become mainstream."
+    },
+    "servicesPage": {
+        "title": "Our Services",
+        "subtitle": "Trend curation and discovery solutions",
+        "curationTitle": "Expert Curation",
+        "curationDesc": "We manually select each product based on real trend analysis from TikTok, Pinterest, and Instagram.",
+        "trackingTitle": "Price Comparison",
+        "trackingDesc": "We show you where to find the best available price on Amazon and Shein instantly.",
+        "globalTitle": "International Reach",
+        "globalDesc": "We adapt our catalog to display products available in each region (Spain / USA)."
+    },
+    "entertainmentPage": {
+        "title": "Entertainment",
+        "subtitle": "Visual culture, lifestyle, and trends beyond shopping",
+        "viralTitle": "Viral Trends",
+        "viralDesc": "Analysis of sounds, challenges, and aesthetics shaping social media trends.",
+        "lifestyleTitle": "Lifestyle",
+        "lifestyleDesc": "Curated movie, music, and series recommendations aligned with current trends.",
+        "comingSoon": "Coming soon — more interactive content in development."
+    },
+    "termsPage": {
+        "title": "Terms & Conditions",
+        "subtitle": "Website terms of use.",
+        "lastUpdated": "Last updated: March 2026",
+        "intro": "By accessing and using the Trendicore website (trendicore.net), you agree to comply with and be bound by the following terms and conditions. If you do not agree with any of these terms, please do not use this site.",
+        "s1": "1. Acceptance of Terms",
+        "p1": "Continued use of this website constitutes full acceptance of these terms and conditions, as well as our Privacy Policy.",
+        "s2": "2. Intellectual Property",
+        "p2": "All content published on Trendicore (text, design, logos, product curation) is the property of Trendicore or its licensors. Reproduction in whole or in part without prior written authorization is prohibited.",
+        "s3": "3. Affiliate Links",
+        "p3": "Trendicore contains affiliate links to external platforms such as Amazon and Shein. By clicking these links and making a purchase, Trendicore may receive a commission at no additional cost to the user. Trendicore is not responsible for the products, services, or policies of external platforms.",
+        "s4": "4. Limitation of Liability",
+        "p4": "Trendicore acts as a product curation and recommendation platform. We do not sell products directly nor guarantee the availability, price, or quality of linked items. All transactions are conducted directly with the corresponding external store.",
+        "s5": "5. Modifications",
+        "p5": "Trendicore reserves the right to modify these terms at any time. Changes will be effective upon publication on this page. It is recommended to review these terms periodically."
     }
 }

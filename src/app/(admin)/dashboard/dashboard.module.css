@@ -67,7 +67,7 @@
 .statValue { font-size: 2.8rem; font-weight: 900; line-height: 1; letter-spacing: -0.02em; color: var(--text-primary); }
 
 /* Tabs */
-.tabsContainer { margin-bottom: 40px; padding: 4px; background: var(--bg-card); border-radius: 24px; display: inline-flex; border: 1px solid var(--border); }
+.tabsContainer { margin-top: 0; margin-bottom: 40px; padding: 4px; background: var(--bg-card); border-radius: 24px; display: inline-flex; border: 1px solid var(--border); }
 .navTab { display: flex; align-items: center; gap: 12px; padding: 14px 28px; border: none; border-radius: 20px; color: var(--text-muted); cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: transparent; font-family: inherit; }
 .tabInfo { display: flex; align-items: center; gap: 12px; }
 .tabLabel { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.02em; }
@@ -1147,11 +1147,47 @@
 .sectionTitle {
   font-size: 1.4rem;
   font-weight: 900;
-  margin-bottom: 32px;
+  margin-bottom: 0;
   color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.permissionsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.savePermissionsBtn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.savePermissionsBtn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.savePermissionsBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.disabledToggle {
+  opacity: 0.7;
+  cursor: default !important;
+  pointer-events: none;
 }
 
 .permissionToggle {

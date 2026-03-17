@@ -19,6 +19,7 @@ export default function DashboardPage() {
     { value: 'moda-hombre', label: t('product.categoryLabels.moda-hombre'), icon: '👕' },
     { value: 'moda-mujer', label: t('product.categoryLabels.moda-mujer'), icon: '👗' },
     { value: 'tech', label: t('product.categoryLabels.tech'), icon: '🎮' },
+    { value: 'entretenimiento', label: t('product.categoryLabels.entretenimiento'), icon: '🍿' },
   ];
 
   const SOURCES = [
@@ -54,10 +55,13 @@ export default function DashboardPage() {
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'published', 'pending', 'roles'
+  const [activeTab, setActiveTab] = useState('published'); // 'published', 'overview', 'pending', 'roles'
   const [selectedRoleInPanel, setSelectedRoleInPanel] = useState('admin');
   const [isLoading, setIsLoading] = useState(true);
   const [isExtracting, setIsExtracting] = useState(false);
+  const [dynamicPermissions, setDynamicPermissions] = useState({});
+  const [isSavingPermissions, setIsSavingPermissions] = useState(false);
+  const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -101,9 +105,30 @@ export default function DashboardPage() {
     }
   }, [router, fetchProducts]);
 
+  const fetchPermissions = useCallback(async () => {
+    if (!accessToken) return;
+    try {
+      const res = await fetch('/api/admin/permissions', {
+        headers: { 'Authorization': `Bearer ${accessToken}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error al cargar permisos');
+      setDynamicPermissions(data);
+    } catch (err) {
+      console.error('Error fetching permissions:', err);
+      showToast('Error al cargar permisos', 'error');
+    }
+  }, [accessToken]);
+
   useEffect(() => {
     checkAuth();
-  }, [checkAuth, fetchProducts]);
+  }, [checkAuth]);
+
+  useEffect(() => {
+    if (activeTab === 'roles' && currentUser?.role === 'admin') {
+      fetchPermissions();
+    }
+  }, [activeTab, currentUser, fetchPermissions]);
 
   useEffect(() => {
     if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'co-admin')) return;
@@ -119,7 +144,7 @@ export default function DashboardPage() {
         },
         (payload) => {
           if (payload.new.status === 'draft') {
-            showToast(`🚀 Nueva revisión: ${payload.new.title}`, 'info');
+            showToast(t('admin.toast.new_review').replace('{title}', payload.new.title), 'info');
             fetchProducts();
           }
         }
@@ -137,6 +162,48 @@ export default function DashboardPage() {
     es: products.filter(p => p.region === 'es').length,
     us: products.filter(p => p.region === 'us').length,
     pending: products.filter(p => p.status === 'draft').length,
+  };
+
+  const handleTogglePermission = (role, permId) => {
+    if (role === 'admin') return;
+
+    setDynamicPermissions(prev => {
+      const currentRolePerms = prev[role] || [];
+      const newPerms = currentRolePerms.includes(permId)
+        ? currentRolePerms.filter(p => p !== permId)
+        : [...currentRolePerms, permId];
+      
+      return { ...prev, [role]: newPerms };
+    });
+  };
+
+  const handleSavePermissions = async () => {
+    if (!accessToken) return;
+    setIsSavingPermissions(true);
+    try {
+      const res = await fetch('/api/admin/permissions', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}` 
+        },
+        body: JSON.stringify({
+          role: selectedRoleInPanel,
+          permissions: dynamicPermissions[selectedRoleInPanel] || []
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || t('admin.toast.perms_error'));
+      }
+
+      showToast(t('admin.toast.perms_success'));
+    } catch (err) {
+      console.error('Error saving permissions:', err);
+      showToast(err.message || t('admin.toast.perms_error'), 'error');
+    }
+    setIsSavingPermissions(false);
   };
 
   const handleImageChange = (e) => {
@@ -185,7 +252,7 @@ export default function DashboardPage() {
       if (data.image) {
         setImagePreview(data.image);
       }
-      showToast('¡Datos extraídos con éxito!');
+      showToast(t('admin.toast.extract_success'));
     } catch (error) {
       console.error('Auto-fill error:', error);
       showToast(error.message, 'error');
@@ -201,7 +268,7 @@ export default function DashboardPage() {
     try {
       // Use stored accessToken for API calls
       if (!accessToken) {
-        showToast('Sesión expirada, inicia sesión de nuevo', 'error');
+        showToast(t('admin.toast.session_expired'), 'error');
         setSaving(false);
         return;
       }
@@ -256,7 +323,7 @@ export default function DashboardPage() {
       const result = await response.json();
       if (!response.ok) {
         if (response.status === 409) {
-          showToast('Ya existe un producto con este nombre', 'error');
+          showToast(t('admin.toast.duplicate'), 'error');
           return;
         }
         throw new Error(result.error || 'Error saving product');
@@ -358,8 +425,10 @@ export default function DashboardPage() {
 
   const handleBulkDelete = async () => {
     if (!selectedIds.length) return;
-    if (!window.confirm(`¿Eliminar ${selectedIds.length} productos definitivamente?`)) return;
+    setBulkDeleteConfirm(true);
+  };
 
+  const executeBulkDelete = async () => {
     setIsBulkDeleting(true);
     try {
       for (const id of selectedIds) {
@@ -378,6 +447,7 @@ export default function DashboardPage() {
       showToast(t('admin.toast.error_delete'), 'error');
     } finally {
       setIsBulkDeleting(false);
+      setBulkDeleteConfirm(false);
     }
   };
 
@@ -398,12 +468,12 @@ export default function DashboardPage() {
         if (!res.ok) throw new Error('Error en actualización masiva');
       }
 
-      showToast(`Estado actualizado para ${selectedIds.length} productos`);
+      showToast(t('admin.toast.bulk_featured_success').replace('{count}', selectedIds.length));
       setSelectedIds([]);
       fetchProducts();
     } catch (err) {
       console.error('Error in bulk featured:', err);
-      showToast('Error al actualizar productos (Solo administradores)', 'error');
+      showToast(t('admin.toast.bulk_error'), 'error');
     } finally {
       setSaving(false);
     }
@@ -471,20 +541,32 @@ export default function DashboardPage() {
       )}
 
       {/* Deletion Modal */}
-      {deleteConfirm && (
+      {(deleteConfirm || bulkDeleteConfirm) && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalCard}>
             <div className={styles.modalIcon}>🗑️</div>
-            <h3 className={styles.modalTitle}>{t('admin.modal.delete_title')}</h3>
+            <h3 className={styles.modalTitle}>
+              {bulkDeleteConfirm ? t('admin.modal.bulk_delete_title') : t('admin.modal.delete_title')}
+            </h3>
             <p className={styles.modalText}>
-              {t('admin.delete_confirm').replace('{title}', deleteConfirm.title)}
+              {bulkDeleteConfirm 
+                ? t('admin.modal.bulk_delete_text').replace('{count}', selectedIds.length) 
+                : t('admin.delete_confirm').replace('{title}', deleteConfirm?.title)}
             </p>
             <div className={styles.modalActions}>
-              <button onClick={() => setDeleteConfirm(null)} className={styles.modalCancelBtn}>
+              <button 
+                onClick={() => { setDeleteConfirm(null); setBulkDeleteConfirm(false); }} 
+                className={styles.modalCancelBtn}
+                disabled={isBulkDeleting}
+              >
                 {t('admin.form.cancel')}
               </button>
-              <button onClick={executeDelete} className={styles.modalDeleteBtn}>
-                {t('admin.modal.delete_btn')}
+              <button 
+                onClick={bulkDeleteConfirm ? executeBulkDelete : executeDelete} 
+                className={styles.modalDeleteBtn}
+                disabled={isBulkDeleting}
+              >
+                {isBulkDeleting ? t('admin.bulk.deleting') : t('admin.modal.delete_btn')}
               </button>
             </div>
           </div>
@@ -524,6 +606,64 @@ export default function DashboardPage() {
 
       {/* Main */}
       <main className={styles.main}>
+        <div className={styles.tabsContainer}>
+          <div className={styles.tabsRow}>
+            <button
+              className={`${styles.navTab} ${activeTab === 'published' ? styles.activePublished : ''}`}
+              onClick={() => setActiveTab('published')}
+            >
+              <CheckCircle2 size={18} className={styles.tabIcon} />
+              <div className={styles.tabInfo}>
+                <span className={styles.tabLabel}>
+                  {currentUser?.role === 'admin' ? t('admin.tabs.published') : t('admin.tabs.my_published')}
+                </span>
+                <span className={styles.tabCountBadge}>
+                  {products.filter(p => p.status === 'published' && (currentUser?.role === 'admin' || p.created_by === currentUser?.id)).length}
+                </span>
+              </div>
+            </button>
+
+            <button
+              className={`${styles.navTab} ${activeTab === 'pending' ? styles.activePending : ''}`}
+              onClick={() => setActiveTab('pending')}
+            >
+              <Clock size={18} className={styles.tabIcon} />
+              <div className={styles.tabInfo}>
+                <span className={styles.tabLabel}>
+                   {currentUser?.role === 'admin' ? t('admin.tabs.pending') : t('admin.tabs.my_pending')}
+                </span>
+                {products.filter(p => p.status === 'draft' && (currentUser?.role === 'admin' || p.created_by === currentUser?.id)).length > 0 && (
+                  <span className={`${styles.tabCountBadge} ${styles.pendingPulse}`}>
+                    {products.filter(p => p.status === 'draft' && (currentUser?.role === 'admin' || p.created_by === currentUser?.id)).length}
+                  </span>
+                )}
+              </div>
+            </button>
+
+            <button
+              className={`${styles.navTab} ${activeTab === 'overview' ? styles.activeOverview : ''}`}
+              onClick={() => setActiveTab('overview')}
+            >
+              <LayoutDashboard size={18} className={styles.tabIcon} />
+              <div className={styles.tabInfo}>
+                <span className={styles.tabLabel}>{t('admin.tabs.overview')}</span>
+              </div>
+            </button>
+            
+            {currentUser?.role === 'admin' && (
+              <button
+                className={`${styles.navTab} ${activeTab === 'roles' ? styles.activeRoles : ''}`}
+                onClick={() => setActiveTab('roles')}
+              >
+                <Star size={18} className={styles.tabIcon} />
+                <div className={styles.tabInfo}>
+                  <span className={styles.tabLabel}>{t('admin.tabs.roles')}</span>
+                </div>
+              </button>
+            )}
+          </div>
+        </div>
+
         {/* Overview Tab Content: Stats & Charts */}
         {activeTab === 'overview' && (
           <motion.div 
@@ -543,7 +683,7 @@ export default function DashboardPage() {
               </div>
               <div className={styles.statCard}>
                 <span className={styles.statIcon}>🕒</span>
-                <span className={styles.statLabel}>Revisiones</span>
+                <span className={styles.statLabel}>{t('admin.tabs.pending')}</span>
                 <span className={styles.statValue}>{stats.pending}</span>
                 <div className={styles.statGraph}>
                   <div 
@@ -554,7 +694,7 @@ export default function DashboardPage() {
               </div>
               <div className={styles.statCard}>
                 <span className={styles.statIcon}><MousePointerClick size={24} color="#9d4edd" /></span>
-                <span className={styles.statLabel}>Total Clicks</span>
+                <span className={styles.statLabel}>{t('admin.stats.clicks')}</span>
                 <span className={styles.statValue}>{stats.clicks}</span>
                 <div className={styles.statGraph}>
                   <div 
@@ -598,64 +738,6 @@ export default function DashboardPage() {
           </motion.div>
         )}
 
-        <div className={styles.tabsContainer}>
-          <div className={styles.tabsRow}>
-            <button
-              className={`${styles.navTab} ${activeTab === 'overview' ? styles.activeOverview : ''}`}
-              onClick={() => setActiveTab('overview')}
-            >
-              <LayoutDashboard size={18} className={styles.tabIcon} />
-              <div className={styles.tabInfo}>
-                <span className={styles.tabLabel}>Resumen</span>
-              </div>
-            </button>
-
-            <button
-              className={`${styles.navTab} ${activeTab === 'published' ? styles.activePublished : ''}`}
-              onClick={() => setActiveTab('published')}
-            >
-              <CheckCircle2 size={18} className={styles.tabIcon} />
-              <div className={styles.tabInfo}>
-                <span className={styles.tabLabel}>
-                  {currentUser?.role === 'admin' ? t('admin.tabs.published') : t('admin.tabs.my_published')}
-                </span>
-                <span className={styles.tabCountBadge}>
-                  {products.filter(p => p.status === 'published' && (currentUser?.role === 'admin' || p.created_by === currentUser?.id)).length}
-                </span>
-              </div>
-            </button>
-
-            <button
-              className={`${styles.navTab} ${activeTab === 'pending' ? styles.activePending : ''}`}
-              onClick={() => setActiveTab('pending')}
-            >
-              <Clock size={18} className={styles.tabIcon} />
-              <div className={styles.tabInfo}>
-                <span className={styles.tabLabel}>
-                   {currentUser?.role === 'admin' ? 'Revisiones' : 'Mis Revisiones'}
-                </span>
-                {products.filter(p => p.status === 'draft' && (currentUser?.role === 'admin' || p.created_by === currentUser?.id)).length > 0 && (
-                  <span className={`${styles.tabCountBadge} ${styles.pendingPulse}`}>
-                    {products.filter(p => p.status === 'draft' && (currentUser?.role === 'admin' || p.created_by === currentUser?.id)).length}
-                  </span>
-                )}
-              </div>
-            </button>
-            
-            {currentUser?.role === 'admin' && (
-              <button
-                className={`${styles.navTab} ${activeTab === 'roles' ? styles.activeRoles : ''}`}
-                onClick={() => setActiveTab('roles')}
-              >
-                <Star size={18} className={styles.tabIcon} />
-                <div className={styles.tabInfo}>
-                  <span className={styles.tabLabel}>Permisos y Roles</span>
-                </div>
-              </button>
-            )}
-          </div>
-        </div>
-
         {activeTab === 'roles' ? (
           <div className={styles.rolesPanel}>
             <div className={styles.rolesSidebar}>
@@ -679,39 +761,53 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className={styles.permissionsContent}>
-              <h3 className={styles.sectionTitle}>
-                {selectedRoleInPanel.toUpperCase()} - Configuración de Permisos
-              </h3>
+              <div className={styles.permissionsHeader}>
+                <h3 className={styles.sectionTitle}>
+                  {t('admin.permissions.title').replace('{role}', selectedRoleInPanel.toUpperCase())}
+                </h3>
+                {selectedRoleInPanel !== 'admin' && (
+                  <button 
+                    className={styles.savePermissionsBtn}
+                    onClick={handleSavePermissions}
+                    disabled={isSavingPermissions}
+                  >
+                    {isSavingPermissions ? t('admin.permissions.saving') : t('admin.permissions.save')}
+                  </button>
+                )}
+              </div>
               
               {[
-                { id: 'view_pending', label: 'Ver Revisiones / Pendientes' },
-                { id: 'create_product', label: 'Subir nuevos productos' },
-                { id: 'publish_product', label: 'Publicar productos (Estado Live)' },
-                { id: 'edit_any_product', label: 'Editar productos de otros' },
-                { id: 'delete_any_product', label: 'Borrar productos de otros' },
-                { id: 'delete_own_product', label: 'Borrar sus propios productos' },
-                { id: 'manage_roles', label: 'Gestionar Roles y Permisos' }
+                { id: 'view_pending', label: t('admin.permissions.view_pending') },
+                { id: 'create_product', label: t('admin.permissions.create_product') },
+                { id: 'publish_product', label: t('admin.permissions.publish_product') },
+                { id: 'edit_any_product', label: t('admin.permissions.edit_any_product') },
+                { id: 'delete_any_product', label: t('admin.permissions.delete_any_product') },
+                { id: 'delete_own_product', label: t('admin.permissions.delete_own_product') },
+                { id: 'manage_roles', label: t('admin.permissions.manage_roles') }
               ].map(perm => {
-                 const hasPerm = 
-                    (selectedRoleInPanel === 'admin') || 
-                    (selectedRoleInPanel === 'co-admin' && ['view_pending', 'create_product', 'delete_own_product'].includes(perm.id)) ||
-                    (selectedRoleInPanel === 'staff' && ['create_product', 'delete_own_product'].includes(perm.id));
+                 const hasPerm = (dynamicPermissions[selectedRoleInPanel] || []).includes(perm.id) || selectedRoleInPanel === 'admin';
 
                  return (
-                    <div key={perm.id} className={styles.permissionToggle}>
+                    <div 
+                      key={perm.id} 
+                      className={`${styles.permissionToggle} ${selectedRoleInPanel === 'admin' ? styles.disabledToggle : ''}`}
+                      onClick={() => handleTogglePermission(selectedRoleInPanel, perm.id)}
+                    >
                         <span>{perm.label}</span>
                         <input 
                           type="checkbox" 
                           checked={hasPerm} 
-                          readOnly 
+                          onChange={() => {}} // Handled by div onClick
+                          readOnly={selectedRoleInPanel === 'admin'}
                         />
                     </div>
                  );
               })}
               
               <p className={styles.roleHint}>
-                * Los permisos de Admin son globales y no editables. 
-                Co-Admin y Staff tienen limitaciones por diseño.
+                {selectedRoleInPanel === 'admin' 
+                  ? t('admin.permissions.hint_admin') 
+                  : t('admin.permissions.hint_other')}
               </p>
             </div>
           </div>
@@ -896,10 +992,10 @@ export default function DashboardPage() {
                       className={styles.magicButton}
                       onClick={handleAutoFill}
                       disabled={isExtracting || !form.affiliate_link}
-                      title="Auto-completar desde URL"
+                      title={t('admin.magic_btn')}
                     >
                       {isExtracting ? <Clock size={14} className={styles.spin} /> : '🪄'} 
-                      <span>{isExtracting ? 'Extrayendo...' : 'Auto-completar'}</span>
+                      <span>{isExtracting ? t('admin.extracting') : t('admin.magic_btn')}</span>
                     </button>
                   </div>
                   <textarea

@@ -33,6 +33,13 @@ export function LocaleProvider({ children }) {
         setReady(true);
     }, []);
 
+    // Sync <html lang> with current locale
+    useEffect(() => {
+        if (ready) {
+            document.documentElement.lang = locale;
+        }
+    }, [locale, ready]);
+
     const setLocale = useCallback((l) => {
         setLocaleState(l);
         localStorage.setItem('trendicore-locale', l);
