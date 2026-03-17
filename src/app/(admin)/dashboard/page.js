@@ -4,9 +4,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import { useTheme } from '@/components/ui/ThemeProvider';
-import { Globe, Plus, Search, LogOut, Package, Star, Trash2, AlertCircle, CheckCircle2, Clock, X, Sun, Moon, MousePointerClick } from 'lucide-react';
+import { Globe, Plus, Search, LogOut, Package, Star, Trash2, AlertCircle, CheckCircle2, Clock, X, Sun, Moon, MousePointerClick, BarChart3, LayoutDashboard, ShieldCheck } from 'lucide-react';
 import styles from './dashboard.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
+import DashboardCharts from '@/components/admin/DashboardCharts';
+import { supabase } from '@/lib/supabase';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -52,7 +54,10 @@ export default function DashboardPage() {
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
-  const [activeTab, setActiveTab] = useState('published'); // 'published' o 'pending'
+  const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'published', 'pending', 'roles'
+  const [selectedRoleInPanel, setSelectedRoleInPanel] = useState('admin');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isExtracting, setIsExtracting] = useState(false);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -100,11 +105,38 @@ export default function DashboardPage() {
     checkAuth();
   }, [checkAuth, fetchProducts]);
 
+  useEffect(() => {
+    if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'co-admin')) return;
+
+    const channel = supabase
+      .channel('products_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'products',
+        },
+        (payload) => {
+          if (payload.new.status === 'draft') {
+            showToast(`🚀 Nueva revisión: ${payload.new.title}`, 'info');
+            fetchProducts();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [currentUser, fetchProducts]);
+
   const stats = {
     total: products.length,
     clicks: products.reduce((sum, p) => sum + (p.clicks || 0), 0),
     es: products.filter(p => p.region === 'es').length,
     us: products.filter(p => p.region === 'us').length,
+    pending: products.filter(p => p.status === 'draft').length,
   };
 
   const handleImageChange = (e) => {
@@ -132,6 +164,34 @@ export default function DashboardPage() {
     const result = await res.json();
     if (!res.ok) throw new Error(result.error);
     return result.url;
+  };
+
+  const handleAutoFill = async () => {
+    if (!form.affiliate_link) return;
+    setIsExtracting(true);
+    try {
+      const res = await fetch('/api/admin/products/extract', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: form.affiliate_link })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error al extraer datos');
+
+      setForm(prev => ({
+        ...prev,
+        title: data.title || prev.title,
+      }));
+      if (data.image) {
+        setImagePreview(data.image);
+      }
+      showToast('¡Datos extraídos con éxito!');
+    } catch (error) {
+      console.error('Auto-fill error:', error);
+      showToast(error.message, 'error');
+    } finally {
+      setIsExtracting(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -464,57 +524,92 @@ export default function DashboardPage() {
 
       {/* Main */}
       <main className={styles.main}>
-        {/* Stats Row */}
-        <div className={styles.statsRow}>
-          <div className={styles.statCard}>
-            <span className={styles.statIcon}>📦</span>
-            <span className={styles.statLabel}>{t('admin.stats.total')}</span>
-            <span className={styles.statValue}>{stats.total}</span>
-            <div className={styles.statGraph}>
-              <div className={styles.statBar} style={{ width: '100%', background: 'rgba(255,255,255,0.2)' }}></div>
+        {/* Overview Tab Content: Stats & Charts */}
+        {activeTab === 'overview' && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+          >
+            {/* Stats Row */}
+            <div className={styles.statsRow}>
+              <div className={styles.statCard}>
+                <span className={styles.statIcon}>📦</span>
+                <span className={styles.statLabel}>{t('admin.stats.total')}</span>
+                <span className={styles.statValue}>{stats.total}</span>
+                <div className={styles.statGraph}>
+                  <div className={styles.statBar} style={{ width: '100%', background: 'rgba(255,255,255,0.2)' }}></div>
+                </div>
+              </div>
+              <div className={styles.statCard}>
+                <span className={styles.statIcon}>🕒</span>
+                <span className={styles.statLabel}>Revisiones</span>
+                <span className={styles.statValue}>{stats.pending}</span>
+                <div className={styles.statGraph}>
+                  <div 
+                    className={styles.statBar} 
+                    style={{ width: `${stats.total > 0 ? (stats.pending / stats.total) * 100 : 0}%`, background: '#f1c40f' }}
+                  ></div>
+                </div>
+              </div>
+              <div className={styles.statCard}>
+                <span className={styles.statIcon}><MousePointerClick size={24} color="#9d4edd" /></span>
+                <span className={styles.statLabel}>Total Clicks</span>
+                <span className={styles.statValue}>{stats.clicks}</span>
+                <div className={styles.statGraph}>
+                  <div 
+                    className={styles.statBar} 
+                    style={{ width: `${stats.clicks > 0 ? 100 : 0}%`, background: '#9d4edd' }}
+                  ></div>
+                </div>
+              </div>
+              <div className={styles.statCard}>
+                <span className={styles.statIcon}>
+                  <img src="/images/flags/es.svg" alt="Spain" className={styles.statFlag} />
+                </span>
+                <span className={styles.statLabel}>{t('regionSelector.es')}</span>
+                <span className={styles.statValue}>{stats.es}</span>
+                <div className={styles.statGraph}>
+                  <div 
+                    className={styles.statBar} 
+                    style={{ width: `${stats.total > 0 ? (stats.es / stats.total) * 100 : 0}%`, background: '#ff4b2b' }}
+                  ></div>
+                </div>
+              </div>
+              <div className={styles.statCard}>
+                <span className={styles.statIcon}>
+                  <img src="/images/flags/us.svg" alt="USA" className={styles.statFlag} />
+                </span>
+                <span className={styles.statLabel}>{t('regionSelector.us')}</span>
+                <span className={styles.statValue}>{stats.us}</span>
+                <div className={styles.statGraph}>
+                  <div 
+                    className={styles.statBar} 
+                    style={{ width: `${stats.total > 0 ? (stats.us / stats.total) * 100 : 0}%`, background: '#3b82f6' }}
+                  ></div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className={styles.statCard}>
-            <span className={styles.statIcon}><MousePointerClick size={24} color="#9d4edd" /></span>
-            <span className={styles.statLabel}>Total Clicks</span>
-            <span className={styles.statValue}>{stats.clicks}</span>
-            <div className={styles.statGraph}>
-              <div 
-                className={styles.statBar} 
-                style={{ width: `${stats.clicks > 0 ? 100 : 0}%`, background: '#9d4edd' }}
-              ></div>
-            </div>
-          </div>
-          <div className={styles.statCard}>
-            <span className={styles.statIcon}>
-              <img src="/images/flags/es.svg" alt="Spain" className={styles.statFlag} />
-            </span>
-            <span className={styles.statLabel}>{t('regionSelector.es')}</span>
-            <span className={styles.statValue}>{stats.es}</span>
-            <div className={styles.statGraph}>
-              <div 
-                className={styles.statBar} 
-                style={{ width: `${stats.total > 0 ? (stats.es / stats.total) * 100 : 0}%`, background: '#ff4b2b' }}
-              ></div>
-            </div>
-          </div>
-          <div className={styles.statCard}>
-            <span className={styles.statIcon}>
-              <img src="/images/flags/us.svg" alt="USA" className={styles.statFlag} />
-            </span>
-            <span className={styles.statLabel}>{t('regionSelector.us')}</span>
-            <span className={styles.statValue}>{stats.us}</span>
-            <div className={styles.statGraph}>
-              <div 
-                className={styles.statBar} 
-                style={{ width: `${stats.total > 0 ? (stats.us / stats.total) * 100 : 0}%`, background: '#3b82f6' }}
-              ></div>
-            </div>
-          </div>
-        </div>
+
+            {/* Charts Section - Visible only for Admin/Co-Admin */}
+            {(currentUser?.role === 'admin' || currentUser?.role === 'co-admin') && (
+              <DashboardCharts products={products} />
+            )}
+          </motion.div>
+        )}
 
         <div className={styles.tabsContainer}>
           <div className={styles.tabsRow}>
+            <button
+              className={`${styles.navTab} ${activeTab === 'overview' ? styles.activeOverview : ''}`}
+              onClick={() => setActiveTab('overview')}
+            >
+              <LayoutDashboard size={18} className={styles.tabIcon} />
+              <div className={styles.tabInfo}>
+                <span className={styles.tabLabel}>Resumen</span>
+              </div>
+            </button>
+
             <button
               className={`${styles.navTab} ${activeTab === 'published' ? styles.activePublished : ''}`}
               onClick={() => setActiveTab('published')}
@@ -537,7 +632,7 @@ export default function DashboardPage() {
               <Clock size={18} className={styles.tabIcon} />
               <div className={styles.tabInfo}>
                 <span className={styles.tabLabel}>
-                  {currentUser?.role === 'admin' ? t('admin.tabs.pending') : t('admin.tabs.my_pending')}
+                   {currentUser?.role === 'admin' ? 'Revisiones' : 'Mis Revisiones'}
                 </span>
                 {products.filter(p => p.status === 'draft' && (currentUser?.role === 'admin' || p.created_by === currentUser?.id)).length > 0 && (
                   <span className={`${styles.tabCountBadge} ${styles.pendingPulse}`}>
@@ -546,11 +641,86 @@ export default function DashboardPage() {
                 )}
               </div>
             </button>
+            
+            {currentUser?.role === 'admin' && (
+              <button
+                className={`${styles.navTab} ${activeTab === 'roles' ? styles.activeRoles : ''}`}
+                onClick={() => setActiveTab('roles')}
+              >
+                <Star size={18} className={styles.tabIcon} />
+                <div className={styles.tabInfo}>
+                  <span className={styles.tabLabel}>Permisos y Roles</span>
+                </div>
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Action Bar */}
-        <div className={styles.actionBar}>
+        {activeTab === 'roles' ? (
+          <div className={styles.rolesPanel}>
+            <div className={styles.rolesSidebar}>
+              <div 
+                className={`${styles.roleItem} ${selectedRoleInPanel === 'admin' ? styles.roleAdminActive : ''} ${styles.roleAdmin}`}
+                onClick={() => setSelectedRoleInPanel('admin')}
+              >
+                Admin
+              </div>
+              <div 
+                className={`${styles.roleItem} ${selectedRoleInPanel === 'co-admin' ? styles.roleCoAdminActive : ''} ${styles.roleCoAdmin}`}
+                onClick={() => setSelectedRoleInPanel('co-admin')}
+              >
+                Co-Admin
+              </div>
+              <div 
+                className={`${styles.roleItem} ${selectedRoleInPanel === 'staff' ? styles.roleStaffActive : ''} ${styles.roleStaff}`}
+                onClick={() => setSelectedRoleInPanel('staff')}
+              >
+                Staff
+              </div>
+            </div>
+            <div className={styles.permissionsContent}>
+              <h3 className={styles.sectionTitle}>
+                {selectedRoleInPanel.toUpperCase()} - Configuración de Permisos
+              </h3>
+              
+              {[
+                { id: 'view_pending', label: 'Ver Revisiones / Pendientes' },
+                { id: 'create_product', label: 'Subir nuevos productos' },
+                { id: 'publish_product', label: 'Publicar productos (Estado Live)' },
+                { id: 'edit_any_product', label: 'Editar productos de otros' },
+                { id: 'delete_any_product', label: 'Borrar productos de otros' },
+                { id: 'delete_own_product', label: 'Borrar sus propios productos' },
+                { id: 'manage_roles', label: 'Gestionar Roles y Permisos' }
+              ].map(perm => {
+                 const hasPerm = 
+                    (selectedRoleInPanel === 'admin') || 
+                    (selectedRoleInPanel === 'co-admin' && ['view_pending', 'create_product', 'delete_own_product'].includes(perm.id)) ||
+                    (selectedRoleInPanel === 'staff' && ['create_product', 'delete_own_product'].includes(perm.id));
+
+                 return (
+                    <div key={perm.id} className={styles.permissionToggle}>
+                        <span>{perm.label}</span>
+                        <input 
+                          type="checkbox" 
+                          checked={hasPerm} 
+                          readOnly 
+                        />
+                    </div>
+                 );
+              })}
+              
+              <p className={styles.roleHint}>
+                * Los permisos de Admin son globales y no editables. 
+                Co-Admin y Staff tienen limitaciones por diseño.
+              </p>
+            </div>
+          </div>
+        ) : activeTab === 'overview' ? (
+          null
+        ) : (
+          <>
+            {/* Action Bar */}
+            <div className={styles.actionBar}>
           <div className={styles.filtersGroup}>
             <button
               onClick={toggleSelectAll}
@@ -718,9 +888,20 @@ export default function DashboardPage() {
                   )}
                 </div>
 
-                {/* Affiliate Link — Textarea for long URLs */}
                 <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>{t('admin.form.affiliate_link')}</label>
+                  <div className={styles.labelWithAction}>
+                    <label className={styles.formLabel}>{t('admin.form.affiliate_link')}</label>
+                    <button 
+                      type="button" 
+                      className={styles.magicButton}
+                      onClick={handleAutoFill}
+                      disabled={isExtracting || !form.affiliate_link}
+                      title="Auto-completar desde URL"
+                    >
+                      {isExtracting ? <Clock size={14} className={styles.spin} /> : '🪄'} 
+                      <span>{isExtracting ? 'Extrayendo...' : 'Auto-completar'}</span>
+                    </button>
+                  </div>
                   <textarea
                     value={form.affiliate_link}
                     onChange={(e) => setForm({ ...form, affiliate_link: e.target.value.replace(/[\n\r]/g, '') })}
@@ -976,7 +1157,9 @@ export default function DashboardPage() {
             ))}
           </div>
         )}
-      </main>
+      </>
+    )}
+  </main>
 
       {/* Bulk Action Floating Bar */}
       {selectedIds.length > 0 && (
@@ -1013,5 +1196,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-

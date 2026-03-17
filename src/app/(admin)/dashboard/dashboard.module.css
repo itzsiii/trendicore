@@ -4,9 +4,9 @@
    ========================================== */
 
 .main {
-  padding: 32px;
-  max-width: 100%;
-  margin: 0;
+  padding: 48px 80px;
+  max-width: 1440px;
+  margin: 0 auto;
   min-height: 100vh;
   background-color: var(--bg-primary);
   color: var(--text-primary);
@@ -72,8 +72,10 @@
 .tabInfo { display: flex; align-items: center; gap: 12px; }
 .tabLabel { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.02em; }
 .tabCountBadge { background: var(--accent-glow); padding: 2px 10px; border-radius: 12px; font-weight: 900; font-size: 0.8rem; }
+.activeOverview { background: rgba(124, 58, 237, 0.15); color: var(--accent); box-shadow: 0 4px 20px rgba(124, 58, 237, 0.1); }
 .activePublished { background: rgba(16, 185, 129, 0.15); color: var(--success); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1); }
 .activePending { background: rgba(241, 196, 15, 0.15); color: #f1c40f; box-shadow: 0 4px 20px rgba(241, 196, 15, 0.1); }
+.activeRoles { background: rgba(157, 78, 221, 0.15); color: #9d4edd; box-shadow: 0 4px 20px rgba(157, 78, 221, 0.1); }
 
 /* Filters */
 .actionBar { 
@@ -175,6 +177,48 @@
 .formCloseBtn:hover { background: var(--bg-card-hover); transform: rotate(90deg); }
 
 .formGroup { display: flex; flex-direction: column; gap: 12px; }
+.labelWithAction {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.magicButton {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 8px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.magicButton:hover:not(:disabled) {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.magicButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .formLabel { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.1em; }
 .formInput { 
   height: 56px; background: var(--bg-card); 
@@ -560,6 +604,12 @@
 .toast { position: fixed; bottom: 32px; right: 32px; padding: 16px 24px; border-radius: 16px; z-index: 5000; display: flex; align-items: center; gap: 12px; font-weight: 700; backdrop-filter: blur(12px); animation: slideIn 0.3s; }
 .toastSuccess { background: rgba(16, 185, 129, 0.9); color: #fff; }
 .toastError { background: rgba(239, 68, 68, 0.9); color: #fff; }
+.toastInfo { 
+  background: rgba(59, 130, 246, 0.9); 
+  color: #fff; 
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+}
 @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
 /* Delete Modal */
@@ -1038,3 +1088,119 @@
   }
 }
 
+/* ==========================================
+   ROLE MANAGEMENT面板 — Discord Style
+   ========================================== */
+.rolesPanel {
+  display: flex;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  height: 700px;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.rolesSidebar {
+  width: 260px;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  padding: 24px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.roleItem {
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.roleItem:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+
+.roleAdmin { color: #ed4245 !important; border-left: 4px solid #ed4245; background: rgba(237, 66, 69, 0.05); }
+.roleCoAdmin { color: #f1c40f !important; border-left: 4px solid #f1c40f; }
+.roleStaff { color: #3498db !important; border-left: 4px solid #3498db; }
+
+.permissionsContent {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+  background: var(--bg-card);
+}
+
+.sectionTitle {
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin-bottom: 32px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.permissionToggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 12px;
+  transition: all 0.2s;
+}
+
+.permissionToggle:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-card-hover);
+}
+
+.permissionToggle span {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.permissionToggle input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.activeRoles { 
+  background: rgba(124, 58, 237, 0.15) !important; 
+  color: var(--accent) !important; 
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.1); 
+}
+
+.roleAdminActive { background: rgba(237, 66, 69, 0.15) !important; color: #ed4245 !important; }
+.roleCoAdminActive { background: rgba(241, 196, 15, 0.15) !important; color: #f1c40f !important; }
+.roleStaffActive { background: rgba(52, 152, 219, 0.15) !important; color: #3498db !important; }
+
+.roleHint {
+  margin-top: 24px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border-left: 4px solid var(--accent);
+}

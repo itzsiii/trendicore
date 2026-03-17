@@ -6,26 +6,36 @@ import { GetProductsUseCase } from '@/core/product/application/GetProductsUseCas
 import { CreateProductUseCase } from '@/core/product/application/CreateProductUseCase';
 import { UpdateProductUseCase } from '@/core/product/application/UpdateProductUseCase';
 import { DeleteProductUseCase } from '@/core/product/application/DeleteProductUseCase';
+import { User } from '@/core/user/domain/User';
+import { PERMISSIONS } from '@/core/user/domain/Permissions';
+import { CheckPermissionUseCase } from '@/core/user/application/CheckPermissionUseCase';
+import { SupabaseAuthRepository } from '@/core/user/infrastructure/adapters/SupabaseAuthRepository';
 
 // Create a Supabase client that can verify any user's token
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 async function getUser(request) {
-  // Get token from Authorization header
   const authHeader = request.headers.get('Authorization');
-  if (!authHeader?.startsWith('Bearer ')) {
-    return null;
-  }
+  if (!authHeader?.startsWith('Bearer ')) return null;
   const token = authHeader.replace('Bearer ', '');
   
-  // Create a temporary client with the user's token
   const supabaseAuth = createClient(supabaseUrl || '', supabaseAnonKey || '', {
     global: { headers: { Authorization: `Bearer ${token}` } }
   });
   
-  const { data: { user } } = await supabaseAuth.auth.getUser(token);
-  return user;
+  const { data: { user: authUser }, error: authError } = await supabaseAuth.auth.getUser(token);
+  if (authError || !authUser) return null;
+
+  const authRepository = new SupabaseAuthRepository(supabaseAdmin);
+  const profile = await authRepository.getUserProfile(authUser.id);
+  
+  return new User({
+    id: authUser.id,
+    email: authUser.email,
+    role: profile?.role || 'staff', // Asumimos staff por defecto si no hay perfil
+    lastSignInAt: authUser.last_sign_in_at
+  });
 }
 
 // GET all products
@@ -35,10 +45,24 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const checkPermission = new CheckPermissionUseCase();
+  if (!checkPermission.execute(user, PERMISSIONS.VIEW_PENDING)) {
+    // Si no puede ver pendientes, tal vez solo pueda ver publicados. 
+    // Por ahora, Co-Admin y Admin pueden ver todo. Staff no tiene VIEW_PENDING?
+    // User dijo: "staff no puede ver lo que hay en revisiones".
+    // Así que filtramos por status='published' si no tiene el permiso.
+  }
+
   try {
     const repository = new SupabaseProductRepository(supabaseAdmin);
     const getProductsUseCase = new GetProductsUseCase(repository);
-    const products = await getProductsUseCase.execute();
+    let products = await getProductsUseCase.execute();
+
+    // Filtro dinámico basado en permisos
+    if (!checkPermission.execute(user, PERMISSIONS.VIEW_PENDING)) {
+      products = products.filter(p => p.status === 'published' || p.created_by === user.id);
+    }
+
     return NextResponse.json(products);
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -52,12 +76,24 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const checkPermission = new CheckPermissionUseCase();
+  if (!checkPermission.execute(user, PERMISSIONS.CREATE_PRODUCT)) {
+    return NextResponse.json({ error: 'No tienes permiso para subir productos' }, { status: 403 });
+  }
+
   try {
     const body = await request.json();
     const repository = new SupabaseProductRepository(supabaseAdmin);
     const createProductUseCase = new CreateProductUseCase(repository);
     
-    await createProductUseCase.execute({ ...body, created_by: user.id });
+    // El staff siempre crea productos en estado 'draft' (revisión)
+    const initialStatus = user.role === 'admin' ? (body.status || 'published') : 'draft';
+    
+    await createProductUseCase.execute({ 
+      ...body, 
+      created_by: user.id,
+      status: initialStatus
+    });
     
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -80,8 +116,25 @@ export async function PUT(request) {
     const { id, ...productData } = body;
     
     const repository = new SupabaseProductRepository(supabaseAdmin);
-    const updateProductUseCase = new UpdateProductUseCase(repository);
+    const product = await repository.findById(id);
+    if (!product) return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+
+    const checkPermission = new CheckPermissionUseCase();
     
+    // Regla: Si intenta publicar y no es Admin, denegar
+    if (productData.status === 'published' && !checkPermission.execute(user, PERMISSIONS.PUBLISH_PRODUCT)) {
+       return NextResponse.json({ error: 'No tienes permiso para publicar productos' }, { status: 403 });
+    }
+
+    // Regla: Edición de otros
+    const canEditOther = checkPermission.execute(user, PERMISSIONS.EDIT_ANY_PRODUCT);
+    const isOwner = product.created_by === user.id;
+
+    if (!canEditOther && !isOwner) {
+       return NextResponse.json({ error: 'No tienes permiso para editar productos ajenos' }, { status: 403 });
+    }
+
+    const updateProductUseCase = new UpdateProductUseCase(repository);
     await updateProductUseCase.execute(id, productData);
     
     return NextResponse.json({ success: true });
@@ -102,8 +155,18 @@ export async function DELETE(request) {
     const id = searchParams.get('id');
     
     const repository = new SupabaseProductRepository(supabaseAdmin);
+    const product = await repository.findById(id);
+    if (!product) return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+
+    const checkPermission = new CheckPermissionUseCase();
+    const canDeleteAny = checkPermission.execute(user, PERMISSIONS.DELETE_ANY_PRODUCT);
+    const isOwner = product.created_by === user.id;
+
+    if (!canDeleteAny && !isOwner) {
+       return NextResponse.json({ error: 'No tienes permiso para borrar productos ajenos' }, { status: 403 });
+    }
+
     const deleteProductUseCase = new DeleteProductUseCase(repository);
-    
     await deleteProductUseCase.execute(id);
     
     return NextResponse.json({ success: true });

@@ -1,3 +1,5 @@
+import { PermissionManager } from './Permissions';
+
 export class User {
   constructor({ id, email, role, lastSignInAt }) {
     this.id = id;
@@ -12,6 +14,13 @@ export class User {
     if (!this.email || !this.email.includes('@')) {
       throw new Error('El usuario debe tener un email válido');
     }
+  }
+
+  hasPermission(permission, resource = null) {
+    if (resource) {
+      return PermissionManager.canPerformOnResource(this, permission, resource);
+    }
+    return PermissionManager.can(this.role, permission);
   }
 
   toDTO() {
