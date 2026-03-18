@@ -32,6 +32,7 @@ export default function TiendaClient({ initialProducts = [], serverRegion = 'es'
     { id: 'all', label: t('shop.filters.allSources') },
     { id: 'amazon', label: 'Amazon' },
     { id: 'shein', label: 'Shein' },
+    { id: 'otros', label: 'Otros' },
   ];
 
   const sortOptions = [

@@ -25,6 +25,7 @@ export default function DashboardPage() {
   const SOURCES = [
     { value: 'amazon', label: 'Amazon', icon: '🟠' },
     { value: 'shein', label: 'Shein', icon: '🟣' },
+    { value: 'otros', label: 'Otros', icon: '🔵' },
   ];
 
   const EMPTY_FORM = {
@@ -1085,7 +1086,7 @@ export default function DashboardPage() {
                     </div>
                     <div className={`${styles.previewStatusBadge}`}>✅ {t('admin.tabs.published')}</div>
                     <div className={`${styles.previewSourceBadge} ${styles[form.affiliate_source]}`}>
-                      {form.affiliate_source === 'amazon' ? '🟠' : '🟣'} {form.affiliate_source === 'amazon' ? 'Amazon' : 'Shein'}
+                      {form.affiliate_source === 'amazon' ? '🟠' : form.affiliate_source === 'shein' ? '🟣' : '🔵'} {form.affiliate_source === 'amazon' ? 'Amazon' : form.affiliate_source === 'shein' ? 'Shein' : 'Otros'}
                     </div>
                     {form.featured && (
                       <div className={styles.previewFeaturedBadge}>
@@ -1191,7 +1192,7 @@ export default function DashboardPage() {
                     </button>
                   )}
                   <span className={`${styles.sourceBadge} ${styles[product.affiliate_source]}`}>
-                    {product.affiliate_source === 'amazon' ? '🟠 Amazon' : '🟣 Shein'}
+                    {product.affiliate_source === 'amazon' ? '🟠 Amazon' : product.affiliate_source === 'shein' ? '🟣 Shein' : '🔵 Otros'}
                   </span>
                   <span className={styles.regionFlag}>
                     <img

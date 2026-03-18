@@ -2,70 +2,100 @@
 
 import { useLocale } from '@/components/providers/LocaleProvider';
 import { motion } from 'framer-motion';
-import { Sparkles, BarChart3, Globe } from 'lucide-react';
-import styles from '../legal/legal.module.css';
+import { ArrowUpRight } from 'lucide-react';
+import styles from './services.module.css';
 
 export default function ServicesPage() {
   const { t } = useLocale();
 
-  const services = [
+  const partners = [
     {
-      icon: <Sparkles size={24} />,
-      iconBg: 'rgba(var(--accent-rgb), 0.1)',
-      iconColor: 'var(--accent)',
-      titleKey: 'servicesPage.curationTitle',
-      descKey: 'servicesPage.curationDesc',
+      roleKey: 'servicesPage.partner1Role',
+      descKey: 'servicesPage.partner1Desc',
+      name: 'Marina Fernández',
+      avatar: 'https://i.pravatar.cc/150?u=marina',
+      link: '#'
     },
     {
-      icon: <BarChart3 size={24} />,
-      iconBg: 'rgba(var(--pink-rgb), 0.1)',
-      iconColor: 'var(--pink)',
-      titleKey: 'servicesPage.trackingTitle',
-      descKey: 'servicesPage.trackingDesc',
-    },
-    {
-      icon: <Globe size={24} />,
-      iconBg: 'rgba(var(--cyan-rgb), 0.1)',
-      iconColor: 'var(--cyan)',
-      titleKey: 'servicesPage.globalTitle',
-      descKey: 'servicesPage.globalDesc',
-    },
+      roleKey: 'servicesPage.partner2Role',
+      descKey: 'servicesPage.partner2Desc',
+      name: 'Lucía Gómez',
+      avatar: 'https://i.pravatar.cc/150?u=lucia',
+      link: '#'
+    }
   ];
 
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <motion.h1 
-          className={styles.title}
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          {t('servicesPage.title')}
-        </motion.h1>
-        <p className={styles.subtitle}>{t('servicesPage.subtitle')}</p>
+      
+      {/* Immersive Hero Header */}
+      <header className={styles.hero}>
+        <div className={styles.heroOrbs}>
+          <div className={`${styles.orb} ${styles.orb1}`}></div>
+          <div className={`${styles.orb} ${styles.orb2}`}></div>
+        </div>
+        
+        <div className={styles.heroContent}>
+          <motion.span 
+            className={styles.badge}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            Trendicore Agency
+          </motion.span>
+          
+          <motion.h1 
+            className={styles.title}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            {t('servicesPage.partnersTitle')}
+          </motion.h1>
+          
+          <motion.p 
+            className={styles.subtitle}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            {t('servicesPage.partnersSubtitle')}
+          </motion.p>
+        </div>
       </header>
 
-      <article className={styles.content}>
-        <div className={styles.servicesGrid}>
-          {services.map((svc, i) => (
-            <motion.section 
+      {/* Partners Full-Width Grid */}
+      <main className={styles.content}>
+        <div className={styles.partnersGrid}>
+          {partners.map((partner, i) => (
+            <motion.div 
               key={i}
-              className={styles.serviceItem}
-              initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              className={styles.partnerCard}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ delay: i * 0.15, duration: 0.5 }}
             >
-              <div className={styles.serviceIcon} style={{ background: svc.iconBg, color: svc.iconColor }}>
-                {svc.icon}
+              <div className={styles.avatarContainer}>
+                <div className={styles.avatarGlow}></div>
+                <div 
+                  className={styles.partnerAvatar}
+                  style={{ backgroundImage: `url(${partner.avatar})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                />
               </div>
-              <div>
-                <h2>{t(svc.titleKey)}</h2>
-                <p>{t(svc.descKey)}</p>
+
+              <div className={styles.partnerInfo}>
+                <span className={styles.partnerBadge}>{t(partner.roleKey)}</span>
+                <h3>{partner.name}</h3>
+                <p>{t(partner.descKey)}</p>
+                <a href={partner.link} target="_blank" rel="noopener noreferrer" className={styles.partnerBtn}>
+                  {t('servicesPage.viewPortfolio')}
+                </a>
               </div>
-            </motion.section>
+            </motion.div>
           ))}
         </div>
-      </article>
+      </main>
     </div>
   );
 }

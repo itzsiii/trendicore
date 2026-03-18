@@ -267,9 +267,16 @@
         "curationTitle": "Curación Experta",
         "curationDesc": "Seleccionamos manualmente cada producto basándonos en el análisis de tendencias reales en TikTok, Pinterest e Instagram.",
         "trackingTitle": "Comparación de Precios",
-        "trackingDesc": "Mostramos dónde encontrar el mejor precio disponible en Amazon y Shein de forma inmediata.",
+        "trackingDesc": "Comparamos precios y disponibilidad en Amazon, Shein y otras plataformas para asegurarte la mejor oferta en tiempo real.",
         "globalTitle": "Alcance Internacional",
-        "globalDesc": "Adaptamos nuestro catálogo para mostrar productos disponibles en cada región (España / EE.UU.)."
+        "globalDesc": "Analizamos tendencias a nivel global, adaptándolas a los mercados de España (ES) y Estados Unidos (US) con precisión cultural.",
+        "partnersTitle": "Ecosistema Creativo",
+        "partnersSubtitle": "Seleccionamos talento excepcional. Conoce a nuestras partners expertas en diseño.",
+        "partner1Role": "Diseño UI/UX",
+        "partner1Desc": "Especialista en interfaces cautivadoras y experiencia de usuario fluida para e-commerce.",
+        "partner2Role": "Branding & Social",
+        "partner2Desc": "Creadora de identidades visuales memorables y estéticas vanguardistas para redes sociales.",
+        "viewPortfolio": "Ver Portfolio ↗"
     },
     "entertainmentPage": {
         "title": "Entretenimiento",

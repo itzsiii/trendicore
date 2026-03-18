@@ -6,7 +6,7 @@ import { useLocale } from '@/components/providers/LocaleProvider';
 import ProductCard from '@/components/product/ProductCard';
 import QuickViewModal from '@/components/product/QuickViewModal';
 import Link from 'next/link';
-import { TrendingUp, Cpu, Sparkles, Flame, ArrowRight } from 'lucide-react';
+import { TrendingUp, Cpu, Sparkles, Flame, ArrowRight, BarChart3, Globe } from 'lucide-react';
 import styles from './home.module.css';
 
 export default function HomeClient({ initialFeatured = [], initialLatest = [], serverRegion = 'es' }) {
@@ -73,6 +73,30 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], s
   const handleTagClick = (tag) => {
     setActiveTag(activeTag === tag ? null : tag);
   };
+
+  const services = [
+    {
+      icon: <Sparkles size={24} />,
+      iconBg: 'rgba(var(--accent-rgb), 0.1)',
+      iconColor: 'var(--accent)',
+      titleKey: 'servicesPage.curationTitle',
+      descKey: 'servicesPage.curationDesc',
+    },
+    {
+      icon: <Flame size={24} />,
+      iconBg: 'rgba(var(--pink-rgb), 0.1)',
+      iconColor: 'var(--pink)',
+      titleKey: 'footer.dailyDrops',
+      descKey: 'footer.newsletterDesc',
+    },
+    {
+      icon: <Globe size={24} />,
+      iconBg: 'rgba(var(--cyan-rgb), 0.1)',
+      iconColor: 'var(--cyan)',
+      titleKey: 'servicesPage.globalTitle',
+      descKey: 'servicesPage.globalDesc',
+    },
+  ];
 
   return (
     <div className={styles.page}>
@@ -166,6 +190,30 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], s
             <span className={styles.statLabel}>{t('stats.update')}</span>
           </div>
         </motion.div>
+      </section>
+
+      {/* Services Overview Section */}
+      <section className={styles.servicesSection}>
+        <div className={styles.servicesGrid}>
+          {services.map((svc, i) => (
+            <motion.div 
+              key={i}
+              className={styles.serviceItem}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ delay: i * 0.1 }}
+            >
+              <div className={styles.serviceIcon} style={{ background: svc.iconBg, color: svc.iconColor }}>
+                {svc.icon}
+              </div>
+              <div>
+                <h3>{t(svc.titleKey)}</h3>
+                <p>{t(svc.descKey)}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </section>
 
       {/* Featured Section */}

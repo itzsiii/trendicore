@@ -28,6 +28,11 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
       icon: <ShoppingBag size={16} strokeWidth={2.5} />,
       class: 'shein',
     },
+    otros: {
+      label: 'Ver producto',
+      icon: <LinkIcon size={16} strokeWidth={2.5} />,
+      class: 'otros',
+    },
   };
 
   const source = sourceConfig[product.affiliate_source] || sourceConfig.amazon;
@@ -86,7 +91,7 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
           </h3>
           <div className={styles.bottom}>
             <span className={`${styles.ctaMini} ${styles[source.class]}`}>
-              {t('product.viewOn')} {product.affiliate_source === 'shein' ? 'Shein' : 'Amazon'} <LinkIcon size={14} className={styles.miniIcon} />
+              {t('product.viewOn')} {product.affiliate_source === 'shein' ? 'Shein' : product.affiliate_source === 'amazon' ? 'Amazon' : 'Tienda'} <LinkIcon size={14} className={styles.miniIcon} />
             </span>
           </div>
         </div>
