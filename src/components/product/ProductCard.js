@@ -35,7 +35,7 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
     e.preventDefault();
     e.stopPropagation();
     
-    const shareUrl = `${window.location.origin}/api/track-click?id=${product.id}`;
+    const shareUrl = product.affiliate_link;
     const shareData = {
       title: product.title,
       text: `Mira este producto en Trendicore: ${product.title}`,
