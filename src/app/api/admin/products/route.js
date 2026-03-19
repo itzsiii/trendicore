@@ -21,7 +21,7 @@ async function getUser(request) {
   if (!authHeader?.startsWith('Bearer ')) return null;
   const token = authHeader.replace('Bearer ', '');
   
-  const supabaseAuth = createClient(supabaseUrl || '', supabaseAnonKey || '', {
+  const supabaseAuth = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder', {
     global: { headers: { Authorization: `Bearer ${token}` } }
   });
   
