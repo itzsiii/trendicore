@@ -11,11 +11,11 @@
         "entertainment": "Entertainment"
     },
     "hero": {
-        "badge": "Verified trend curation",
-        "titleLine1": "Discover what's",
+        "badge": "Premium Verified Curation",
+        "titleLine1": "Discover the most",
         "titleHighlight": "trending",
-        "titleLine2": " now",
-        "subtitle": "Fashion and technology curated from top platforms — verified, selected, and ready for you.",
+        "titleLine2": " selection",
+        "subtitle": "High-quality fashion and technology meticulously curated from top platforms — verified and ready for you.",
         "ctaFashion": "Explore Fashion",
         "ctaTech": "See Tech"
     },
@@ -25,11 +25,11 @@
         "update": "Updated"
     },
     "sections": {
-        "trendingTitle": "Trending Now",
-        "trendingSubtitle": "The most searched products this week",
-        "newTitle": "What's New",
-        "newTag": "NEW",
-        "newSubtitle": "Just added to our catalog",
+        "trendingTitle": "Exclusive Curation",
+        "trendingSubtitle": "Our premium selection of this week's most desired products.",
+        "newTitle": "Most Exclusive",
+        "newTag": "PREMIUM",
+        "newSubtitle": "Recently curated for our catalog",
         "filtered": "FILTERED",
         "trendsFor": "Trends for",
         "browsingTag": "Top items for",
@@ -59,8 +59,8 @@
         "empty": "Coming soon — new gadgets in curation."
     },
     "shop": {
-        "title": "Trend Catalog",
-        "subtitle": "Explore our entire viral selection in one place.",
+        "title": "Curated Collection",
+        "subtitle": "Explore our exclusive and carefully curated selection in one place.",
         "searchPlaceholder": "Search for a product or style...",
         "filters": {
             "title": "Filters",

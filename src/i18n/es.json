@@ -11,11 +11,11 @@
         "entertainment": "Entretenimiento"
     },
     "hero": {
-        "badge": "Curación de tendencias verificadas",
-        "titleLine1": "Descubre lo que es",
+        "badge": "Curación premium certificada",
+        "titleLine1": "Descubre la selección ",
         "titleHighlight": "trending",
-        "titleLine2": " ahora",
-        "subtitle": "Moda y tecnología seleccionadas de las principales plataformas — verificadas, curadas y listas para ti.",
+        "titleLine2": " más exclusiva",
+        "subtitle": "Moda y tecnología de alta calidad curadas minuciosamente desde las mejores plataformas — verificadas y listas para ti.",
         "ctaFashion": "Explorar Moda",
         "ctaTech": "Ver Tech"
     },
@@ -25,11 +25,11 @@
         "update": "Actualización"
     },
     "sections": {
-        "trendingTitle": "Tendencias Ahora",
-        "trendingSubtitle": "Los productos más buscados esta semana",
-        "newTitle": "Lo Más Nuevo",
-        "newTag": "NUEVO",
-        "newSubtitle": "Recién añadido a nuestro catálogo",
+        "trendingTitle": "Curación Exclusiva",
+        "trendingSubtitle": "Nuestra selección premium de los productos más deseados de la semana",
+        "newTitle": "Lo Más Exclusivo",
+        "newTag": "PREMIUM",
+        "newSubtitle": "Recientemente curado para nuestro catálogo",
         "filtered": "FILTRADO",
         "trendsFor": "Tendencias de",
         "browsingTag": "Selección de",
@@ -59,8 +59,8 @@
         "empty": "Próximamente — nuevos gadgets en selección."
     },
     "shop": {
-        "title": "Catálogo de Tendencias",
-        "subtitle": "Explora toda nuestra selección viral en un solo lugar.",
+        "title": "Colección Curada",
+        "subtitle": "Explora nuestra exclusiva y cuidadosa selección en un solo lugar.",
         "searchPlaceholder": "Busca un producto o estilo...",
         "filters": {
             "title": "Filtros",

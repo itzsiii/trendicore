@@ -6,6 +6,7 @@ import styles from './login.module.css';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import Button from '@/components/ui/Button';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -111,13 +112,16 @@ export default function LoginPage() {
             </motion.p>
           )}
 
-          <button
+          <Button
             type="submit"
+            variant="primary"
             className={styles.button}
-            disabled={loading}
+            loading={loading}
+            fullWidth
+            size="large"
           >
-            {loading ? 'Verificando...' : 'Acceder al Dashboard'}
-          </button>
+            Acceder al Dashboard
+          </Button>
         </form>
 
         <Link href="/" className={styles.backLink}>

@@ -21,12 +21,21 @@ export class SupabaseProductRepository {
 
     if (filters.region) query = query.eq('region', filters.region);
     if (filters.status) query = query.eq('status', filters.status);
-    if (filters.category) query = query.eq('category', filters.category);
+    if (filters.category && filters.category !== 'all') query = query.eq('category', filters.category);
     if (filters.categories) query = query.in('category', filters.categories);
     if (filters.featured !== undefined) query = query.eq('featured', filters.featured);
+    if (filters.affiliate_source && filters.affiliate_source !== 'all') query = query.eq('affiliate_source', filters.affiliate_source);
     
-    query = query.order('created_at', { ascending: false });
+    if (filters.search) {
+      query = query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
+    }
 
+    if (filters.sortBy === 'popular') {
+      query = query.order('clicks', { ascending: false });
+    } else {
+      query = query.order('created_at', { ascending: false });
+    }
+    
     if (filters.limit) query = query.limit(filters.limit);
 
     const { data, error } = await query;

@@ -217,7 +217,7 @@
   background: var(--accent);
   color: #fff;
   font-size: 0.65rem;
-  font-weight: 800;
+  font-weight: 700;
   min-width: 18px;
   height: 18px;
   padding: 0 4px;
@@ -397,7 +397,7 @@
   .mobileShopHeader {
     padding: 0.9rem 1rem 0.4rem;
     font-size: 0.75rem;
-    font-weight: 800;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--accent);

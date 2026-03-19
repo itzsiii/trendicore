@@ -52,7 +52,7 @@
 
 .errorCode {
   font-size: 8rem;
-  font-weight: 900;
+  font-weight: 700;
   font-family: var(--font-title);
   line-height: 1;
   background: linear-gradient(135deg, var(--accent) 0%, var(--pink) 100%);

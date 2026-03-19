@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import { useTheme } from '@/components/ui/ThemeProvider';
@@ -8,6 +11,7 @@ import { Globe, Plus, Search, LogOut, Package, Star, Trash2, AlertCircle, CheckC
 import styles from './dashboard.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import DashboardCharts from '@/components/admin/DashboardCharts';
+import Button from '@/components/ui/Button';
 import { supabase } from '@/lib/supabase';
 
 export default function DashboardPage() {
@@ -37,12 +41,34 @@ export default function DashboardPage() {
     featured: false,
   };
 
+  const productSchema = z.object({
+    title: z.string().min(5, "El título debe tener al menos 5 caracteres"),
+    category: z.string(),
+    affiliate_link: z.string().url("Debe ser una URL válida"),
+    affiliate_source: z.string(),
+    region: z.string(),
+    featured: z.boolean().default(false),
+  });
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [form, setForm] = useState(EMPTY_FORM);
+  
+  const {
+    register,
+    handleSubmit: handleFormSubmit,
+    setValue,
+    watch,
+    reset: resetFormHook,
+    formState: { errors }
+  } = useForm({
+    resolver: zodResolver(productSchema),
+    defaultValues: EMPTY_FORM
+  });
+  
+  const form = watch();
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -246,10 +272,7 @@ export default function DashboardPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error al extraer datos');
 
-      setForm(prev => ({
-        ...prev,
-        title: data.title || prev.title,
-      }));
+      setValue('title', data.title || form.title, { shouldValidate: true });
       if (data.image) {
         setImagePreview(data.image);
       }
@@ -262,8 +285,7 @@ export default function DashboardPage() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     setSaving(true);
 
     try {
@@ -343,7 +365,7 @@ export default function DashboardPage() {
   };
 
   const handleEdit = (product) => {
-    setForm({
+    resetFormHook({
       title: product.title,
       category: product.category,
       affiliate_link: product.affiliate_link,
@@ -382,7 +404,7 @@ export default function DashboardPage() {
   };
 
   const resetForm = () => {
-    setForm(EMPTY_FORM);
+    resetFormHook(EMPTY_FORM);
     setEditingId(null);
     setImageFile(null);
     setImagePreview('');
@@ -556,20 +578,23 @@ export default function DashboardPage() {
                 : t('admin.delete_confirm').replace('{title}', deleteConfirm?.title)}
             </p>
             <div className={styles.modalActions}>
-              <button 
+              <Button 
+                variant="secondary"
                 onClick={() => { setDeleteConfirm(null); setBulkDeleteConfirm(false); }} 
-                className={styles.modalCancelBtn}
                 disabled={isBulkDeleting}
+                fullWidth
               >
                 {t('admin.form.cancel')}
-              </button>
-              <button 
+              </Button>
+              <Button 
+                variant="primary"
                 onClick={bulkDeleteConfirm ? executeBulkDelete : executeDelete} 
                 className={styles.modalDeleteBtn}
-                disabled={isBulkDeleting}
+                loading={isBulkDeleting}
+                fullWidth
               >
                 {isBulkDeleting ? t('admin.bulk.deleting') : t('admin.modal.delete_btn')}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -892,7 +917,7 @@ export default function DashboardPage() {
             >
               <X size={20} />
             </button>
-            <form onSubmit={handleSubmit} className={styles.formLayout}>
+            <form onSubmit={handleFormSubmit(onSubmit)} className={styles.formLayout}>
               {/* LEFT COLUMN — Form Fields */}
               <div className={styles.formLeft}>
                 {/* Title */}
@@ -900,12 +925,11 @@ export default function DashboardPage() {
                   <label className={styles.formLabel}>{t('admin.form.title')}</label>
                   <input
                     type="text"
-                    value={form.title}
-                    onChange={(e) => setForm({ ...form, title: e.target.value })}
+                    {...register('title')}
                     placeholder={t('admin.form.title_placeholder')}
                     className={styles.formInput}
-                    required
                   />
+                  {errors.title && <span className={styles.formError} style={{ color: '#ff4b2b', fontSize: '12px', marginTop: '4px' }}>{errors.title.message}</span>}
                 </div>
 
                 {/* Category + Source in a row */}
@@ -917,8 +941,8 @@ export default function DashboardPage() {
                         <button
                           key={c.value}
                           type="button"
-                          className={`${styles.selectorOption} ${form.category === c.value ? styles.active : ''}`}
-                          onClick={() => setForm({ ...form, category: c.value })}
+                          className={`${styles.selectorOption} ${form?.category === c.value ? styles.active : ''}`}
+                          onClick={() => setValue('category', c.value, { shouldValidate: true })}
                         >
                           <span>{c.icon}</span>
                           <span>{c.label}</span>
@@ -934,8 +958,8 @@ export default function DashboardPage() {
                         <button
                           key={s.value}
                           type="button"
-                          className={`${styles.selectorOption} ${form.affiliate_source === s.value ? styles.active : ''}`}
-                          onClick={() => setForm({ ...form, affiliate_source: s.value })}
+                          className={`${styles.selectorOption} ${form?.affiliate_source === s.value ? styles.active : ''}`}
+                          onClick={() => setValue('affiliate_source', s.value, { shouldValidate: true })}
                         >
                           <span>{s.icon}</span>
                           <span>{s.label}</span>
@@ -952,16 +976,16 @@ export default function DashboardPage() {
                     <div className={styles.regionSelector}>
                       <button
                         type="button"
-                        className={`${styles.regionOption} ${form.region === 'es' ? styles.activeRegion : ''}`}
-                        onClick={() => setForm({ ...form, region: 'es' })}
+                        className={`${styles.regionOption} ${form?.region === 'es' ? styles.activeRegion : ''}`}
+                        onClick={() => setValue('region', 'es', { shouldValidate: true })}
                       >
                         <img src="/images/flags/es.svg" alt="Spain" />
                         <span>{t('regionSelector.es')}</span>
                       </button>
                       <button
                         type="button"
-                        className={`${styles.regionOption} ${form.region === 'us' ? styles.activeRegion : ''}`}
-                        onClick={() => setForm({ ...form, region: 'us' })}
+                        className={`${styles.regionOption} ${form?.region === 'us' ? styles.activeRegion : ''}`}
+                        onClick={() => setValue('region', 'us', { shouldValidate: true })}
                       >
                         <img src="/images/flags/us.svg" alt="USA" />
                         <span>{t('regionSelector.us')}</span>
@@ -972,13 +996,13 @@ export default function DashboardPage() {
                   {currentUser?.role === 'admin' && (
                     <div className={styles.formGroup}>
                       <label className={styles.formLabel}>{t('admin.form.featured')}</label>
-                      <div className={styles.switchContainer} onClick={() => setForm({ ...form, featured: !form.featured })}>
+                      <div className={styles.switchContainer} onClick={() => setValue('featured', !form?.featured, { shouldValidate: true })}>
                         <label className={styles.switch}>
-                          <input type="checkbox" checked={form.featured} readOnly />
+                          <input type="checkbox" checked={form?.featured || false} readOnly />
                           <span className={styles.slider}></span>
                         </label>
                         <span className={styles.checkboxLabel}>
-                          <Star size={16} color={form.featured ? 'var(--accent)' : 'var(--text-muted)'} />
+                          <Star size={16} color={form?.featured ? 'var(--accent)' : 'var(--text-muted)'} />
                           {t('admin.form.featured')}
                         </span>
                       </div>
@@ -993,7 +1017,7 @@ export default function DashboardPage() {
                       type="button" 
                       className={styles.magicButton}
                       onClick={handleAutoFill}
-                      disabled={isExtracting || !form.affiliate_link}
+                      disabled={isExtracting || !form?.affiliate_link}
                       title={t('admin.magic_btn')}
                     >
                       {isExtracting ? <Clock size={14} className={styles.spin} /> : '🪄'} 
@@ -1001,14 +1025,13 @@ export default function DashboardPage() {
                     </button>
                   </div>
                   <textarea
-                    value={form.affiliate_link}
-                    onChange={(e) => setForm({ ...form, affiliate_link: e.target.value.replace(/[\n\r]/g, '') })}
+                    {...register('affiliate_link')}
                     placeholder={t('admin.form.link_placeholder')}
                     className={styles.urlTextarea}
-                    required
                     rows={3}
                   />
-                  {form.affiliate_link && (
+                  {errors.affiliate_link && <span className={styles.formError} style={{ color: '#ff4b2b', fontSize: '12px', marginTop: '4px' }}>{errors.affiliate_link.message}</span>}
+                  {form?.affiliate_link && !errors.affiliate_link && (
                     <div className={styles.urlPreview}>
                       <span className={styles.urlDomain}>
                         {(() => { try { return new URL(form.affiliate_link).hostname; } catch { return '—'; } })()}
@@ -1051,10 +1074,10 @@ export default function DashboardPage() {
 
                 {/* Form Actions */}
                 <div className={styles.formActions}>
-                  <button type="button" onClick={resetForm} className={styles.cancelBtn}>
+                  <Button variant="secondary" onClick={resetForm} disabled={saving} size="large" fullWidth>
                     {t('admin.form.cancel')}
-                  </button>
-                  <button type="submit" className={styles.saveBtn} disabled={saving}>
+                  </Button>
+                  <Button variant="primary" type="submit" loading={saving} size="large" fullWidth>
                     {saving
                       ? t('admin.form.saving')
                       : editingId
@@ -1062,7 +1085,7 @@ export default function DashboardPage() {
                         : currentUser?.role === 'admin' 
                           ? t('admin.form.save_new') 
                           : t('admin.form.send_review')}
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -1222,20 +1245,23 @@ export default function DashboardPage() {
                 </div>
                 <div className={styles.productActions}>
                   {activeTab === 'pending' && currentUser?.role === 'admin' && (
-                    <button
+                    <Button
+                      variant="primary"
                       onClick={() => handlePublish(product.id)}
-                      className={styles.publishBtn}
+                      style={{ flex: 1 }}
                     >
                       {t('admin.actions.publish')}
-                    </button>
+                    </Button>
                   )}
-                  <button
+                  <Button
+                    variant="secondary"
                     onClick={() => handleEdit(product)}
-                    className={styles.editBtn}
+                    style={{ flex: 1 }}
                   >
                     {t('admin.edit_btn')}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="glass"
                     onClick={() => {
                       const isOwner = product.created_by === currentUser?.id;
                       const isAdmin = currentUser?.role === 'admin';
@@ -1246,10 +1272,10 @@ export default function DashboardPage() {
                         showToast(t('admin.toast.error_delete'), 'error');
                       }
                     }}
-                    className={styles.deleteBtn}
+                    style={{ width: '44px', padding: '0', display: 'flex', justifyContent: 'center' }}
                   >
-                    <Trash2 size={16} />
-                  </button>
+                    <Trash2 size={16} color="var(--danger)" />
+                  </Button>
                 </div>
               </div>
             ))}

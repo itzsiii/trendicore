@@ -14,6 +14,9 @@ export async function GET(request) {
     categories: categories ? categories.split(',') : undefined,
     featured: searchParams.get('featured') === 'true' ? true : searchParams.get('featured') === 'false' ? false : undefined,
     limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')) : undefined,
+    search: searchParams.get('search') || undefined,
+    affiliate_source: searchParams.get('source') || undefined,
+    sortBy: searchParams.get('sortBy') || 'newest',
     status: 'published' // La API pública solo devuelve productos publicados
   };
 

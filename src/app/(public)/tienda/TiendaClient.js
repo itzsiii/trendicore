@@ -1,93 +1,52 @@
 'use client';
 
-import { useState, useMemo, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, ChevronRight, ChevronDown, ArrowUpDown, TrendingUp, Clock, SlidersHorizontal, Grid, LayoutGrid } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Search, X, SlidersHorizontal, Clock, TrendingUp } from 'lucide-react';
 import { useLocale } from '@/components/providers/LocaleProvider';
+import { useProducts } from '@/hooks/useProducts';
+import { TIENDA_CATEGORIES, TIENDA_SOURCES, SORT_OPTIONS } from '@/config/constants';
 import ProductCard from '@/components/product/ProductCard';
 import QuickViewModal from '@/components/product/QuickViewModal';
 import styles from './tienda.module.css';
 
 export default function TiendaClient({ initialProducts = [], serverRegion = 'es' }) {
   const { t, region } = useLocale();
-  const [products, setProducts] = useState(initialProducts);
-  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [activeSource, setActiveSource] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [expandedSection, setExpandedSection] = useState('category');
 
-  const categories = [
-    { id: 'all', label: t('shop.filters.allCategories') },
-    { id: 'moda-mujer', label: t('product.categoryLabels.moda-mujer') },
-    { id: 'moda-hombre', label: t('product.categoryLabels.moda-hombre') },
-    { id: 'tech', label: t('product.categoryLabels.tech') },
-    { id: 'entretenimiento', label: t('product.categoryLabels.entretenimiento') },
-  ];
+  const categories = useMemo(() => TIENDA_CATEGORIES(t), [t]);
+  const sources = useMemo(() => TIENDA_SOURCES(t), [t]);
+  const sortOptions = useMemo(() => SORT_OPTIONS(t), [t]);
 
-  const sources = [
-    { id: 'all', label: t('shop.filters.allSources') },
-    { id: 'amazon', label: 'Amazon' },
-    { id: 'shein', label: 'Shein' },
-    { id: 'otros', label: 'Otros' },
-  ];
+  // 1. Data Fetching Hook (Centralized)
+  const query = useMemo(() => ({
+    region: region || serverRegion,
+    limit: 50,
+    category: activeCategory !== 'all' ? activeCategory : undefined,
+    search: searchQuery || undefined,
+    source: activeSource !== 'all' ? activeSource : undefined,
+    sortBy: sortBy
+  }), [region, serverRegion, activeCategory, searchQuery, activeSource, sortBy]);
 
-  const sortOptions = [
-    { id: 'newest', label: t('shop.filters.newest'), icon: <Clock size={14} /> },
-    { id: 'popular', label: t('shop.filters.popular'), icon: <TrendingUp size={14} /> },
-  ];
-
-  useEffect(() => {
-    async function updateProducts() {
-      setLoading(true);
-      let url = `/api/products?region=${region || serverRegion}&limit=50`;
-      if (activeCategory !== 'all') url += `&category=${activeCategory}`;
-      if (searchQuery) url += `&search=${encodeURIComponent(searchQuery)}`;
-      
-      try {
-        const res = await fetch(url);
-        if (res.ok) {
-          let data = await res.json();
-          if (activeSource !== 'all') {
-            data = data.filter(p => p.affiliate_source === activeSource);
-          }
-          if (sortBy === 'popular') {
-            data.sort((a, b) => (b.clicks || 0) - (a.clicks || 0));
-          } else {
-            data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-          }
-          setProducts(data);
-        }
-      } catch (err) {
-        console.error('Error updating shop products:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-
-    const timer = setTimeout(updateProducts, 300);
-    return () => clearTimeout(timer);
-  }, [searchQuery, activeCategory, activeSource, sortBy, region, serverRegion]);
-
-  const toggleSection = (section) => {
-    setExpandedSection(expandedSection === section ? null : section);
-  };
+  const { products, loading } = useProducts(
+    query, 
+    [region, activeCategory, searchQuery, activeSource, sortBy],
+    (region === serverRegion && activeCategory === 'all' && !searchQuery) ? initialProducts : null
+  );
 
   const activeFilterCount = (activeCategory !== 'all' ? 1 : 0) + (activeSource !== 'all' ? 1 : 0);
 
   return (
     <div className={styles.shopPage}>
-      {/* Background Decor */}
       <div className={styles.bgDecor}>
         <div className={styles.orb1}></div>
         <div className={styles.orb2}></div>
       </div>
 
-      {/* Compact Header with Search */}
       <header className={styles.shopHeader}>
         <div className={styles.headerContent}>
           <div className={styles.headerLeft}>
@@ -112,10 +71,7 @@ export default function TiendaClient({ initialProducts = [], serverRegion = 'es'
         </div>
       </header>
 
-      {/* Main Layout: Sidebar + Grid */}
       <div className={styles.shopLayout}>
-        
-        {/* Mobile Filter Toggle */}
         <button 
           className={styles.mobileFilterBtn} 
           onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -127,7 +83,6 @@ export default function TiendaClient({ initialProducts = [], serverRegion = 'es'
           )}
         </button>
 
-        {/* Sidebar Filters */}
         <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
           <div className={styles.sidebarHeader}>
             <h3 className={styles.sidebarTitle}>{t('shop.filters.title')}</h3>
@@ -141,7 +96,6 @@ export default function TiendaClient({ initialProducts = [], serverRegion = 'es'
             )}
           </div>
 
-          {/* Category Filter */}
           <div className={styles.filterGroup}>
             <div className={styles.filterGroupHeader}>
               <span>{t('shop.filters.category')}</span>
@@ -162,7 +116,6 @@ export default function TiendaClient({ initialProducts = [], serverRegion = 'es'
             </div>
           </div>
 
-          {/* Source Filter */}
           <div className={styles.filterGroup}>
             <div className={styles.filterGroupHeader}>
               <span>{t('shop.filters.source')}</span>
@@ -183,30 +136,25 @@ export default function TiendaClient({ initialProducts = [], serverRegion = 'es'
             </div>
           </div>
 
-          {/* Mobile close */}
           <button 
             className={styles.sidebarClose}
             onClick={() => setSidebarOpen(false)}
           >
-            Aplicar filtros
+            {t('common.apply') || 'Aplicar filtros'}
           </button>
         </aside>
 
-        {/* Mobile sidebar backdrop */}
         {sidebarOpen && (
           <div className={styles.sidebarBackdrop} onClick={() => setSidebarOpen(false)} />
         )}
 
-        {/* Content Area */}
         <main className={styles.mainContent}>
-          {/* Top Bar */}
           <div className={styles.topBar}>
             <span className={styles.resultsInfo}>
               {products.length} {t('shop.results.found')}
             </span>
 
             <div className={styles.topBarRight}>
-              {/* Sort pills */}
               {sortOptions.map(opt => (
                 <button
                   key={opt.id}
@@ -219,7 +167,6 @@ export default function TiendaClient({ initialProducts = [], serverRegion = 'es'
             </div>
           </div>
 
-          {/* Active Filters */}
           {(activeCategory !== 'all' || activeSource !== 'all' || searchQuery) && (
             <div className={styles.activeFilters}>
               {activeCategory !== 'all' && (
@@ -240,7 +187,6 @@ export default function TiendaClient({ initialProducts = [], serverRegion = 'es'
             </div>
           )}
 
-          {/* Products */}
           {loading ? (
             <div className={styles.productsGrid}>
               {[...Array(8)].map((_, i) => (

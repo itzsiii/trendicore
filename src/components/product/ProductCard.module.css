@@ -165,7 +165,7 @@
   top: 0.7rem;
   left: 0.7rem;
   font-size: 0.6rem;
-  font-weight: 900;
+  font-weight: 700;
   padding: 0.3rem 0.7rem;
   border-radius: 6px;
   text-transform: uppercase;
@@ -279,7 +279,7 @@
 .category {
   display: inline-block;
   font-size: 0.58rem;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--accent);
@@ -316,7 +316,7 @@
 .price {
   font-family: var(--font-display);
   font-size: 1rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
