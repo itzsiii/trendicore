@@ -186,6 +186,7 @@
   justify-self: end;
 }
 
+<<<<<<< HEAD
 .actionBtn {
   width: 42px;
   height: 42px;
@@ -230,6 +231,8 @@
   z-index: 10;
 }
 
+=======
+>>>>>>> 5ab3d5c82729024fb4b5bee0b609ab8e71a4c21c
 /* Theme Toggle */
 .themeToggle {
   width: 42px;
@@ -387,6 +390,7 @@
     font-weight: 700;
   }
 
+<<<<<<< HEAD
   /* Mobile Shop Submenu */
   .mobileShopContainer {
     display: flex;
@@ -418,6 +422,8 @@
     font-size: 0.95rem;
   }
 
+=======
+>>>>>>> 5ab3d5c82729024fb4b5bee0b609ab8e71a4c21c
   [data-theme="dark"] .mobileLinkActive {
     color: var(--accent-light);
   }

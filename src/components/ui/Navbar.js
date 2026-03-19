@@ -5,8 +5,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/components/ui/ThemeProvider';
 import { useLocale } from '@/components/providers/LocaleProvider';
+<<<<<<< HEAD
 import { useWishlist } from '@/components/providers/WishlistProvider';
 import { Zap, Sun, Moon, Menu, X, Heart } from 'lucide-react';
+=======
+import { Zap, Sun, Moon, Menu, X } from 'lucide-react';
+>>>>>>> 5ab3d5c82729024fb4b5bee0b609ab8e71a4c21c
 import LocaleSelector from './LocaleSelector';
 import FavoritesDrawer from '@/components/product/FavoritesDrawer';
 import styles from './Navbar.module.css';
@@ -17,7 +21,10 @@ export default function Navbar() {
   const { count } = useWishlist();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+<<<<<<< HEAD
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+=======
+>>>>>>> 5ab3d5c82729024fb4b5bee0b609ab8e71a4c21c
 
   // Close menu on route change
   useEffect(() => {
@@ -117,6 +124,42 @@ export default function Navbar() {
             <Heart size={20} fill={count > 0 ? "var(--accent)" : "none"} strokeWidth={count > 0 ? 0 : 2} />
             {count > 0 && <span className={styles.badge}>{count}</span>}
           </button>
+          <button
+            onClick={toggleTheme}
+            className={styles.themeToggle}
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+        </div>
+
+        {/* Hamburger button (mobile only) */}
+        <button
+          className={styles.hamburger}
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+        >
+          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Mobile menu overlay */}
+      {menuOpen && <div className={styles.mobileBackdrop} onClick={() => setMenuOpen(false)} />}
+      <div className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ''}`}>
+        <div className={styles.mobileLinks}>
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`${styles.mobileLink} ${pathname === link.href ? styles.mobileLinkActive : ''}`}
+              onClick={() => setMenuOpen(false)}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+        <div className={styles.mobileActions}>
+          <LocaleSelector />
           <button
             onClick={toggleTheme}
             className={styles.themeToggle}

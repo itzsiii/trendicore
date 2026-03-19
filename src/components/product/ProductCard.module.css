@@ -363,7 +363,11 @@
 /* Responsive */
 @media (max-width: 768px) {
   .card:hover {
+<<<<<<< HEAD
     transform: translateY(-3px);
+=======
+    transform: translateY(-4px) scale(1.005);
+>>>>>>> 5ab3d5c82729024fb4b5bee0b609ab8e71a4c21c
   }
 
   /* Hide overlay on mobile — tap the card to go to the store */
@@ -376,8 +380,13 @@
   }
 
   .title {
+<<<<<<< HEAD
     font-size: 0.85rem;
     padding-bottom: 0.6rem;
+=======
+    font-size: 0.88rem;
+    margin-bottom: 0.6rem;
+>>>>>>> 5ab3d5c82729024fb4b5bee0b609ab8e71a4c21c
   }
 
   .price {

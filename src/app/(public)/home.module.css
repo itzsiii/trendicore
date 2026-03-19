@@ -780,11 +780,14 @@
   .statNumber { font-size: 1.3rem; }
   .statDivider { display: none; }
 
+<<<<<<< HEAD
   .servicesGrid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
 
+=======
+>>>>>>> 5ab3d5c82729024fb4b5bee0b609ab8e71a4c21c
   .grid {
     columns: 2 160px;
     column-gap: 1rem;
