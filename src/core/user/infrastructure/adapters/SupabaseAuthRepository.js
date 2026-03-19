@@ -24,8 +24,9 @@ export class SupabaseAuthRepository extends AuthRepository {
   }
 
   async getSession() {
-    const { data } = await this.client.auth.getSession();
-    return data;
+    const { data: { user }, error } = await this.client.auth.getUser();
+    if (error || !user) return { session: null };
+    return { session: { user, access_token: 'stateless-valid' } };
   }
 
   async getUserProfile(userId) {

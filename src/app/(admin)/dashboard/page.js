@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import { useTheme } from '@/components/ui/ThemeProvider';
 import { Globe, Plus, Search, LogOut, Package, Star, Trash2, AlertCircle, CheckCircle2, Clock, X, Sun, Moon, MousePointerClick, BarChart3, LayoutDashboard, ShieldCheck } from 'lucide-react';
@@ -115,7 +116,16 @@ export default function DashboardPage() {
   const checkAuth = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/check');
+      const { data: { session }, error } = await supabase.auth.getSession();
+      
+      if (error || !session) {
+        router.push('/login');
+        return;
+      }
+      
+      const res = await fetch('/api/admin/check', {
+        headers: { 'Authorization': `Bearer ${session.access_token}` }
+      });
       const data = await res.json();
       
       if (!res.ok || !data.authenticated || !data.user) {
@@ -124,8 +134,8 @@ export default function DashboardPage() {
       }
       
       setCurrentUser(data.user);
-      setAccessToken(data.token);
-      fetchProducts(data.token);
+      setAccessToken(session.access_token);
+      fetchProducts(session.access_token);
     } catch (err) {
       console.error('Auth check error:', err);
       router.push('/login');

@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
+import { supabase } from '@/lib/supabase';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -22,18 +23,10 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const { data, error: err } = await supabase.auth.signInWithPassword({ email, password });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || 'Correo o contraseña incorrectos');
+      if (err) {
+        setError(err.message === 'Invalid login credentials' ? 'Correo o contraseña incorrectos' : 'Error de autenticación');
       } else {
         router.push('/dashboard');
         router.refresh();
