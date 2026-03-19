@@ -1,7 +1,8 @@
 export class Product {
-  constructor({ id, title, category, affiliate_link, affiliate_source, region, featured, status, image_url, clicks, created_by, created_at }) {
+  constructor({ id, title, price, category, affiliate_link, affiliate_source, region, featured, status, image_url, clicks, created_by, created_at }) {
     this.id = id;
     this.title = title;
+    this.price = price;
     this.category = category;
     this.affiliate_link = affiliate_link;
     this.affiliate_source = affiliate_source;
@@ -23,9 +24,10 @@ export class Product {
   }
 
   toDTO() {
-    return {
+    const dto = {
       id: this.id,
       title: this.title,
+      price: this.price,
       category: this.category,
       affiliate_link: this.affiliate_link,
       affiliate_source: this.affiliate_source,
@@ -37,5 +39,10 @@ export class Product {
       created_by: this.created_by,
       created_at: this.created_at
     };
+
+    // Eliminar propiedades undefined para que Supabase use los defaults de la BD
+    Object.keys(dto).forEach(key => dto[key] === undefined && delete dto[key]);
+
+    return dto;
   }
 }

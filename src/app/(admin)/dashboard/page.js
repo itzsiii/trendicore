@@ -278,12 +278,13 @@ export default function DashboardPage() {
         'Authorization': `Bearer ${accessToken}`,
       };
 
-      let imageUrl = editingId
-        ? products.find((p) => p.id === editingId)?.image_url
-        : '';
-
+      let imageUrl = '';
       if (imageFile) {
         imageUrl = await uploadImage(imageFile, accessToken);
+      } else if (imagePreview && typeof imagePreview === 'string' && imagePreview.startsWith('http')) {
+        imageUrl = imagePreview;
+      } else if (editingId) {
+        imageUrl = products.find((p) => p.id === editingId)?.image_url || '';
       }
 
       if (!imageUrl) {
