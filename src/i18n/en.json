@@ -92,7 +92,17 @@
         "quickView": "Quick View",
         "trending": "Trending",
         "noDescription": "No description available for this item.",
-        "redirectNotice": "You will be redirected to the affiliate store."
+        "redirectNotice": "You will be redirected to the affiliate store.",
+        "addFavorite": "Save",
+        "removeFavorite": "Remove",
+        "share": "Share",
+        "linkCopied": "Link copied!"
+    },
+    "wishlist": {
+        "title": "My Favorites",
+        "empty": "You haven't saved any trends yet.",
+        "clear": "Clear all",
+        "viewProduct": "View product"
     },
     "footer": {
         "tagline": "Trendicore is the go-to platform for discovering trends in fashion and technology. Expert curation, real style.",

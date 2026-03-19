@@ -1,15 +1,62 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { ShoppingBag, Flame, Link as LinkIcon } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ShoppingBag, Flame, Link as LinkIcon, Heart, Share2 } from 'lucide-react';
 import { useLocale } from '@/components/providers/LocaleProvider';
+import { useWishlist } from '@/components/providers/WishlistProvider';
 import styles from './ProductCard.module.css';
 
 export default function ProductCard({ product, index = 0, onQuickView }) {
   const { t } = useLocale();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [imgSrc, setImgSrc] = useState(product.image_url);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMsg, setToastMsg] = useState('');
+
+  const isSaved = isInWishlist(product.id);
+
+  const toggleSave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    toggleWishlist(product);
+    showCardToast(isSaved ? t('product.removeFavorite') : t('product.addFavorite'));
+  };
+
+  const showCardToast = (msg) => {
+    setToastMsg(msg);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
+  };
+
+  const handleShare = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const shareUrl = `${window.location.origin}/api/track-click?id=${product.id}`;
+    const shareData = {
+      title: product.title,
+      text: `Mira este producto en Trendicore: ${product.title}`,
+      url: shareUrl
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        if (err.name !== 'AbortError') console.error('Error sharing:', err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        showCardToast(t('product.linkCopied'));
+      } catch (err) {
+        console.error('Error copying link:', err);
+      }
+    }
+  };
 
   const handleQuickView = (e) => {
     e.preventDefault();
@@ -58,6 +105,37 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
               setImgSrc('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iI2ZmZiIgYWxpZ249Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGR5PSIuM2VtIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4=');
             }}
           />
+          
+          <AnimatePresence>
+            {showToast && (
+              <motion.div 
+                className={styles.cardToast}
+                initial={{ opacity: 0, y: -10, x: '-50%' }}
+                animate={{ opacity: 1, y: 0, x: '-50%' }}
+                exit={{ opacity: 0, scale: 0.9, x: '-50%' }}
+              >
+                {toastMsg}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className={styles.topActions}>
+             <button 
+               className={`${styles.actionBtn} ${isSaved ? styles.saved : ''}`}
+               onClick={toggleSave}
+               title={isSaved ? t('product.removeFavorite') : t('product.addFavorite')}
+             >
+               <Heart size={16} fill={isSaved ? "currentColor" : "none"} strokeWidth={isSaved ? 0 : 2} />
+             </button>
+             <button 
+               className={styles.actionBtn}
+               onClick={handleShare}
+               title={t('product.share')}
+             >
+               <Share2 size={16} strokeWidth={2.5} />
+             </button>
+          </div>
+
           <div className={styles.overlay}>
             <div className={styles.overlayButtons}>
               <span className={`${styles.ctaButton} ${styles[source.class]}`}>
@@ -68,9 +146,7 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
               </button>
             </div>
           </div>
-          {product.featured && (
-            <span className={styles.featuredBadge}><Flame size={12} strokeWidth={3} className={styles.badgeIcon} /> {t('product.trending')}</span>
-          )}
+          
           <span className={`${styles.sourcePill} ${styles[source.class + 'Pill']}`}>
             {product.affiliate_source}
           </span>
@@ -78,7 +154,12 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
 
         {/* Info */}
         <div className={styles.info}>
-          <span className={styles.category}>{categoryLabel}</span>
+          <div className={styles.categoryRow}>
+            <span className={styles.category}>{categoryLabel}</span>
+            {product.featured && (
+              <Flame size={14} strokeWidth={3} className={styles.trendingIcon} />
+            )}
+          </div>
           <h3 className={styles.title}>
             <a
               href={`/api/track-click?id=${product.id}`}

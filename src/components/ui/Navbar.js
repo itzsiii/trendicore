@@ -5,15 +5,19 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/components/ui/ThemeProvider';
 import { useLocale } from '@/components/providers/LocaleProvider';
-import { Zap, Sun, Moon, Menu, X } from 'lucide-react';
+import { useWishlist } from '@/components/providers/WishlistProvider';
+import { Zap, Sun, Moon, Menu, X, Heart } from 'lucide-react';
 import LocaleSelector from './LocaleSelector';
+import FavoritesDrawer from '@/components/product/FavoritesDrawer';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const { t } = useLocale();
+  const { count } = useWishlist();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
 
   // Close menu on route change
   useEffect(() => {
@@ -62,6 +66,14 @@ export default function Navbar() {
         <div className={styles.actions}>
           <LocaleSelector />
           <button
+            onClick={() => setIsWishlistOpen(true)}
+            className={styles.actionBtn}
+            aria-label="Toggle favorites"
+          >
+            <Heart size={20} fill={count > 0 ? "var(--accent)" : "none"} strokeWidth={count > 0 ? 0 : 2} />
+            {count > 0 && <span className={styles.badge}>{count}</span>}
+          </button>
+          <button
             onClick={toggleTheme}
             className={styles.themeToggle}
             aria-label="Toggle theme"
@@ -98,6 +110,14 @@ export default function Navbar() {
         <div className={styles.mobileActions}>
           <LocaleSelector />
           <button
+            onClick={() => setIsWishlistOpen(true)}
+            className={styles.actionBtn}
+            aria-label="Toggle favorites"
+          >
+            <Heart size={20} fill={count > 0 ? "var(--accent)" : "none"} strokeWidth={count > 0 ? 0 : 2} />
+            {count > 0 && <span className={styles.badge}>{count}</span>}
+          </button>
+          <button
             onClick={toggleTheme}
             className={styles.themeToggle}
             aria-label="Toggle theme"
@@ -106,6 +126,12 @@ export default function Navbar() {
           </button>
         </div>
       </div>
+
+      {/* Favorites Drawer */}
+      <FavoritesDrawer 
+        isOpen={isWishlistOpen} 
+        onClose={() => setIsWishlistOpen(false)} 
+      />
     </nav>
   );
 }

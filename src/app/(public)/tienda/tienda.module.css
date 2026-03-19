@@ -61,20 +61,19 @@
 
 .shopTitle {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  background: linear-gradient(135deg, var(--text-primary), var(--accent));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-size: clamp(2rem, 6vw, 2.8rem);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+  color: var(--text-primary);
 }
 
 .shopSubtitle {
-  font-size: 0.85rem;
+  font-size: 0.88rem;
+  font-weight: 500;
   color: var(--text-muted);
-  margin-top: 0.3rem;
+  margin-top: 0.4rem;
+  opacity: 0.8;
 }
 
 .searchBox {
@@ -84,15 +83,18 @@
   flex: 1;
   max-width: 420px;
   padding: 0 1.2rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-pill);
-  transition: border-color 0.2s;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .searchBox:focus-within {
+  background: rgba(255, 255, 255, 0.06);
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
+  box-shadow: 0 0 25px rgba(124, 77, 255, 0.2), 0 0 0 1px rgba(124, 77, 255, 0.2);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .searchIcon {
@@ -153,14 +155,19 @@
    Sidebar
    ========================================== */
 .sidebar {
-  border-right: 1px solid var(--border);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
   padding: 1.5rem 1.5rem 3rem 1.5rem;
   position: sticky;
-  top: 64px;
+  top: 80px;
   height: fit-content;
-  max-height: calc(100vh - 64px);
+  max-height: calc(100vh - 100px);
   overflow-y: auto;
   scrollbar-width: thin;
+  background: rgba(255, 255, 255, 0.01);
+  backdrop-filter: blur(20px);
+  margin-right: 1.5rem;
+  border-radius: 20px;
+  margin-top: 1.5rem;
 }
 
 .sidebarHeader {
@@ -238,52 +245,38 @@
 .filterOption {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.8rem;
   width: 100%;
-  padding: 0.5rem 0.2rem;
-  background: none;
-  border: none;
-  font-size: 0.84rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
+  font-size: 0.82rem;
   font-weight: 500;
   color: var(--text-secondary);
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.15s;
-  border-radius: 6px;
+  transition: all 0.25s ease;
+  border-radius: 12px;
+  margin-bottom: 0.4rem;
 }
 
 .filterOption:hover {
+  background: rgba(255, 255, 255, 0.05);
   color: var(--text-primary);
-  padding-left: 0.5rem;
+  transform: translateX(4px);
 }
 
 .filterActive {
-  color: #c4a5ff;
-  font-weight: 700;
+  background: rgba(124, 77, 255, 0.1) !important;
+  border-color: rgba(124, 1, 255, 0.2) !important;
+  color: var(--accent-light) !important;
+  font-weight: 800;
+  box-shadow: 0 4px 15px rgba(124, 77, 255, 0.1);
 }
 
-/* Radio buttons */
+/* Radio buttons (hidden in new design or kept for subtlety) */
 .radio {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 2px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: border-color 0.2s;
-}
-
-.filterActive .radio {
-  border-color: #c4a5ff;
-}
-
-.radioDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #c4a5ff;
+  display: none;
 }
 
 /* Mobile filter button */
@@ -525,23 +518,28 @@
   .mobileFilterBtn {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1.2rem;
-    margin: 1rem 1.5rem 0;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.8rem 1.8rem;
+    margin: 1.5rem auto;
+    background: rgba(124, 77, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(124, 77, 255, 0.2);
     border-radius: var(--radius-pill);
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--accent-light);
     cursor: pointer;
     font-family: inherit;
-    transition: all 0.2s;
+    transition: all 0.3s;
+    box-shadow: 0 10px 25px rgba(124, 77, 255, 0.15);
   }
 
   .mobileFilterBtn:hover {
-    border-color: var(--accent);
-    color: var(--text-primary);
+    background: var(--accent);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(124, 77, 255, 0.3);
   }
 
   .filterBadge {

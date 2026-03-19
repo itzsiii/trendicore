@@ -92,7 +92,17 @@
         "quickView": "Vista Rápida",
         "trending": "Tendencia",
         "noDescription": "No hay descripción disponible para este artículo.",
-        "redirectNotice": "Serás redirigido a la tienda oficial."
+        "redirectNotice": "Serás redirigido a la tienda oficial.",
+        "addFavorite": "Guardar",
+        "removeFavorite": "Quitar",
+        "share": "Compartir",
+        "linkCopied": "¡Enlace copiado!"
+    },
+    "wishlist": {
+        "title": "Mis Favoritos",
+        "empty": "Aún no has guardado ninguna tendencia.",
+        "clear": "Limpiar todo",
+        "viewProduct": "Ver producto"
     },
     "footer": {
         "tagline": "Trendicore es la plataforma de referencia para descubrir tendencias en moda y tecnología. Curación experta, estilo real.",
