@@ -34,7 +34,7 @@ async function getUser(request) {
   return new User({
     id: authUser.id,
     email: authUser.email,
-    role: profile?.role || 'staff', // Asumimos staff por defecto si no hay perfil
+    role: profile?.role || 'worker', // Asumimos worker por defecto si no hay perfil
     lastSignInAt: authUser.last_sign_in_at
   });
 }

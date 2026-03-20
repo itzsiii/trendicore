@@ -130,7 +130,7 @@
     "admin": {
         "roles": {
             "admin": "ADMIN",
-            "staff": "STAFF",
+            "worker": "STAFF",
             "me": "Tú"
         },
         "tabs": {
@@ -146,7 +146,7 @@
         "search_placeholder": "🔍 Buscar producto...",
         "all_categories": "Todas las categorías",
         "all_platforms": "Todas las tiendas",
-        "all_staff": "Todo el personal",
+        "all_staff": "Todo el Staff",
         "new_product": "Nuevo Producto",
         "close": "Cerrar",
         "edit_product_title": "✏️ Editar Producto",

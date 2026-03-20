@@ -38,7 +38,7 @@
 }
 
 .adminBadge { background: var(--accent-glow); color: var(--accent-light); border: 1px solid rgba(124, 58, 237, 0.3); }
-.staffBadge { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+.workerBadge { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
 
 .statsRow {
   display: grid;
@@ -1135,7 +1135,7 @@
 
 .roleAdmin { color: #ed4245 !important; border-left: 4px solid #ed4245; background: rgba(237, 66, 69, 0.05); }
 .roleCoAdmin { color: #f1c40f !important; border-left: 4px solid #f1c40f; }
-.roleStaff { color: #3498db !important; border-left: 4px solid #3498db; }
+.roleWorker { color: #3498db !important; border-left: 4px solid #3498db; }
 
 .permissionsContent {
   flex: 1;
@@ -1228,7 +1228,7 @@
 
 .roleAdminActive { background: rgba(237, 66, 69, 0.15) !important; color: #ed4245 !important; }
 .roleCoAdminActive { background: rgba(241, 196, 15, 0.15) !important; color: #f1c40f !important; }
-.roleStaffActive { background: rgba(52, 152, 219, 0.15) !important; color: #3498db !important; }
+.roleWorkerActive { background: rgba(52, 152, 219, 0.15) !important; color: #3498db !important; }
 
 .roleHint {
   margin-top: 24px;

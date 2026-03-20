@@ -613,8 +613,8 @@ export default function DashboardPage() {
       <header className={styles.header}>
         <div className={styles.headerLeft}>
           <h1 className={styles.headerTitle}>Trendicore</h1>
-          <span className={`${styles.badge} ${currentUser?.role === 'admin' ? styles.adminBadge : styles.staffBadge}`}>
-            {currentUser?.role === 'admin' ? t('admin.roles.admin') : t('admin.roles.staff')}
+          <span className={`${styles.badge} ${currentUser?.role === 'admin' ? styles.adminBadge : styles.workerBadge}`}>
+            {currentUser?.role === 'admin' ? t('admin.roles.admin') : t('admin.roles.worker')}
           </span>
         </div>
         <div className={styles.headerRight}>
@@ -790,10 +790,10 @@ export default function DashboardPage() {
                 Co-Admin
               </div>
               <div 
-                className={`${styles.roleItem} ${selectedRoleInPanel === 'staff' ? styles.roleStaffActive : ''} ${styles.roleStaff}`}
-                onClick={() => setSelectedRoleInPanel('staff')}
+                className={`${styles.roleItem} ${selectedRoleInPanel === 'worker' ? styles.roleWorkerActive : ''} ${styles.roleWorker}`}
+                onClick={() => setSelectedRoleInPanel('worker')}
               >
-                Staff
+                Worker / Staff
               </div>
             </div>
             <div className={styles.permissionsContent}>
