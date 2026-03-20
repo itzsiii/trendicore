@@ -10,71 +10,66 @@ export default function ServicesPage() {
 
   const partners = [
     {
-      roleKey: 'servicesPage.partner1Role',
-      descKey: 'servicesPage.partner1Desc',
-      name: 'Marina Fernández',
-      avatar: 'https://i.pravatar.cc/150?u=marina',
-      link: '#'
-    },
-    {
-      roleKey: 'servicesPage.partner2Role',
-      descKey: 'servicesPage.partner2Desc',
-      name: 'Lucía Gómez',
-      avatar: 'https://i.pravatar.cc/150?u=lucia',
-      link: '#'
+      roleKey: 'servicesPage.partner3Role',
+      descKey: 'servicesPage.partner3Desc',
+      name: 'Irene Domínguez',
+      avatar: '/images/partners/irene.jpg',
+      link: 'https://airendesignsportfolio.framer.website/'
     }
   ];
 
   return (
     <div className={styles.page}>
       
-      {/* Immersive Hero Header */}
+      {/* Hero Header */}
       <header className={styles.hero}>
         <div className={styles.heroOrbs}>
           <div className={`${styles.orb} ${styles.orb1}`}></div>
           <div className={`${styles.orb} ${styles.orb2}`}></div>
+          <div className={`${styles.orb} ${styles.orb3}`}></div>
         </div>
         
         <div className={styles.heroContent}>
           <motion.span 
             className={styles.badge}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
           >
-            Trendicore Agency
+            Trendicore Solutions
           </motion.span>
           
           <motion.h1 
             className={styles.title}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
+            transition={{ delay: 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            {t('servicesPage.partnersTitle')}
+            {t('servicesPage.title')}
           </motion.h1>
           
           <motion.p 
             className={styles.subtitle}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
           >
-            {t('servicesPage.partnersSubtitle')}
+            {t('servicesPage.subtitle')}
           </motion.p>
         </div>
       </header>
 
-      {/* Partners Full-Width Grid */}
+      {/* Partner Cards */}
       <main className={styles.content}>
         <div className={styles.partnersGrid}>
           {partners.map((partner, i) => (
             <motion.div 
               key={i}
               className={styles.partnerCard}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ delay: i * 0.15, duration: 0.5 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ delay: i * 0.1, duration: 0.6 }}
             >
               <div className={styles.avatarContainer}>
                 <div className={styles.avatarGlow}></div>
@@ -90,6 +85,7 @@ export default function ServicesPage() {
                 <p>{t(partner.descKey)}</p>
                 <a href={partner.link} target="_blank" rel="noopener noreferrer" className={styles.partnerBtn}>
                   {t('servicesPage.viewPortfolio')}
+                  <ArrowUpRight size={18} />
                 </a>
               </div>
             </motion.div>

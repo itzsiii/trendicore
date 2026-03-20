@@ -9,7 +9,7 @@ import ProductCard from '@/components/product/ProductCard';
 import QuickViewModal from '@/components/product/QuickViewModal';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
-import { TrendingUp, Cpu, Sparkles, Flame, ArrowRight } from 'lucide-react';
+import { TrendingUp, Cpu, Sparkles, Flame, ArrowRight, Film } from 'lucide-react';
 import styles from './home.module.css';
 
 export default function HomeClient({ initialFeatured = [], initialLatest = [], serverRegion = 'es' }) {
@@ -201,53 +201,48 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], s
         )}
 
         {/* Latest Products */}
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionTag}>
-              <Sparkles size={12} strokeWidth={3} style={{ display: 'inline', marginBottom: '-2px' }} /> 
-              {activeTag ? t('sections.filtered') : t('sections.newTag')}
+        {(latestLoading || latest.length > 0) && (
+          <section className={styles.section}>
+            <div className={styles.sectionHeader}>
+              <div className={styles.sectionTag}>
+                <Sparkles size={12} strokeWidth={3} style={{ display: 'inline', marginBottom: '-2px' }} /> 
+                {activeTag ? t('sections.filtered') : t('sections.newTag')}
+              </div>
+              <h2 className={styles.sectionTitle}>
+                {activeTag ? `${t('sections.trendsFor')} #${activeTag}` : t('sections.newTitle')}
+              </h2>
+              <p className={styles.sectionSubtitle}>
+                {activeTag ? `${t('sections.browsingTag')} ${activeTag}` : t('sections.newSubtitle')}
+              </p>
             </div>
-            <h2 className={styles.sectionTitle}>
-              {activeTag ? `${t('sections.trendsFor')} #${activeTag}` : t('sections.newTitle')}
-            </h2>
-            <p className={styles.sectionSubtitle}>
-              {activeTag ? `${t('sections.browsingTag')} ${activeTag}` : t('sections.newSubtitle')}
-            </p>
-          </div>
 
-          {latestLoading ? (
-            <div className={styles.loadingGrid}>
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className={styles.skeleton}>
-                  <div className={styles.skeletonImage}></div>
-                  <div className={styles.skeletonInfo}>
-                    <div className={styles.skeletonLine} style={{ width: '40%' }}></div>
-                    <div className={styles.skeletonLine} style={{ width: '80%' }}></div>
-                    <div className={styles.skeletonLine} style={{ width: '60%' }}></div>
+            {latestLoading ? (
+              <div className={styles.loadingGrid}>
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className={styles.skeleton}>
+                    <div className={styles.skeletonImage}></div>
+                    <div className={styles.skeletonInfo}>
+                      <div className={styles.skeletonLine} style={{ width: '40%' }}></div>
+                      <div className={styles.skeletonLine} style={{ width: '80%' }}></div>
+                      <div className={styles.skeletonLine} style={{ width: '60%' }}></div>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ) : latest.length === 0 ? (
-            <div className={styles.empty}>
-              <div className={styles.emptyGlow}></div>
-              <span className={styles.emptyEmoji}><Sparkles size={48} strokeWidth={1.5} color="var(--accent)" /></span>
-              <h3 className={styles.emptyTitle}>{t('sections.emptyTitle')}</h3>
-              <p className={styles.emptyText}>{t('sections.emptyText')}</p>
-            </div>
-          ) : (
-            <div className={styles.grid}>
-              {latest.map((product, i) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  index={i}
-                  onQuickView={setSelectedProduct}
-                />
-              ))}
-            </div>
-          )}
-        </section>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.grid}>
+                {latest.map((product, i) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    index={i}
+                    onQuickView={setSelectedProduct}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
 
         {/* Category Banners */}
         <section className={styles.section}>
@@ -255,7 +250,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], s
             <h2 className={styles.sectionTitle}>{t('sections.categoriesTitle')}</h2>
           </div>
           <div className={styles.categoryGrid}>
-            <Link href="/moda" className={styles.categoryBanner}>
+            <Link href="/tienda" className={styles.categoryBanner}>
               <motion.div
                 className={`${styles.categoryCard} ${styles.modaCard}`}
                 whileHover={{ scale: 1.02, y: -5 }}
@@ -265,7 +260,9 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], s
                 <div className={styles.categoryContent}>
                   <span className={styles.categoryEmoji}><TrendingUp size={40} strokeWidth={1.5} color="var(--pink)" /></span>
                   <h3 className={styles.categoryTitle}>{t('categories.fashionTitle')}</h3>
-                  <p className={styles.categoryDesc}>{t('categories.fashionDesc')}</p>
+                  {t('categories.fashionDesc') && (
+                    <p className={styles.categoryDesc}>{t('categories.fashionDesc')}</p>
+                  )}
                   <span className={styles.categoryArrow}>
                     {t('categories.fashionCta')}
                     <ArrowRight size={16} strokeWidth={2.5} />
@@ -275,19 +272,21 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], s
               </motion.div>
             </Link>
 
-            <Link href="/tech" className={styles.categoryBanner}>
+            <Link href="/servicios" className={styles.categoryBanner}>
               <motion.div
-                className={`${styles.categoryCard} ${styles.techCard}`}
+                className={`${styles.categoryCard} ${styles.serviciosCard}`}
                 whileHover={{ scale: 1.02, y: -5 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className={styles.categoryGlow}></div>
                 <div className={styles.categoryContent}>
-                  <span className={styles.categoryEmoji}><Cpu size={40} strokeWidth={1.5} color="var(--cyan)" /></span>
-                  <h3 className={styles.categoryTitle}>{t('categories.techTitle')}</h3>
-                  <p className={styles.categoryDesc}>{t('categories.techDesc')}</p>
+                  <span className={styles.categoryEmoji}><Sparkles size={40} strokeWidth={1.5} color="var(--pink)" /></span>
+                  <h3 className={styles.categoryTitle}>{t('categories.servicesTitle')}</h3>
+                  {t('categories.servicesDesc') && (
+                    <p className={styles.categoryDesc}>{t('categories.servicesDesc')}</p>
+                  )}
                   <span className={styles.categoryArrow}>
-                    {t('categories.techCta')}
+                    {t('categories.servicesCta')}
                     <ArrowRight size={16} strokeWidth={2.5} />
                   </span>
                 </div>

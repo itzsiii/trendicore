@@ -1,7 +1,7 @@
 {
     "nav": {
         "home": "Home",
-        "store": "Store",
+        "store": "Collection",
         "fashion": "Fashion",
         "tech": "Tech",
         "searchPlaceholder": "Search trends...",
@@ -11,11 +11,11 @@
         "entertainment": "Entertainment"
     },
     "hero": {
-        "badge": "Premium Verified Curation",
+        "badge": "Premium Verified Selection",
         "titleLine1": "Discover the most",
         "titleHighlight": "trending",
         "titleLine2": " selection",
-        "subtitle": "High-quality fashion and technology meticulously curated from top platforms — verified and ready for you.",
+        "subtitle": "High-quality fashion and technology meticulously selected from top platforms — verified and ready for you.",
         "ctaFashion": "Explore Fashion",
         "ctaTech": "See Tech"
     },
@@ -25,25 +25,31 @@
         "update": "Updated"
     },
     "sections": {
-        "trendingTitle": "Exclusive Curation",
+        "trendingTitle": "Exclusive Selection",
         "trendingSubtitle": "Our premium selection of this week's most desired products.",
         "newTitle": "Most Exclusive",
         "newTag": "PREMIUM",
-        "newSubtitle": "Recently curated for our catalog",
+        "newSubtitle": "Recently selected for our catalog",
         "filtered": "FILTERED",
         "trendsFor": "Trends for",
         "browsingTag": "Top items for",
-        "categoriesTitle": "Explore by Category",
+        "categoriesTitle": "Discover Trendicore",
         "emptyTitle": "Something amazing is coming",
         "emptyText": "Our team is selecting the best products for you."
     },
     "categories": {
-        "fashionTitle": "Gen Z Fashion",
-        "fashionDesc": "Aesthetic · Streetwear · Coquette · & more",
+        "fashionTitle": "Collection",
+        "fashionDesc": "Explore our premium selection of fashion, tech, and entertainment.",
         "fashionCta": "Explore collection",
         "techTitle": "Tech & Gadgets",
         "techDesc": "Setups · Accessories · Viral gadgets",
-        "techCta": "Explore collection"
+        "techCta": "Explore collection",
+        "entertainmentTitle": "Entertainment",
+        "entertainmentDesc": "Cinema · Music · Lifestyle · Viral",
+        "entertainmentCta": "Learn more",
+        "servicesTitle": "Creative Services",
+        "servicesDesc": "Branding · Identity · Consulting",
+        "servicesCta": "View ecosystem"
     },
     "fashionPage": {
         "title": "Gen Z Fashion",
@@ -55,12 +61,12 @@
     },
     "techPage": {
         "title": "Tech & Gadgets",
-        "subtitle": "Top setups, accessories, and tech gadgets curated from current trends.",
-        "empty": "Coming soon — new gadgets in curation."
+        "subtitle": "Top setups, accessories, and tech gadgets selected from current trends.",
+        "empty": "Coming soon — new gadgets in selection."
     },
     "shop": {
-        "title": "Curated Collection",
-        "subtitle": "Explore our exclusive and carefully curated selection in one place.",
+        "title": "Premium Collection",
+        "subtitle": "Explore our exclusive and carefully handpicked selection in one place.",
         "searchPlaceholder": "Search for a product or style...",
         "filters": {
             "title": "Filters",
@@ -264,7 +270,7 @@
     },
     "aboutUsPage": {
         "title": "About Us",
-        "subtitle": "The curation team behind Trendicore",
+        "subtitle": "The creative team behind Trendicore",
         "intro": "Trendicore was built to simplify trend discovery. In a digital ecosystem saturated with content, our team selects and verifies every product that reaches the platform.",
         "missionTitle": "Our Mission",
         "missionText": "Connect our community with products that define their personal style, eliminating unnecessary hours of searching.",
@@ -272,21 +278,23 @@
         "visionText": "Establish ourselves as the go-to platform for trend discovery before they become mainstream."
     },
     "servicesPage": {
-        "title": "Our Services",
-        "subtitle": "Trend curation and discovery solutions",
-        "curationTitle": "Expert Curation",
+        "title": "Boost your Vision",
+        "subtitle": "Trendicore was born to simplify your life. We carefully select the best on the market to save you time and money, while boosting your brand with identity design and tailored technological solutions.",
+        "curationTitle": "Expert Selection",
         "curationDesc": "We manually select each product based on real trend analysis from TikTok, Pinterest, and Instagram.",
         "trackingTitle": "Price Comparison",
         "trackingDesc": "We compare prices and availability across Amazon, Shein, and other platforms to ensure you get the best deal in real-time.",
         "globalTitle": "International Reach",
         "globalDesc": "We analyze global trends, adapting them for the Spanish (ES) and US markets with cultural precision.",
-        "partnersTitle": "Creative Ecosystem",
-        "partnersSubtitle": "We partner with exceptional talent. Meet our trusted design experts.",
+        "partnersTitle": "Talent Ecosystem",
+        "partnersSubtitle": "We join forces with creative specialists to elevate your brand and prepare you for the digital future.",
         "partner1Role": "UI/UX Design",
         "partner1Desc": "Specialist in captivating interfaces and seamless user experiences for e-commerce.",
         "partner2Role": "Branding & Social",
         "partner2Desc": "Creator of memorable visual identities and avant-garde aesthetics for social media.",
-        "viewPortfolio": "View Portfolio ↗"
+        "partner3Role": "Branding & Identity",
+        "partner3Desc": "Specialist in creating memorable brand identities and visual systems that tell unique stories.",
+        "viewPortfolio": "View Portfolio"
     },
     "entertainmentPage": {
         "title": "Entertainment",
@@ -294,7 +302,7 @@
         "viralTitle": "Viral Trends",
         "viralDesc": "Analysis of sounds, challenges, and aesthetics shaping social media trends.",
         "lifestyleTitle": "Lifestyle",
-        "lifestyleDesc": "Curated movie, music, and series recommendations aligned with current trends.",
+        "lifestyleDesc": "Handpicked movie, music, and series recommendations aligned with current trends.",
         "comingSoon": "Coming soon — more interactive content in development."
     },
     "termsPage": {
@@ -305,11 +313,11 @@
         "s1": "1. Acceptance of Terms",
         "p1": "Continued use of this website constitutes full acceptance of these terms and conditions, as well as our Privacy Policy.",
         "s2": "2. Intellectual Property",
-        "p2": "All content published on Trendicore (text, design, logos, product curation) is the property of Trendicore or its licensors. Reproduction in whole or in part without prior written authorization is prohibited.",
+        "p2": "All content published on Trendicore (text, design, logos, product selection) is the property of Trendicore or its licensors. Reproduction in whole or in part without prior written authorization is prohibited.",
         "s3": "3. Affiliate Links",
         "p3": "Trendicore contains affiliate links to external platforms such as Amazon and Shein. By clicking these links and making a purchase, Trendicore may receive a commission at no additional cost to the user. Trendicore is not responsible for the products, services, or policies of external platforms.",
         "s4": "4. Limitation of Liability",
-        "p4": "Trendicore acts as a product curation and recommendation platform. We do not sell products directly nor guarantee the availability, price, or quality of linked items. All transactions are conducted directly with the corresponding external store.",
+        "p4": "Trendicore acts as a product selection and recommendation platform. We do not sell products directly nor guarantee the availability, price, or quality of linked items. All transactions are conducted directly with the corresponding external store.",
         "s5": "5. Modifications",
         "p5": "Trendicore reserves the right to modify these terms at any time. Changes will be effective upon publication on this page. It is recommended to review these terms periodically."
     }
