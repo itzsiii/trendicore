@@ -13,7 +13,6 @@ import styles from './dashboard.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import DashboardCharts from '@/components/admin/DashboardCharts';
 import Button from '@/components/ui/Button';
-import { supabase } from '@/lib/supabase';
 
 export default function DashboardPage() {
   const router = useRouter();
