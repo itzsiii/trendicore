@@ -1,8 +1,11 @@
 export class Product {
-  constructor({ id, title, price, category, affiliate_link, affiliate_source, region, featured, status, image_url, clicks, created_by, created_at }) {
+  constructor({ id, title, description, image_credits, price, price_period, category, affiliate_link, affiliate_source, region, featured, status, image_url, clicks, created_by, created_at }) {
     this.id = id;
     this.title = title;
+    this.description = description;
+    this.image_credits = image_credits || '';
     this.price = price;
+    this.price_period = price_period || 'mes';
     this.category = category;
     this.affiliate_link = affiliate_link;
     this.affiliate_source = affiliate_source;
@@ -27,7 +30,10 @@ export class Product {
     const dto = {
       id: this.id,
       title: this.title,
+      description: this.description,
+      image_credits: this.image_credits,
       price: this.price,
+      price_period: this.price_period,
       category: this.category,
       affiliate_link: this.affiliate_link,
       affiliate_source: this.affiliate_source,

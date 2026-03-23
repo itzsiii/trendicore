@@ -24,6 +24,7 @@ export default function DashboardPage() {
     { value: 'moda-mujer', label: t('product.categoryLabels.moda-mujer'), icon: '👗' },
     { value: 'tech', label: t('product.categoryLabels.tech'), icon: '🎮' },
     { value: 'entretenimiento', label: t('product.categoryLabels.entretenimiento'), icon: '🍿' },
+    { value: 'suscripciones', label: t('product.categoryLabels.suscripciones') || 'Suscripciones', icon: '🎟️' },
   ];
 
   const SOURCES = [
@@ -34,7 +35,11 @@ export default function DashboardPage() {
 
   const EMPTY_FORM = {
     title: '',
+    description: '',
+    image_credits: '',
     category: 'moda-hombre',
+    price: 0,
+    price_period: 'mes',
     affiliate_link: '',
     affiliate_source: 'amazon',
     region: 'es',
@@ -42,8 +47,12 @@ export default function DashboardPage() {
   };
 
   const productSchema = z.object({
-    title: z.string().min(5, "El título debe tener al menos 5 caracteres"),
+    title: z.string().min(3, "El título debe tener al menos 3 caracteres"),
+    description: z.string().optional(),
+    image_credits: z.string().optional(),
     category: z.string(),
+    price: z.coerce.number().min(0, "El precio no puede ser negativo"),
+    price_period: z.string().optional(),
     affiliate_link: z.string().url("Debe ser una URL válida"),
     affiliate_source: z.string(),
     region: z.string(),
@@ -328,11 +337,14 @@ export default function DashboardPage() {
 
       const productData = {
         title: form.title.trim(),
-        price: 0,
+        description: form.category === 'suscripciones' ? (form.description || '').trim() : '',
+        image_credits: form.category === 'suscripciones' ? (form.image_credits || '').trim() : '',
+        price: form.category === 'suscripciones' ? form.price : 0,
+        price_period: form.category === 'suscripciones' ? (form.price_period || 'mes') : null,
         category: form.category,
         affiliate_link: cleanUrl,
-        affiliate_source: form.affiliate_source,
-        region: form.region,
+        affiliate_source: form.category === 'suscripciones' ? 'otros' : form.affiliate_source,
+        region: form.category === 'suscripciones' ? 'es' : form.region,
         featured: form.featured,
         image_url: imageUrl,
       };
@@ -376,7 +388,11 @@ export default function DashboardPage() {
   const handleEdit = (product) => {
     resetFormHook({
       title: product.title,
+      description: product.description || '',
+      image_credits: product.image_credits || '',
       category: product.category,
+      price: product.price || 0,
+      price_period: product.price_period || 'mes',
       affiliate_link: product.affiliate_link,
       affiliate_source: product.affiliate_source || 'amazon',
       region: product.region || 'es',
@@ -931,11 +947,13 @@ export default function DashboardPage() {
               <div className={styles.formLeft}>
                 {/* Title */}
                 <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>{t('admin.form.title')}</label>
+                  <label className={styles.formLabel}>
+                    {form?.category === 'suscripciones' ? 'Nombre' : t('admin.form.title')}
+                  </label>
                   <input
                     type="text"
                     {...register('title')}
-                    placeholder={t('admin.form.title_placeholder')}
+                    placeholder={form?.category === 'suscripciones' ? 'Ej: Netflix Premium...' : t('admin.form.title_placeholder')}
                     className={styles.formInput}
                   />
                   {errors.title && <span className={styles.formError} style={{ color: '#ff4b2b', fontSize: '12px', marginTop: '4px' }}>{errors.title.message}</span>}
@@ -960,47 +978,51 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>{t('admin.form.platform')}</label>
-                    <div className={styles.platformSelector}>
-                      {SOURCES.map((s) => (
-                        <button
-                          key={s.value}
-                          type="button"
-                          className={`${styles.selectorOption} ${form?.affiliate_source === s.value ? styles.active : ''}`}
-                          onClick={() => setValue('affiliate_source', s.value, { shouldValidate: true })}
-                        >
-                          <span>{s.icon}</span>
-                          <span>{s.label}</span>
-                        </button>
-                      ))}
+                  {form?.category !== 'suscripciones' && (
+                    <div className={styles.formGroup}>
+                      <label className={styles.formLabel}>{t('admin.form.platform')}</label>
+                      <div className={styles.platformSelector}>
+                        {SOURCES.map((s) => (
+                          <button
+                            key={s.value}
+                            type="button"
+                            className={`${styles.selectorOption} ${form?.affiliate_source === s.value ? styles.active : ''}`}
+                            onClick={() => setValue('affiliate_source', s.value, { shouldValidate: true })}
+                          >
+                            <span>{s.icon}</span>
+                            <span>{s.label}</span>
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* Region + Featured in a row */}
                 <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>{t('admin.form.region')}</label>
-                    <div className={styles.regionSelector}>
-                      <button
-                        type="button"
-                        className={`${styles.regionOption} ${form?.region === 'es' ? styles.activeRegion : ''}`}
-                        onClick={() => setValue('region', 'es', { shouldValidate: true })}
-                      >
-                        <img src="/images/flags/es.svg" alt="Spain" />
-                        <span>{t('regionSelector.es')}</span>
-                      </button>
-                      <button
-                        type="button"
-                        className={`${styles.regionOption} ${form?.region === 'us' ? styles.activeRegion : ''}`}
-                        onClick={() => setValue('region', 'us', { shouldValidate: true })}
-                      >
-                        <img src="/images/flags/us.svg" alt="USA" />
-                        <span>{t('regionSelector.us')}</span>
-                      </button>
+                  {form?.category !== 'suscripciones' && (
+                    <div className={styles.formGroup}>
+                      <label className={styles.formLabel}>{t('admin.form.region')}</label>
+                      <div className={styles.regionSelector}>
+                        <button
+                          type="button"
+                          className={`${styles.regionOption} ${form?.region === 'es' ? styles.activeRegion : ''}`}
+                          onClick={() => setValue('region', 'es', { shouldValidate: true })}
+                        >
+                          <img src="/images/flags/es.svg" alt="Spain" />
+                          <span>{t('regionSelector.es')}</span>
+                        </button>
+                        <button
+                          type="button"
+                          className={`${styles.regionOption} ${form?.region === 'us' ? styles.activeRegion : ''}`}
+                          onClick={() => setValue('region', 'us', { shouldValidate: true })}
+                        >
+                          <img src="/images/flags/us.svg" alt="USA" />
+                          <span>{t('regionSelector.us')}</span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {currentUser?.role === 'admin' && (
                     <div className={styles.formGroup}>
@@ -1019,19 +1041,75 @@ export default function DashboardPage() {
                   )}
                 </div>
 
+                {/* Price + Period Row — ONLY for subscriptions */}
+                {form?.category === 'suscripciones' && (
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label className={styles.formLabel}>{t('admin.form.price')}</label>
+                      <div className={styles.priceInputWrapper}>
+                        <span className={styles.currencySymbol}>€</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          {...register('price')}
+                          className={styles.formInput}
+                          placeholder="0.00"
+                        />
+                      </div>
+                      {errors.price && <span className={styles.formError}>{errors.price.message}</span>}
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label className={styles.formLabel}>Periodo</label>
+                      <div className={styles.periodSelector}>
+                        {[
+                          { value: 'dia', label: '/ Día' },
+                          { value: 'mes', label: '/ Mes' },
+                          { value: 'año', label: '/ Año' },
+                        ].map((p) => (
+                          <button
+                            key={p.value}
+                            type="button"
+                            className={`${styles.periodOption} ${form?.price_period === p.value ? styles.activePeriod : ''}`}
+                            onClick={() => setValue('price_period', p.value, { shouldValidate: true })}
+                          >
+                            {p.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Description — ONLY for subscriptions */}
+                {form?.category === 'suscripciones' && (
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>{t('admin.form.description') || 'Descripción'}</label>
+                    <textarea
+                      {...register('description')}
+                      placeholder="Ej: Cuenta compartida, 4K, acceso completo..."
+                      className={styles.urlTextarea}
+                      rows={3}
+                    />
+                  </div>
+                )}
+
                 <div className={styles.formGroup}>
                   <div className={styles.labelWithAction}>
-                    <label className={styles.formLabel}>{t('admin.form.affiliate_link')}</label>
-                    <button 
-                      type="button" 
-                      className={styles.magicButton}
-                      onClick={handleAutoFill}
-                      disabled={isExtracting || !form?.affiliate_link}
-                      title={t('admin.magic_btn')}
-                    >
-                      {isExtracting ? <Clock size={14} className={styles.spin} /> : '🪄'} 
-                      <span>{isExtracting ? t('admin.extracting') : t('admin.magic_btn')}</span>
-                    </button>
+                    <label className={styles.formLabel}>
+                      {form?.category === 'suscripciones' ? 'Enlace' : t('admin.form.affiliate_link')}
+                    </label>
+                    {form?.category !== 'suscripciones' && (
+                      <button 
+                        type="button" 
+                        className={styles.magicButton}
+                        onClick={handleAutoFill}
+                        disabled={isExtracting || !form?.affiliate_link}
+                        title={t('admin.magic_btn')}
+                      >
+                        {isExtracting ? <Clock size={14} className={styles.spin} /> : '🪄'} 
+                        <span>{isExtracting ? t('admin.extracting') : t('admin.magic_btn')}</span>
+                      </button>
+                    )}
                   </div>
                   <textarea
                     {...register('affiliate_link')}
@@ -1092,6 +1170,22 @@ export default function DashboardPage() {
                   />
                 </div>
 
+                {/* Image Credits — ONLY for subscriptions */}
+                {form?.category === 'suscripciones' && (
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>{t('admin.form.image_credits') || 'Créditos de Imagen (Opcional)'}</label>
+                    <textarea
+                      {...register('image_credits')}
+                      placeholder='Ej: <a href="https://www.flaticon.es/iconos-gratis/netflix">Netflix iconos creados por berkahicon...</a>'
+                      className={styles.urlTextarea}
+                      rows={2}
+                    />
+                    <span className={styles.formHint} style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px', display: 'block' }}>
+                      Pega aquí el enlace de HTML o texto de atribución de derechos de autor. Aparecerá en la vista rápida.
+                    </span>
+                  </div>
+                )}
+
                 {/* Form Actions */}
                 <div className={styles.formActions}>
                   <Button variant="secondary" onClick={resetForm} disabled={saving} size="large" fullWidth>
@@ -1129,9 +1223,11 @@ export default function DashboardPage() {
                       <span>{form.region.toUpperCase()}</span>
                     </div>
                     <div className={`${styles.previewStatusBadge}`}>✅ {t('admin.tabs.published')}</div>
-                    <div className={`${styles.previewSourceBadge} ${styles[form.affiliate_source]}`}>
-                      {form.affiliate_source === 'amazon' ? '🟠' : form.affiliate_source === 'shein' ? '🟣' : '🔵'} {form.affiliate_source === 'amazon' ? 'Amazon' : form.affiliate_source === 'shein' ? 'Shein' : 'Otros'}
-                    </div>
+                    {form?.category !== 'suscripciones' && (
+                      <div className={`${styles.previewSourceBadge} ${styles[form.affiliate_source]}`}>
+                        {form.affiliate_source === 'amazon' ? '🟠' : form.affiliate_source === 'shein' ? '🟣' : '🔵'} {form.affiliate_source === 'amazon' ? 'Amazon' : form.affiliate_source === 'shein' ? 'Shein' : 'Otros'}
+                      </div>
+                    )}
                     {form.featured && (
                       <div className={styles.previewFeaturedBadge}>
                         <Star size={12} fill="#f1c40f" color="#f1c40f" />
@@ -1291,8 +1387,11 @@ export default function DashboardPage() {
                     onClick={() => {
                       const isOwner = product.created_by === currentUser?.id;
                       const isAdmin = currentUser?.role === 'admin';
+                      const userPerms = dynamicPermissions[currentUser?.role] || [];
+                      const canDeleteAny = isAdmin || userPerms.includes('delete_any_product');
+                      const canDeleteOwn = isAdmin || userPerms.includes('delete_own_product');
                       
-                      if (isAdmin || isOwner) {
+                      if (canDeleteAny || (isOwner && canDeleteOwn)) {
                         setDeleteConfirm({ id: product.id, title: product.title });
                       } else {
                         showToast(t('admin.toast.error_delete'), 'error');

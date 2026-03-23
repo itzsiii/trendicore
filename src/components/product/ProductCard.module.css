@@ -2,23 +2,19 @@
   position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-sm);
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: all var(--transition-fast);
   display: flex;
   flex-direction: column;
   height: 100%;
-  backdrop-filter: blur(8px);
   box-shadow: var(--shadow-sm);
 }
 
 .card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 15px var(--accent-glow);
+  transform: translateY(-4px);
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
   z-index: 10;
 }
 
@@ -107,11 +103,10 @@
 .quickViewBtn {
   width: 100%;
   padding: 0.5rem;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #fff;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
@@ -133,8 +128,8 @@
 }
 
 .quickViewBtn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: var(--bg-primary);
+  border-color: var(--text-primary);
 }
 
 /* Badges and Labels */
@@ -164,35 +159,29 @@
   position: absolute;
   top: 0.7rem;
   left: 0.7rem;
-  font-size: 0.6rem;
-  font-weight: 700;
-  padding: 0.3rem 0.7rem;
-  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius-sm);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  letter-spacing: 0.05em;
   z-index: 2;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-sm);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
 }
 
 .amazonPill {
-  background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
-  border-color: rgba(245, 158, 11, 0.3);
+  border-left: 3px solid var(--amazon);
 }
 
 .sheinPill {
-  background: rgba(236, 72, 153, 0.15);
-  color: #ec4899;
-  border-color: rgba(236, 72, 153, 0.3);
+  border-left: 3px solid var(--shein);
 }
 
 .otrosPill {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.2);
+  border-left: 3px solid #64748b;
 }
 
 /* Action Buttons */
@@ -218,33 +207,31 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #fff;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
 }
 
 .actionBtn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: var(--bg-primary);
+  transform: scale(1.05);
+  color: var(--text-primary);
+  border-color: var(--border-hover);
 }
 
 .actionBtn.saved {
-  color: #fff;
-  background: #ff4b2b; /* Vibrant solid red when saved */
-  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--pink);
+  border-color: var(--pink);
 }
 
 .actionBtn.saved:hover {
-  background: rgba(255, 75, 43, 0.2);
+  background: var(--pink-glow);
 }
 
 /* Toast inside card */
@@ -318,6 +305,12 @@
   font-size: 1rem;
   font-weight: 700;
   color: var(--text-primary);
+}
+
+.pricePeriod {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-muted);
 }
 
 .ctaMini {

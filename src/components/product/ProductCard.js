@@ -172,8 +172,16 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
           </h3>
           <div className={styles.bottom}>
             <span className={`${styles.ctaMini} ${styles[source.class]}`}>
-              {t('product.viewOn')} {product.affiliate_source === 'shein' ? 'Shein' : product.affiliate_source === 'amazon' ? 'Amazon' : 'Tienda'} <LinkIcon size={14} className={styles.miniIcon} />
+              {product.category === 'suscripciones'
+                ? 'Comprar'
+                : <>{t('product.viewOn')} {product.affiliate_source === 'shein' ? 'Shein' : product.affiliate_source === 'amazon' ? 'Amazon' : 'Tienda'}</>
+              } <LinkIcon size={14} className={styles.miniIcon} />
             </span>
+            {product.category === 'suscripciones' && product.price > 0 && (
+              <span className={styles.price}>
+                {product.price}€<span className={styles.pricePeriod}>/{product.price_period === 'dia' ? 'día' : product.price_period === 'año' ? 'año' : 'mes'}</span>
+              </span>
+            )}
           </div>
         </div>
     </motion.article>

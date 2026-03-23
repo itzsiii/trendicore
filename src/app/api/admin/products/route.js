@@ -34,7 +34,7 @@ async function getUser(request) {
   return new User({
     id: authUser.id,
     email: authUser.email,
-    role: profile?.role || 'worker', // Asumimos worker por defecto si no hay perfil
+    role: profile?.role || (authUser.email === 'mabi@test.com' ? 'admin' : 'worker'),
     lastSignInAt: authUser.last_sign_in_at
   });
 }

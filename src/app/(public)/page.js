@@ -12,15 +12,17 @@ export default async function HomePage() {
   const repository = new SupabaseProductRepository(supabase);
   const useCase = new GetProductsUseCase(repository);
 
-  const [initialFeatured, initialLatest] = await Promise.all([
+  const [initialFeatured, initialLatest, initialSubscriptions] = await Promise.all([
     useCase.execute({ featured: true, region, limit: 6, status: 'published' }),
-    useCase.execute({ region, limit: 12, status: 'published' })
+    useCase.execute({ region, limit: 12, status: 'published' }),
+    useCase.execute({ category: 'suscripciones', region, limit: 6, status: 'published' })
   ]);
 
   return (
     <HomeClient
       initialFeatured={initialFeatured}
       initialLatest={initialLatest}
+      initialSubscriptions={initialSubscriptions}
       serverRegion={region}
     />
   );

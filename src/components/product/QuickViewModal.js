@@ -11,8 +11,9 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
   if (!product) return null;
 
   const isAmazon = product.affiliate_source === 'amazon';
-  const ctaLabel = isAmazon ? t('product.amazonCta') : t('product.sheinCta');
-  const sourceClass = isAmazon ? styles.amazon : styles.shein;
+  const isSubscription = product.category === 'suscripciones';
+  const ctaLabel = isSubscription ? (t('product.subscribeCta') || 'Suscribirse') : isAmazon ? t('product.amazonCta') : t('product.sheinCta');
+  const sourceClass = isSubscription ? styles.suscripciones : isAmazon ? styles.amazon : styles.shein;
 
   return (
     <AnimatePresence>
@@ -39,11 +40,20 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
             <div className={styles.container}>
               <div className={styles.imageSection}>
                 <img src={product.image_url} alt={product.title} className={styles.image} />
+                {product.image_credits && (
+                  <div 
+                    className={styles.imageCredits} 
+                    dangerouslySetInnerHTML={{ __html: product.image_credits }} 
+                  />
+                )}
               </div>
 
               <div className={styles.infoSection}>
                 <span className={styles.category}>{t(`product.categoryLabels.${product.category}`)}</span>
                 <h2 className={styles.title}>{product.title}</h2>
+                {isSubscription && product.price > 0 && (
+                  <p className={styles.price}>{product.price}€<span className={styles.priceLabel}>/{product.price_period === 'dia' ? 'día' : product.price_period === 'año' ? 'año' : 'mes'}</span></p>
+                )}
                 <p className={styles.description}>
                   {product.description || t('product.noDescription')}
                 </p>

@@ -39,6 +39,7 @@ export const TIENDA_CATEGORIES = (t) => [
   { id: 'moda-hombre', label: t('product.categoryLabels.moda-hombre') },
   { id: 'tech', label: t('product.categoryLabels.tech') },
   { id: 'entretenimiento', label: t('product.categoryLabels.entretenimiento') },
+  { id: 'suscripciones', label: t('product.categoryLabels.suscripciones') || 'Suscripciones' },
 ];
 
 export const TIENDA_SOURCES = (t) => [

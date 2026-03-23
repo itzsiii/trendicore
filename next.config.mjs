@@ -21,6 +21,10 @@ const nextConfig = {
       {
          protocol: 'https',
          hostname: 'sheinsz.ltwebstatic.com',
+      },
+      {
+         protocol: 'https',
+         hostname: 'images.unsplash.com',
       }
     ],
   },

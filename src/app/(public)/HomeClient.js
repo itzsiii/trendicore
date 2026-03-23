@@ -12,7 +12,7 @@ import Link from 'next/link';
 import { TrendingUp, Cpu, Sparkles, Flame, ArrowRight, Film } from 'lucide-react';
 import styles from './home.module.css';
 
-export default function HomeClient({ initialFeatured = [], initialLatest = [], serverRegion = 'es' }) {
+export default function HomeClient({ initialFeatured = [], initialLatest = [], initialSubscriptions = [], serverRegion = 'es' }) {
   const { region, t } = useLocale();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [activeTag, setActiveTag] = useState(null);
@@ -49,6 +49,19 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], s
     (region === serverRegion && !activeTag) ? initialLatest : null
   );
 
+  // 3. Subscriptions Hook
+  const subsQuery = useMemo(() => ({
+    category: 'suscripciones',
+    region: region,
+    limit: 6
+  }), [region]);
+
+  const { products: subscriptions, loading: subsLoading } = useProducts(
+    subsQuery, 
+    [region],
+    (region === serverRegion && !activeTag) ? initialSubscriptions : null
+  );
+
   const handleTagClick = (tag) => {
     setActiveTag(activeTag === tag ? null : tag);
   };
@@ -57,11 +70,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], s
     <div className={styles.page}>
       {/* Hero Section */}
       <section className={styles.hero}>
-        <div className={styles.heroOrbs}>
-          <div className={`${styles.orb} ${styles.orb1}`}></div>
-          <div className={`${styles.orb} ${styles.orb2}`}></div>
-          <div className={`${styles.orb} ${styles.orb3}`}></div>
-        </div>
+
 
         <div className={styles.heroContent}>
           <motion.div
@@ -113,22 +122,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], s
             </Button>
           </motion.div>
 
-          <motion.div
-            className={styles.heroTags}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-          >
-            {Object.keys(TAG_MAP).map((tag) => (
-              <button
-                key={tag}
-                className={`${styles.tag} ${activeTag === tag ? styles.activeTag : ''}`}
-                onClick={() => handleTagClick(tag)}
-              >
-                #{tag}
-              </button>
-            ))}
-          </motion.div>
+
         </div>
 
         <motion.div
@@ -180,7 +174,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], s
 
       <div className={styles.catalogWrapper}>
         {/* Featured Section */}
-        {featured.length > 0 && !activeTag && (
+        {featured.length > 0 && (
           <section className={styles.section}>
             <div className={styles.sectionHeader}>
               <div className={styles.sectionTag}><Flame size={12} strokeWidth={3} style={{ display: 'inline', marginBottom: '-2px' }} /> HOT</div>
@@ -200,19 +194,68 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], s
           </section>
         )}
 
+        {/* Subscriptions Section */}
+        {(subsLoading || subscriptions.length > 0) && (
+          <section className={styles.section} style={{ marginTop: '3rem', marginBottom: '3rem', padding: '2.5rem', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-xl)' }}>
+            <div className={styles.sectionHeader} style={{ marginBottom: '2rem' }}>
+              <div className={styles.sectionTag} style={{ color: 'var(--accent)' }}>
+                <Film size={12} strokeWidth={3} style={{ display: 'inline', marginBottom: '-2px' }} /> 
+                DIGITAL PASSES
+              </div>
+              <h2 className={styles.sectionTitle}>Suscripciones Premium</h2>
+              <p className={styles.sectionSubtitle}>Acceso a tu entretenimiento favorito sin comprometer tu bolsillo.</p>
+            </div>
+
+            {subsLoading ? (
+               <div className={styles.loadingGrid}>
+                 {[...Array(4)].map((_, i) => (
+                   <div key={i} className={styles.skeleton}>
+                     <div className={styles.skeletonImage}></div>
+                     <div className={styles.skeletonInfo}>
+                       <div className={styles.skeletonLine} style={{ width: '40%' }}></div>
+                       <div className={styles.skeletonLine} style={{ width: '80%' }}></div>
+                       <div className={styles.skeletonLine} style={{ width: '60%' }}></div>
+                     </div>
+                   </div>
+                 ))}
+               </div>
+            ) : (
+              <>
+                <div className={styles.grid}>
+                  {subscriptions.map((product, i) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      index={i}
+                      onQuickView={setSelectedProduct}
+                    />
+                  ))}
+                </div>
+                {subscriptions.length > 0 && (
+                  <div style={{ textAlign: 'center', marginTop: '2.5rem', display: 'flex', justifyContent: 'center' }}>
+                    <Button href="/tienda?c=suscripciones" variant="secondary" iconRight={<ArrowRight size={18} />}>
+                      Ver todas las suscripciones
+                    </Button>
+                  </div>
+                )}
+              </>
+            )}
+          </section>
+        )}
+
         {/* Latest Products */}
         {(latestLoading || latest.length > 0) && (
           <section className={styles.section}>
             <div className={styles.sectionHeader}>
               <div className={styles.sectionTag}>
                 <Sparkles size={12} strokeWidth={3} style={{ display: 'inline', marginBottom: '-2px' }} /> 
-                {activeTag ? t('sections.filtered') : t('sections.newTag')}
+                {t('sections.newTag')}
               </div>
               <h2 className={styles.sectionTitle}>
-                {activeTag ? `${t('sections.trendsFor')} #${activeTag}` : t('sections.newTitle')}
+                {t('sections.newTitle')}
               </h2>
               <p className={styles.sectionSubtitle}>
-                {activeTag ? `${t('sections.browsingTag')} ${activeTag}` : t('sections.newSubtitle')}
+                {t('sections.newSubtitle')}
               </p>
             </div>
 
