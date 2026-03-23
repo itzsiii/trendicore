@@ -1296,3 +1296,10 @@
   border-radius: 12px;
   border-left: 4px solid var(--accent);
 }
+
+.containImage {
+  object-fit: contain !important;
+  padding: 2rem;
+  box-sizing: border-box;
+  background-color: var(--bg-secondary);
+}

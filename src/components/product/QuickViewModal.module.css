@@ -73,18 +73,22 @@
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.image:hover {
+.image:hover:not(.containImage) {
   transform: scale(1.04);
 }
 
+.containImage {
+  object-fit: contain !important;
+  padding: 5rem;
+  box-sizing: border-box;
+}
+
 .imageCredits {
-  position: absolute;
-  bottom: 0.5rem;
-  right: 1rem;
+  text-align: center;
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.7);
-  z-index: 10;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  color: var(--text-muted);
+  opacity: 0.8;
+  margin-top: 0.5rem;
 }
 .imageCredits a {
   color: inherit;

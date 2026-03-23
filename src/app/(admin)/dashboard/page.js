@@ -44,6 +44,8 @@ export default function DashboardPage() {
     affiliate_source: 'amazon',
     region: 'es',
     featured: false,
+    platform_name: '',
+    brand_color: '#7c3aed',
   };
 
   const productSchema = z.object({
@@ -57,6 +59,8 @@ export default function DashboardPage() {
     affiliate_source: z.string(),
     region: z.string(),
     featured: z.boolean().default(false),
+    platform_name: z.string().optional(),
+    brand_color: z.string().optional(),
   });
 
   const [products, setProducts] = useState([]);
@@ -282,9 +286,16 @@ export default function DashboardPage() {
     if (!form.affiliate_link) return;
     setIsExtracting(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentToken = session?.access_token;
+      if (!currentToken) throw new Error('Session expired');
+
       const res = await fetch('/api/admin/products/extract', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${currentToken}`
+        },
         body: JSON.stringify({ url: form.affiliate_link })
       });
       const data = await res.json();
@@ -307,20 +318,23 @@ export default function DashboardPage() {
     setSaving(true);
 
     try {
-      // Use stored accessToken for API calls
-      if (!accessToken) {
+      // Retrieve fresh session to avoid expired token errors
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentToken = session?.access_token;
+
+      if (!currentToken) {
         showToast(t('admin.toast.session_expired'), 'error');
         setSaving(false);
         return;
       }
       const authHeaders = {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
+        'Authorization': `Bearer ${currentToken}`,
       };
 
       let imageUrl = '';
       if (imageFile) {
-        imageUrl = await uploadImage(imageFile, accessToken);
+        imageUrl = await uploadImage(imageFile, currentToken);
       } else if (imagePreview && typeof imagePreview === 'string' && imagePreview.length > 5) {
         imageUrl = imagePreview.startsWith('http') || imagePreview.startsWith('data:') ? imagePreview : 'https://' + imagePreview.replace(/^(https?:\/\/)?/, '');
       } else if (editingId) {
@@ -410,9 +424,13 @@ export default function DashboardPage() {
     const { id } = deleteConfirm;
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentToken = session?.access_token;
+      if (!currentToken) throw new Error('Session expired');
+
       const res = await fetch(`/api/admin/products?id=${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${accessToken}` },
+        headers: { 'Authorization': `Bearer ${currentToken}` },
       });
       
       const result = await res.json();
@@ -452,11 +470,15 @@ export default function DashboardPage() {
 
   const handleToggleFeatured = async (id, currentStatus) => {
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentToken = session?.access_token;
+      if (!currentToken) throw new Error('Session expired');
+
       const res = await fetch('/api/admin/products', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
+          'Authorization': `Bearer ${currentToken}`,
         },
         body: JSON.stringify({ id, featured: !currentStatus }),
       });
@@ -480,10 +502,14 @@ export default function DashboardPage() {
   const executeBulkDelete = async () => {
     setIsBulkDeleting(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentToken = session?.access_token;
+      if (!currentToken) throw new Error('Session expired');
+
       for (const id of selectedIds) {
         const res = await fetch(`/api/admin/products?id=${id}`, {
           method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${accessToken}` },
+          headers: { 'Authorization': `Bearer ${currentToken}` },
         });
         if (!res.ok) throw new Error('Error en borrado masivo');
       }
@@ -504,13 +530,17 @@ export default function DashboardPage() {
     if (!selectedIds.length) return;
     setSaving(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentToken = session?.access_token;
+      if (!currentToken) throw new Error('Session expired');
+
       console.log('Actualizando destacados masivamente:', status, selectedIds);
       for (const id of selectedIds) {
         const res = await fetch('/api/admin/products', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`,
+            'Authorization': `Bearer ${currentToken}`,
           },
           body: JSON.stringify({ id, featured: status }),
         });
@@ -1134,13 +1164,18 @@ export default function DashboardPage() {
                   <div className={styles.imageUpload}>
                     {imagePreview ? (
                       <div className={styles.imagePreviewBox}>
-                        <img src={imagePreview} alt="Preview" className={styles.previewImg} />
+                        <img 
+                          src={imagePreview} 
+                          alt="Preview" 
+                          className={`${styles.previewImg} ${form?.category === 'suscripciones' ? styles.containImage : ''}`} 
+                        />
                         <button
                           type="button"
                           onClick={() => { setImageFile(null); setImagePreview(''); }}
-                          className={styles.removeImg}
+                          className={styles.removeImageBtn}
+                          title={t('admin.form.remove_tag')}
                         >
-                          <X size={14} />
+                          <X size={16} />
                         </button>
                       </div>
                     ) : (

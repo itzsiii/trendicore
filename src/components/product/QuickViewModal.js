@@ -39,13 +39,11 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
 
             <div className={styles.container}>
               <div className={styles.imageSection}>
-                <img src={product.image_url} alt={product.title} className={styles.image} />
-                {product.image_credits && (
-                  <div 
-                    className={styles.imageCredits} 
-                    dangerouslySetInnerHTML={{ __html: product.image_credits }} 
-                  />
-                )}
+                <img 
+                  src={product.image_url} 
+                  alt={product.title} 
+                  className={`${styles.image} ${isSubscription ? styles.containImage : ''}`} 
+                />
               </div>
 
               <div className={styles.infoSection}>
@@ -71,6 +69,12 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                   <p className={styles.secondaryCta}>
                     {t('product.redirectNotice')}
                   </p>
+                  {product.image_credits && (
+                    <div 
+                      className={styles.imageCredits} 
+                      dangerouslySetInnerHTML={{ __html: product.image_credits }} 
+                    />
+                  )}
                 </div>
               </div>
             </div>
