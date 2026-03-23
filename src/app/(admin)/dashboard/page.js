@@ -312,8 +312,8 @@ export default function DashboardPage() {
       let imageUrl = '';
       if (imageFile) {
         imageUrl = await uploadImage(imageFile, accessToken);
-      } else if (imagePreview && typeof imagePreview === 'string' && imagePreview.startsWith('http')) {
-        imageUrl = imagePreview;
+      } else if (imagePreview && typeof imagePreview === 'string' && imagePreview.length > 5) {
+        imageUrl = imagePreview.startsWith('http') || imagePreview.startsWith('data:') ? imagePreview : 'https://' + imagePreview.replace(/^(https?:\/\/)?/, '');
       } else if (editingId) {
         imageUrl = products.find((p) => p.id === editingId)?.image_url || '';
       }
@@ -1079,6 +1079,17 @@ export default function DashboardPage() {
                       </label>
                     )}
                   </div>
+                  <input 
+                    type="url"
+                    className={styles.formInput}
+                    style={{ marginTop: '12px' }}
+                    placeholder={t('admin.form.image_url_placeholder') === 'admin.form.image_url_placeholder' ? 'O pega una URL de imagen aquí' : t('admin.form.image_url_placeholder')}
+                    value={typeof imagePreview === 'string' ? imagePreview : ''}
+                    onChange={(e) => {
+                      setImagePreview(e.target.value);
+                      setImageFile(null); // Clear file if URL is provided
+                    }}
+                  />
                 </div>
 
                 {/* Form Actions */}
@@ -1138,7 +1149,13 @@ export default function DashboardPage() {
                       </span>
                     </div>
                     <div className={styles.previewActionsPreview}>
-                      <span className={styles.previewEditBtn}>✏️ {t('admin.actions.edit')}</span>
+                      <span 
+                        className={styles.previewEditBtn} 
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => document.querySelector('input[name="title"]')?.focus()}
+                      >
+                        ✏️ {t('admin.actions.edit')}
+                      </span>
                       <span className={styles.previewDeleteBtn}>🗑️</span>
                     </div>
                   </div>

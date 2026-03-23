@@ -31,15 +31,23 @@ export class URLMetadataService {
       const amazonImage = html.match(/id="landingImage"[^>]*data-old-hires=["']([^"']+)["']/i) || 
                           html.match(/id="imgBlkFront"[^>]*src=["']([^"']+)["']/i);
 
+      let extractedTitle = amazonTitle ? amazonTitle[1].trim() : (getMeta('og:title') || getTitle());
+      let extractedImage = amazonImage ? amazonImage[1] : (getMeta('og:image') || getMeta('twitter:image'));
+
+      // Detect Amazon CAPTCHA or error pages
+      if (extractedTitle && (extractedTitle.includes('Documento no encontrado') || extractedTitle.includes('Amazon CAPTCHA') || extractedTitle.includes('Bot Check'))) {
+        throw new Error('El enlace fue bloqueado por protección antibots (CAPTCHA o no encontrado). Ingresa los datos manualmente.');
+      }
+
       return {
-        title: amazonTitle ? amazonTitle[1].trim() : (getMeta('og:title') || getTitle()),
-        image: amazonImage ? amazonImage[1] : (getMeta('og:image') || getMeta('twitter:image')),
+        title: extractedTitle,
+        image: extractedImage,
         description: getMeta('og:description') || getMeta('description'),
         site_name: getMeta('og:site_name')
       };
     } catch (error) {
       console.error('Error extracting metadata:', error);
-      throw new Error('No se pudo extraer información del enlace proporcionado');
+      throw new Error(error.message || 'No se pudo extraer información del enlace proporcionado');
     }
   }
 }
