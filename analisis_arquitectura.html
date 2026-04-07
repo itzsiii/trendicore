@@ -3,371 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte de Arquitectura: Trendicore (Estado Final)</title>
+    <title>Documento de Arquitectura - Trendicore</title>
+    <!-- Incluyendo fuentes de Google para estética profesional -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap');
-
         :root {
-            --primary: #9d4edd;
-            --primary-light: #c77dff;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --success: #10b981;
-            --danger: #ef4444;
-            --accent: #3b82f6;
-            --glass: rgba(255, 255, 255, 0.05);
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #475569;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
-
+        
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at 50% 10%, #1e1b4b 0%, var(--bg-dark) 50%);
-            color: var(--text-main);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             line-height: 1.6;
+            color: var(--text);
+            background-color: var(--background);
             margin: 0;
             padding: 0;
         }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 3rem 1.5rem;
-        }
-
+        
         header {
+            background-color: var(--primary);
+            background-image: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 4rem 2rem;
             text-align: center;
-            margin-bottom: 5rem;
-            padding-bottom: 2rem;
-            position: relative;
+            box-shadow: var(--shadow);
         }
-
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 25%;
-            width: 50%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-        }
-
-        h1 {
-            color: var(--primary-light);
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.04em;
+        
+        header h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2.75rem;
             font-weight: 700;
+            letter-spacing: -0.025em;
         }
-
-        .subtitle {
+        
+        header p {
+            margin: 0;
             font-size: 1.25rem;
-            color: var(--text-muted);
-            font-weight: 300;
+            opacity: 0.9;
+            font-weight: 400;
         }
-
+        
+        main {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+        
+        section {
+            background-color: var(--surface);
+            padding: 3rem;
+            margin-bottom: 2.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
         h2 {
-            color: var(--primary-light);
-            margin-top: 3.5rem;
-            font-size: 2rem;
-            letter-spacing: -0.02em;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.75rem;
+            margin-top: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        h3 {
+            color: var(--text);
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            font-weight: 500;
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+            font-size: 1.05rem;
+        }
+        
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        
+        code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: ui-monospace, monospace;
+            font-size: 0.9em;
+            color: #b91c1c;
+        }
+        
+        .mermaid {
+            background: var(--background);
+            padding: 2rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
             display: flex;
-            align-items: center;
-            gap: 1rem;
+            justify-content: center;
+            overflow-x: auto;
+            margin: 2rem 0;
         }
-
-        .card {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 2.5rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
+        
+        ul {
+            padding-left: 1.5rem;
+            color: var(--secondary);
         }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--primary);
-            opacity: 0.5;
+        
+        li {
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
         }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.6rem 1.2rem;
-            border-radius: 9999px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            margin-bottom: 2rem;
-            letter-spacing: 0.05em;
-        }
-
-        .status-badge.legacy {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-            border-color: rgba(239, 68, 68, 0.3);
-        }
-
-        .grid {
+        
+        .component-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 2rem;
             margin-top: 2rem;
         }
-
-        .grid-item {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        
+        .component-card {
+            background: var(--background);
+            padding: 2rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-
-        ul {
-            padding-left: 1.5rem;
-            list-style: none;
+        
+        .component-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
-
-        li {
-            margin-bottom: 1rem;
-            position: relative;
-            color: var(--text-muted);
-        }
-
-        li::before {
-            content: '▫';
-            position: absolute;
-            left: -1.5rem;
+        
+        .component-card h4 {
+            margin-top: 0;
             color: var(--primary);
-            font-weight: bold;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
         }
-
-        strong {
-            color: var(--text-main);
+        
+        @media (max-width: 768px) {
+            .component-grid {
+                grid-template-columns: 1fr;
+            }
+            section {
+                padding: 1.5rem;
+            }
         }
-
-        .diagram-container {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 2.5rem;
-            margin: 2.5rem 0;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
-            border: 8px solid var(--bg-dark);
-            display: flex;
-            justify-content: center;
-        }
-
-        .tech-tag {
-            background: var(--glass);
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.9rem;
-            color: var(--accent);
-        }
-
-        progress {
-            width: 100%;
-            height: 10px;
-            border-radius: 5px;
-            margin-top: 1rem;
-        }
-
-        progress::-webkit-progress-bar { background: rgba(0,0,0,0.3); border-radius: 5px; }
-        progress::-webkit-progress-value { background: var(--success); border-radius: 5px; }
-
-        footer {
-            text-align: center;
-            margin-top: 6rem;
-            padding: 3rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-        }
-
-        /* Animations */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .card { animation: fadeIn 0.6s ease-out forwards; }
     </style>
 </head>
 <body>
+    <header>
+        <h1>Arquitectura del Sistema: Trendicore</h1>
+        <p>Documento Técnico de Diseño y Patrones Estructurales de Software</p>
+    </header>
 
-    <div class="container">
-        <header>
-            <div class="status-badge">ARCHITECT-LEVEL VERIFIED</div>
-            <h1>Trendicore: Architectural Audit</h1>
-            <p class="subtitle">Análisis técnico de la migración a Arquitectura Hexagonal</p>
-        </header>
-
-        <section class="card">
+    <main>
+        <section id="resumen">
             <h2>1. Resumen Ejecutivo</h2>
-            <p>Como Arquitecto Senior, he validado la transición del sistema Trendicore desde una estructura monolítica acoplada hacia una <strong>Arquitectura Hexagonal descentralizada</strong>. Esta migración resuelve problemas críticos de deuda técnica y prepara la plataforma para una escalabilidad global.</p>
-            
-            <div class="grid">
-                <div class="grid-item">
-                    <h3 style="color: var(--danger);">Análisis Retrospectivo (Legacy)</h3>
-                    <div class="status-badge legacy">ALTO ACOPLAMIENTO</div>
-                    <ul>
-                        <li>Componentes UI (React) gestionando directamente estados de Auth de Supabase.</li>
-                        <li>Rutas API mezclando lógica de negocio con detalles de infraestructura.</li>
-                        <li>Dependencia rígida del SDK de Supabase: "Vendor Lock-in".</li>
-                    </ul>
-                </div>
-                <div class="grid-item">
-                    <h3 style="color: var(--success);">Análisis Post-Migración</h3>
-                    <div class="status-badge">ORDEN HEXAGONAL</div>
-                    <ul>
-                        <li><strong>UI Agnóstica:</strong> El frontend no conoce Supabase; se comunica via APIs estándar.</li>
-                        <li><strong>Dominio Puro:</strong> Las entidades (<code>Product</code>) viven en el centro, aisladas.</li>
-                        <li><strong>Inversión de Dependencias:</strong> El negocio dicta el contrato; la infraestructura lo cumple.</li>
-                    </ul>
-                </div>
-            </div>
-            <div style="margin-top: 2rem;">
-                <strong>Progreso de la Migración:</strong>
-                <progress value="100" max="100"></progress>
-                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
-                    <span>Auth Domain</span>
-                    <span>Storage Domain</span>
-                    <span>Product Domain</span>
-                    <span>UI Decoupling</span>
-                </div>
-            </div>
-        </section>
-
-        <section class="card">
-            <h2>2. La Nueva Capa de Dominio (El Corazón)</h2>
-            <p>Hemos implementado una estructura de directorios estricta en <span class="tech-tag">src/core</span> que garantiza la separación de intereses:</p>
-            
-            <div class="grid">
-                <div class="grid-item">
-                    <strong style="color: var(--primary-light);">Domain (Core)</strong>
-                    <p>Entidades como <span class="tech-tag">Product.js</span> definiendo el modelo conceptual y sus validaciones intrínsecas.</p>
-                </div>
-                <div class="grid-item">
-                    <strong style="color: var(--primary-light);">Application</strong>
-                    <p>Casos de uso (<span class="tech-tag">GetProductsUseCase.js</span>) que orquestan el flujo de datos sin conocer la persistencia.</p>
-                </div>
-                <div class="grid-item">
-                    <strong style="color: var(--primary-light);">Infrastructure</strong>
-                    <p>Adaptadores Secundarios (<span class="tech-tag">SupabaseProductRepository.js</span>) que traducen el dominio a operaciones tecnológicas reales.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="card">
-            <h2>3. Diagrama: Estructura Original (Legacy)</h2>
-            <p>El flujo original presentaba una dependencia directa donde cualquier cambio en la base de datos requería modificar componentes visuales.</p>
-            <div class="diagram-container">
-                <div class="mermaid">
-                    graph TD
-                        subgraph UI ["Adaptador Primario UI"]
-                            Dashboard[Dashboard Component\nLogic + View + Supabase JS]
-                        end
-
-                        subgraph SDK ["Middleware de Terceros"]
-                            SupaJS[Supabase SDK Client]
-                        end
-
-                        subgraph DB ["Infraestructura"]
-                            Postgres[(PostgreSQL)]
-                        end
-
-                        Dashboard -->|Direct Call| SupaJS
-                        SupaJS --> Postgres
-                        
-                        style Dashboard fill:#1e293b,stroke:#ef4444,color:#fff
-                        style SupaJS fill:#0f172a,stroke:#9d4edd,color:#fff
-                        style Postgres fill:#0f172a,stroke:#3b82f6,color:#fff
-                </div>
-            </div>
-        </section>
-
-        <section class="card">
-            <h2>4. Diagrama: Arquitectura Hexagonal (Actual)</h2>
-            <p>En el modelo actual, el "Hexágono" central protege al negocio de los cambios externos. Los adaptadores son intercambiables.</p>
-            <div class="diagram-container">
-                <div class="mermaid">
-                    graph LR
-                        subgraph External_Driving ["Adaptadores Primarios"]
-                            Web[Next.js App]
-                            Mobile[Future Mobile App]
-                        end
-
-                        subgraph Ports_In ["Puertos de Entrada"]
-                            API[REST Endpoints]
-                        end
-
-                        subgraph Hexagon ["DOMAIN CORE"]
-                            UC[Use Cases]
-                            Entities[Entities]
-                            UC --> Entities
-                        end
-
-                        subgraph Ports_Out ["Puertos de Salida"]
-                            RepoPort((Repository Contrato))
-                        end
-
-                        subgraph External_Driven ["Adaptadores Secundarios"]
-                            SupaAdapter[Supabase Repo]
-                            MockRepo[In-Memory Repo]
-                        end
-
-                        Web --> API
-                        API --> UC
-                        UC --> RepoPort
-                        SupaAdapter -.->|Implementa| RepoPort
-                        MockRepo -.->|Implementa| RepoPort
-                        
-                        SupaAdapter --> DB[(Cloud Supabase)]
-                        
-                        style Hexagon fill:#1e1b4b,stroke:#10b981,color:#fff,stroke-width:3px
-                        style API fill:#1e293b,stroke:#9d4edd,color:#fff
-                        style SupaAdapter fill:#1e293b,stroke:#3b82f6,color:#fff
-                </div>
-            </div>
-        </section>
-
-        <section class="card">
-            <h2>5. Veredicto Arquitectónico</h2>
-            <p>La adopción de este patrón en Trendicore ha resultado en un sistema <strong>altamente mantenible</strong>. La reciente resolución del <code>ReferenceError</code> en el dashboard, sin tocar una sola línea de lógica de renderizado, es la prueba empírica de que la inversión en desacoplamiento ha sido exitosa.</p>
+            <p>
+                La aplicación <strong>Trendicore</strong> ha sido conceptualizada, diseñada y refactorizada bajo los principios de la <strong>Arquitectura Limpia (Clean Architecture)</strong> combinada con patrones de <strong>Arquitectura Hexagonal (Puertos y Adaptadores)</strong>.
+            </p>
+            <p>
+                El objetivo arquitectónico primordial es garantizar un sistema altamente desacoplado. En este diseño, la lógica de negocio central o de dominio es completamente independiente de toda implementación periférica técnica, tal como las interfaces de usuario (Next.js/React), las herramientas de persistencia y bases de datos (Supabase) y dependencias de terceros.
+            </p>
+            <p>El código establece barreras claras mediante las siguientes capas principales:</p>
             <ul>
-                <li><strong>Independencia de Frameworks:</strong> El core puede ejecutarse en Node.js puro fuera de Next.js.</li>
-                <li><strong>Testabilidad:</strong> El negocio es 100% testable mediante mocks de repositorio.</li>
-                <li><strong>Resiliencia:</strong> La UI es ahora más ligera y predecible, delegando la complejidad al core.</li>
+                <li><strong>Dominio (Entities):</strong> Contiene las reglas y abstracciones de negocio puras (e.g., <code>Product</code>, <code>User</code>, <code>Permissions</code>).</li>
+                <li><strong>Aplicación (Use Cases):</strong> Aloja la orquestación de operaciones de la aplicación (e.g., <code>CreateProductUseCase</code>, <code>CheckPermissionUseCase</code>).</li>
+                <li><strong>Infraestructura (Adapters):</strong> Aloja implementaciones que concretan puertos o interfaces definidos, interactuando con agentes externos (e.g., <code>SupabaseProductRepository</code>).</li>
+                <li><strong>Presentación (UI):</strong> Comprende Componentes React interactivos y APIs manejadas puramente por rutado (App Router).</li>
             </ul>
         </section>
 
-        <footer>
-            PRODUCED BY TRENDICORE ENGINEERING DEPT | ARCHITECT ID: ANTIGRAVITY-01
-        </footer>
-    </div>
+        <section id="diagrama">
+            <h2>2. Diagrama de Clases y Arquitectura</h2>
+            <p>La siguiente representación visual ilustra cómo fluye la invocación desde la capa de Presentación hasta Infraestructura, mostrando la inversión de dependencia clave en las interfaces o puertos de los repositorios que blindan y protegen las entidades base.</p>
+            
+            <div class="mermaid">
+classDiagram
+    %% Core Domain
+    class Product {
+        +String id
+        +String title
+        +validate()
+        +toDTO()
+    }
+    class User {
+        +String id
+        +String role
+        +hasPermission()
+        +toDTO()
+    }
+    class PermissionManager {
+        &lt;&lt;static&gt;&gt;
+        +can(role, permission)
+        +canPerformOnResource()
+    }
 
+    %% Application Layer (Use Cases)
+    class CreateProductUseCase {
+        -IProductRepository repository
+        +execute(productData)
+    }
+    class CheckPermissionUseCase {
+        -IPermissionRepository repository
+        +execute(user, permission, resource)
+    }
+
+    %% Ports (Interfaces)
+    class IProductRepository {
+        &lt;&lt;interface&gt;&gt;
+        +findById(id)
+        +save(productDTO)
+        +update(id, product)
+        +delete(id)
+    }
+
+    %% Infrastructure (Adapters)
+    class SupabaseProductRepository {
+        -SupabaseClient client
+        +findById(id)
+        +save(productDTO)
+        +delete(id)
+    }
+
+    %% Presentation / UI
+    class ProductControllerAPI {
+        &lt;&lt;RouteHandler&gt;&gt;
+        +handlePostRequest()
+    }
+    class ProductFormUI {
+        &lt;&lt;ReactComponent&gt;&gt;
+        +onSubmit(data)
+    }
+
+    %% Relationships and Dependencies
+    ProductFormUI --&gt; ProductControllerAPI : HTTP_POST
+    ProductControllerAPI --&gt; CreateProductUseCase : invoca_execute
+    CreateProductUseCase --&gt; IProductRepository : usa_puerto
+    CreateProductUseCase ..&gt; Product : crea
+    SupabaseProductRepository ..|&gt; IProductRepository : implementa
+    CheckPermissionUseCase ..&gt; PermissionManager : usa
+    CheckPermissionUseCase ..&gt; User : usa
+            </div>
+        </section>
+
+        <section id="justificacion">
+            <h2>3. Justificación de Refactorización</h2>
+            <p>
+                <strong>Fase I (Legacy/AI-Generated):</strong> La aplicación prototipada inicialmente mediante IA generativa funcionaba de forma monolítica. Es decir: la obtención de datos, el enrutado, la pintura de UI y las restricciones de base de datos residían conjuntamente dentro de las páginas web (Server Components o API Routes sobrecargadas). Esto redujo la calidad arquitectónica asumiendo gran acumulación de <em>deuda técnica</em> y bloqueando una cobertura seria en validaciones de tests unitarios (Test-Driven Development).
+            </p>
+            <h3>Ventajas Adquiridas con TDD y Arquitectura Limpia:</h3>
+            <ul>
+                <li><strong>Incremento de Testabilidad (Intercambiabilidad de Componentes):</strong> Al purificar las reglas de negocio en la capa <code>/core</code> e introducir puertos con interfaces para los repositorios, resulta trivial pasar "Mocks Repository" durante test. Los métodos de <code>LoginUseCase</code> pueden comprobarse al 100% aislando totalmente el servidor físico de Supabase o las caídas de red.</li>
+                <li><strong>Inversión de Control y Desacoplamiento (Principios SOLID):</strong> Componentes visuales robustos se dedican puramente a UI sin contaminarse ejecutando lógica de SQL o lógicas complejas estáticas de si un producto es publicable o no.</li>
+                <li><strong>Escalabilidad Superior y Extensibilidad:</strong> Alterar un servicio por otro (ejemplo, rotar de Supabase a un backend custom Node/Postgres u otro BaaS) se localiza creando exclusivamente un nuevo adapter en <code>/infrastructure</code> sin alterar los scripts principales de los <code>UseCases</code> o la Entidad abstracta.</li>
+            </ul>
+        </section>
+
+        <section id="componentes">
+            <h2>4. Detalle de Componentes y Responsabilidades de Módulos</h2>
+            <p>El código central del sistema se reparte geográficamente según los siguientes focos de responsabilidad.</p>
+            
+            <div class="component-grid">
+                <div class="component-card">
+                    <h4>Módulos de Front-End (UI / Next.js)</h4>
+                    <ul>
+                        <li><strong>Capa <code>/app</code> (Enrutador Web):</strong> Gobierna estrictamente las divisiones frontales para el Server Side Rendering y Client Routing de Next.js (<code>(public)</code> y <code>(admin)</code>). Administra layouts globales de forma limpia.</li>
+                        <li><strong>Capa <code>/components</code> (Presentación Visual):</strong> Estanca los assets y utilidades del modelo abstracto de UI React. Los componentes como <code>ProductCard</code> y <code>ProductForm</code> son "Dumb y Presentacionales". Operan a partir de inyección de properties sin lógicas de infra.</li>
+                        <li><strong>Capa <code>/hooks</code> & <code>/providers</code>:</strong> Proporcionan conectores limpios de contexto React hacia los features visuales o de optimización UX (i18n, Wishlist, Autenticación Client-Side).</li>
+                    </ul>
+                </div>
+                
+                <div class="component-card">
+                    <h4>Módulos Back-End (Core & Domain)</h4>
+                    <ul>
+                        <li><strong>Entities (<code>/domain</code>):</strong> El santuario puro de la aplicación. Modelos vitales auto-contenidos, aislados estructuralmente como <code>Product.js</code> y <code>User.js</code>, garantizando verificaciones de sintaxis y estado antes de accionar operaciones.</li>
+                        <li><strong>Use Cases (<code>/application</code>):</strong> Modos directos de interacciones (Agentes Activos). Representan acciones transaccionales del ciclo de software: <code>UpdateProductUseCase.js</code> o <code>LogoutUseCase.js</code> orquestando entidades sobre los repositorios.</li>
+                        <li><strong>Adapters (<code>/infrastructure</code>):</strong> Clases pragmáticas concretadas (<code>SupabaseProductRepository</code>). Usan el objeto cliente físico <code>supabaseClient</code> e interactúan en el protocolo bruto (SQL, Rest).</li>
+                        <li><strong>Controladores de Red (<code>/app/api</code>):</strong> Funciones exponiendo endpoints REST aislados para conectar web remota hacia el Core App y devolver JSON estándar con estado nativo HTTP.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Script de Mermaid para renderizado de diagramas visuales -->
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-        mermaid.initialize({ 
-            startOnLoad: true, 
-            theme: 'dark',
-            securityLevel: 'loose',
-            fontFamily: 'Inter',
-            themeVariables: {
-                primaryColor: '#9d4edd',
-                edgeLabelBackground: '#1e293b'
-            }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            mermaid.initialize({ 
+                startOnLoad: true, 
+                theme: 'neutral',
+                fontFamily: 'Inter, sans-serif',
+                securityLevel: 'loose',
+                themeVariables: {
+                    primaryColor: '#f8fafc',
+                    primaryTextColor: '#0f172a',
+                    primaryBorderColor: '#cbd5e1',
+                    lineColor: '#2563eb',
+                    secondaryColor: '#f1f5f9',
+                    fontFamily: 'Inter'
+                }
+            });
+            mermaid.init(undefined, document.querySelectorAll('.mermaid'));
         });
     </script>
 </body>
