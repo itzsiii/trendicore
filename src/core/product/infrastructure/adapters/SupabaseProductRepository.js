@@ -1,4 +1,6 @@
 import { Product } from '../../domain/Product';
+import { DuplicateProductError, ProductNotFoundError } from '../../domain/ProductErrors';
+
 
 export class SupabaseProductRepository {
   constructor(supabaseClient) {
@@ -12,7 +14,10 @@ export class SupabaseProductRepository {
       .eq('id', id)
       .single();
 
-    if (error) throw new Error(error.message);
+    if (error) {
+      if (error.code === 'PGRST116') throw new ProductNotFoundError(id);
+      throw new Error(error.message); // Other unknown errors
+    }
     return new Product(data);
   }
 
@@ -73,7 +78,7 @@ export class SupabaseProductRepository {
 
     if (error) {
       if (error.code === '23505') {
-        throw new Error('Ya existe un producto con este nombre.');
+        throw new DuplicateProductError(productDTO.title);
       }
       throw new Error(error.message);
     }

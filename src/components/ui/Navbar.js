@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useTheme } from '@/components/ui/ThemeProvider';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import { useWishlist } from '@/components/providers/WishlistProvider';
-import { Zap, Sun, Moon, Menu, X, Heart } from 'lucide-react';
+import { Zap, Sun, Moon, Menu, X, Heart, User } from 'lucide-react';
 import LocaleSelector from './LocaleSelector';
 import FavoritesDrawer from '@/components/product/FavoritesDrawer';
 import styles from './Navbar.module.css';
@@ -65,6 +65,11 @@ export default function Navbar() {
         {/* Desktop actions */}
         <div className={styles.actions}>
           <LocaleSelector />
+          
+          <Link href="/login" className={styles.actionBtn} aria-label="Ingresar">
+            <User size={20} strokeWidth={2} />
+          </Link>
+
           <button
             onClick={() => setIsWishlistOpen(true)}
             className={styles.actionBtn}
@@ -109,6 +114,16 @@ export default function Navbar() {
         </div>
         <div className={styles.mobileActions}>
           <LocaleSelector />
+          
+          <Link 
+            href="/login" 
+            className={styles.actionBtn} 
+            aria-label="Ingresar"
+            onClick={() => setMenuOpen(false)}
+          >
+            <User size={20} strokeWidth={2} />
+          </Link>
+
           <button
             onClick={() => setIsWishlistOpen(true)}
             className={styles.actionBtn}
