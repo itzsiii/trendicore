@@ -3,7 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-export const supabaseAdmin = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseServiceKey || 'placeholder'
-);
+if (!supabaseUrl || !supabaseServiceKey) {
+  throw new Error(
+    'FATAL: Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY. ' +
+    'Set them in .env.local before starting the app.'
+  );
+}
+
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Flame, Link as LinkIcon, Heart, Share2 } from 'lucide-react';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import { useWishlist } from '@/components/providers/WishlistProvider';
@@ -35,10 +35,10 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
     e.preventDefault();
     e.stopPropagation();
     
-    const shareUrl = product.affiliate_link;
+    const shareUrl = `${window.location.origin}/api/track-click?id=${product.id}`;
     const shareData = {
       title: product.title,
-      text: `Mira este producto en Trendicore: ${product.title}`,
+      text: t('product.shareText').replace('{title}', product.title),
       url: shareUrl
     };
 
@@ -76,17 +76,21 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
       class: 'shein',
     },
     otros: {
-      label: 'Ver producto',
+      label: t('product.otherCta'),
       icon: <LinkIcon size={16} strokeWidth={2.5} />,
       class: 'otros',
     },
   };
 
   const source = sourceConfig[product.affiliate_source] || sourceConfig.amazon;
+  if (product.category === 'suscripciones') {
+    source.label = t('product.subscribeCta') || '¿Cómo conseguirlo?';
+    source.class = 'suscripciones';
+  }
   const categoryLabel = t(`product.categoryLabels.${product.category}`) || product.category;
 
   return (
-    <motion.article
+    <m.article
       className={styles.card}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -108,14 +112,14 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
           
           <AnimatePresence>
             {showToast && (
-              <motion.div 
+              <m.div 
                 className={styles.cardToast}
                 initial={{ opacity: 0, y: -10, x: '-50%' }}
                 animate={{ opacity: 1, y: 0, x: '-50%' }}
                 exit={{ opacity: 0, scale: 0.9, x: '-50%' }}
               >
                 {toastMsg}
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
 
@@ -138,9 +142,14 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
 
           <div className={styles.overlay}>
             <div className={styles.overlayButtons}>
-              <span className={`${styles.ctaButton} ${styles[source.class]}`}>
+              <a 
+                href={`/api/track-click?id=${product.id}`}
+                target="_blank"
+                rel="noopener noreferrer nofollow sponsored"
+                className={`${styles.ctaButton} ${styles[source.class]}`}
+              >
                 {source.icon} {source.label}
-              </span>
+              </a>
               <button className={styles.quickViewBtn} onClick={handleQuickView}>
                 <Flame size={16} /> {t('product.quickView')}
               </button>
@@ -164,19 +173,24 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
             <a
               href={`/api/track-click?id=${product.id}`}
               target="_blank"
-              rel="noopener noreferrer nofollow"
+              rel="noopener noreferrer nofollow sponsored"
               className={styles.mainLink}
             >
               {product.title}
             </a>
           </h3>
           <div className={styles.bottom}>
-            <span className={`${styles.ctaMini} ${styles[source.class]}`}>
+            <a 
+              href={`/api/track-click?id=${product.id}`}
+              target="_blank"
+              rel="noopener noreferrer nofollow sponsored"
+              className={`${styles.ctaMini} ${styles[source.class]}`}
+            >
               {product.category === 'suscripciones'
-                ? 'Comprar'
-                : <>{t('product.viewOn')} {product.affiliate_source === 'shein' ? 'Shein' : product.affiliate_source === 'amazon' ? 'Amazon' : 'Tienda'}</>
+                ? (t('product.subscribeCta') || '¿Cómo conseguirlo?')
+                : t('product.discoverCta')
               } <LinkIcon size={14} className={styles.miniIcon} />
-            </span>
+            </a>
             {product.category === 'suscripciones' && product.price > 0 && (
               <span className={styles.price}>
                 {product.price}€<span className={styles.pricePeriod}>/{product.price_period === 'dia' ? 'día' : product.price_period === 'año' ? 'año' : 'mes'}</span>
@@ -184,6 +198,6 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
             )}
           </div>
         </div>
-    </motion.article>
+    </m.article>
   );
 }

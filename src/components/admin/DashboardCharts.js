@@ -29,7 +29,7 @@ export default function DashboardCharts({ products }) {
   const getClicksTrend = () => {
     const dates = {};
     products.forEach(p => {
-      const date = p.created_at ? new Date(p.created_at).toLocaleDateString() : 'Desconocido';
+      const date = p.created_at ? new Date(p.created_at).toLocaleDateString() : t('admin.charts.unknown');
       dates[date] = (dates[date] || 0) + (p.clicks || 0);
     });
     return Object.entries(dates).map(([name, clicks]) => ({ name, clicks })).slice(-7);
@@ -43,7 +43,7 @@ export default function DashboardCharts({ products }) {
     <div className={styles.chartsGrid}>
       {/* 1. Categorías Bar Chart */}
       <div className={styles.chartCard}>
-        <h3 className={styles.chartTitle}>📦 Distribución por Categoría</h3>
+        <h3 className={styles.chartTitle}>📦 {t('admin.charts.categoryDistribution')}</h3>
         <div className={styles.chartContainer}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={categoryData}>
@@ -66,7 +66,7 @@ export default function DashboardCharts({ products }) {
 
       {/* 2. Clicks Trend Area Chart */}
       <div className={styles.chartCard}>
-        <h3 className={styles.chartTitle}>📈 Rendimiento de Clicks</h3>
+        <h3 className={styles.chartTitle}>📈 {t('admin.charts.clicksPerformance')}</h3>
         <div className={styles.chartContainer}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={trendData}>
@@ -90,7 +90,7 @@ export default function DashboardCharts({ products }) {
 
       {/* 3. Fuentes Pie Chart */}
       <div className={styles.chartCard}>
-        <h3 className={styles.chartTitle}>🔗 Fuentes de Afiliado</h3>
+        <h3 className={styles.chartTitle}>🔗 {t('admin.charts.affiliateSources')}</h3>
         <div className={styles.chartContainer}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>

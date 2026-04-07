@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useLocale } from '@/components/providers/LocaleProvider';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Play, Music, Zap, Sparkles, TrendingUp } from 'lucide-react';
 import ProductCard from '@/components/product/ProductCard';
 import QuickViewModal from '@/components/product/QuickViewModal';
@@ -35,7 +35,7 @@ export default function EntertainmentPage() {
   return (
     <div className={styles.page}>
       <section className={styles.header}>
-        <motion.div
+        <m.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
@@ -45,12 +45,12 @@ export default function EntertainmentPage() {
           <p className={styles.subtitle}>
             {t('entertainmentPage.subtitle')}
           </p>
-        </motion.div>
+        </m.div>
       </section>
 
       <section className={styles.content}>
         <div style={{ marginBottom: '3rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-          <motion.div 
+          <m.div 
             className={styles.infoBox}
             whileHover={{ y: -5 }}
             style={{ padding: '2rem', borderRadius: '24px', background: 'var(--card-bg)', border: '1px solid var(--border)', borderLeft: '4px solid var(--accent)' }}
@@ -58,9 +58,9 @@ export default function EntertainmentPage() {
             <Zap size={24} color="var(--accent)" style={{ marginBottom: '1rem' }} />
             <h3>{t('entertainmentPage.viralTitle')}</h3>
             <p>{t('entertainmentPage.viralDesc')}</p>
-          </motion.div>
+          </m.div>
 
-          <motion.div 
+          <m.div 
             className={styles.infoBox}
             whileHover={{ y: -5 }}
             style={{ padding: '2rem', borderRadius: '24px', background: 'var(--card-bg)', border: '1px solid var(--border)', borderLeft: '4px solid var(--pink)' }}
@@ -68,7 +68,7 @@ export default function EntertainmentPage() {
             <Music size={24} color="var(--pink)" style={{ marginBottom: '1rem' }} />
             <h3>{t('entertainmentPage.lifestyleTitle')}</h3>
             <p>{t('entertainmentPage.lifestyleDesc')}</p>
-          </motion.div>
+          </m.div>
         </div>
 
         <div className={styles.sectionHeader}>

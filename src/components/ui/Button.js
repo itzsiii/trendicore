@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Link from 'next/link';
 import styles from './Button.module.css';
 
@@ -40,7 +40,7 @@ export default function Button({
   };
 
   if (href && !disabled) {
-    const MotionLink = motion(Link);
+    const MotionLink = m(Link);
     return (
       <MotionLink href={href} className={baseClass} {...motionProps} {...props}>
         {content}
@@ -49,7 +49,7 @@ export default function Button({
   }
 
   return (
-    <motion.button
+    <m.button
       type={type}
       className={baseClass}
       onClick={!loading && !disabled ? onClick : undefined}
@@ -58,6 +58,6 @@ export default function Button({
       {...props}
     >
       {content}
-    </motion.button>
+    </m.button>
   );
 }

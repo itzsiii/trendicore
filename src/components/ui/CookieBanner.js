@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { X, Shield } from 'lucide-react';
+import { useLocale } from '@/components/providers/LocaleProvider';
 import styles from './CookieBanner.module.css';
 
 export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
+  const { t } = useLocale();
 
   useEffect(() => {
     const consent = localStorage.getItem('trendicore-cookie-consent');
@@ -35,15 +37,15 @@ export default function CookieBanner() {
           <Shield size={20} />
         </div>
         <div className={styles.text}>
-          <p className={styles.title}>Utilizamos cookies</p>
+          <p className={styles.title}>{t('cookieBanner.title')}</p>
           <p className={styles.desc}>
-            Usamos cookies esenciales para el funcionamiento del sitio y cookies analíticas para mejorar tu experiencia. 
-            Consulta nuestra <a href="/legal/privacy" className={styles.link}>Política de Privacidad</a>.
+            {t('cookieBanner.desc')}{' '}
+            <a href="/legal/privacy" className={styles.link}>{t('cookieBanner.policyLink')}</a>.
           </p>
         </div>
         <div className={styles.actions}>
-          <button className={styles.rejectBtn} onClick={reject}>Rechazar</button>
-          <button className={styles.acceptBtn} onClick={accept}>Aceptar</button>
+          <button className={styles.rejectBtn} onClick={reject}>{t('cookieBanner.reject')}</button>
+          <button className={styles.acceptBtn} onClick={accept}>{t('cookieBanner.accept')}</button>
         </div>
       </div>
     </div>

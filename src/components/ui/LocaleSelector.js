@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import { Globe, Check, ChevronDown } from 'lucide-react';
 import styles from './LocaleSelector.module.css';
 
 export default function LocaleSelector() {
     const [isOpen, setIsOpen] = useState(false);
-    const { locale, region, setLocale, setRegion } = useLocale();
+    const { locale, region, setLocale, setRegion, t } = useLocale();
     const containerRef = useRef(null);
 
     // Close when clicking outside
@@ -56,7 +56,7 @@ export default function LocaleSelector() {
                 {isOpen && (
                     <>
                         <div className={styles.backdrop} onClick={() => setIsOpen(false)} />
-                        <motion.div
+                        <m.div
                             className={styles.dropdown}
                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -65,7 +65,7 @@ export default function LocaleSelector() {
                         >
                             <div className={styles.dropdownHeader}>
                                 <Globe size={14} />
-                                <span>Select Region & Language</span>
+                                <span>{t('localeSelector.header')}</span>
                             </div>
 
                             <div className={styles.options}>
@@ -90,7 +90,7 @@ export default function LocaleSelector() {
                                     </button>
                                 ))}
                             </div>
-                        </motion.div>
+                        </m.div>
                     </>
                 )}
             </AnimatePresence>

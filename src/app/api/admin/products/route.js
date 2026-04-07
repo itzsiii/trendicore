@@ -31,10 +31,15 @@ async function getUser(request) {
   const authRepository = new SupabaseAuthRepository(supabaseAdmin);
   const profile = await authRepository.getUserProfile(authUser.id);
   
+  if (!profile?.role) {
+    console.error(`No profile/role found for user ${authUser.id}. Denying access.`);
+    return null;
+  }
+
   return new User({
     id: authUser.id,
     email: authUser.email,
-    role: profile?.role || (authUser.email === 'mabi@test.com' ? 'admin' : 'worker'),
+    role: profile.role,
     lastSignInAt: authUser.last_sign_in_at
   });
 }

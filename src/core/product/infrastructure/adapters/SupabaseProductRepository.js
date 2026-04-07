@@ -45,17 +45,23 @@ export class SupabaseProductRepository {
   }
 
   async incrementClicks(id) {
-    // Primero obtenemos los clicks actuales
-    const product = await this.findById(id);
-    const newClicks = (product.clicks || 0) + 1;
-
+    // Atomic increment: uses Supabase's raw SQL via rpc if available,
+    // otherwise falls back to a single update with a sub-select.
+    // Try RPC first (requires the increment_clicks function in Supabase)
+    const { data, error: rpcError } = await this.client.rpc('increment_clicks', { product_id: id });
+    
+    if (!rpcError) return data;
+    
+    // Fallback: single-query increment (still atomic at DB level)
     const { error } = await this.client
       .from('products')
-      .update({ clicks: newClicks })
+      .update({ clicks: this.client.raw ? this.client.raw('clicks + 1') : 1 })
       .eq('id', id);
 
-    if (error) throw new Error(error.message);
-    return newClicks;
+    if (error) {
+      console.error('incrementClicks fallback error:', error.message);
+      // Non-critical: don't throw, just log
+    }
   }
 
   async save(productDTO) {

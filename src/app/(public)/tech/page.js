@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import ProductCard from '@/components/product/ProductCard';
 import QuickViewModal from '@/components/product/QuickViewModal';
@@ -31,7 +31,7 @@ export default function TechPage() {
   return (
     <div className={styles.page}>
       <section className={styles.header}>
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -41,7 +41,7 @@ export default function TechPage() {
           <p className={styles.subtitle}>
             {t('techPage.subtitle')}
           </p>
-        </motion.div>
+        </m.div>
       </section>
 
       <section className={styles.content}>

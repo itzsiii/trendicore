@@ -15,7 +15,7 @@
         "titleLine1": "Descubre la selección ",
         "titleHighlight": "trending",
         "titleLine2": " más exclusiva",
-        "subtitle": "Moda y tecnología de alta calidad curadas minuciosamente desde las mejores plataformas — verificadas y listas para ti.",
+        "subtitle": "Moda y tecnología de alta calidad seleccionadas minuciosamente desde las mejores plataformas — verificadas y listas para ti.",
         "ctaFashion": "Explorar Moda",
         "ctaTech": "Ver Tech"
     },
@@ -29,7 +29,7 @@
         "trendingSubtitle": "Nuestra selección premium de los productos más deseados de la semana",
         "newTitle": "Lo Más Exclusivo",
         "newTag": "PREMIUM",
-        "newSubtitle": "Recientemente curado para nuestro catálogo",
+        "newSubtitle": "Recientemente seleccionado para nuestro catálogo",
         "filtered": "FILTRADO",
         "trendsFor": "Tendencias de",
         "browsingTag": "Selección de",
@@ -65,7 +65,7 @@
         "empty": "Próximamente — nuevos gadgets en selección."
     },
     "shop": {
-        "title": "Colección Curada",
+        "title": "Colección Premium",
         "subtitle": "Explora nuestra exclusiva y cuidadosa selección en un solo lugar.",
         "searchPlaceholder": "Busca un producto o estilo...",
         "filters": {
@@ -96,14 +96,17 @@
         "viewOn": "Ver precio actual en",
         "amazonCta": "Ver en Amazon",
         "sheinCta": "Conseguir en Shein",
+        "otherCta": "Ver producto",
         "quickView": "Vista Rápida",
         "trending": "Tendencia",
-        "subscribeCta": "Suscribirse",
+        "subscribeCta": "¿Cómo conseguirlo?",
+        "discoverCta": "Ver Precio",
         "noDescription": "No hay descripción disponible para este artículo.",
         "redirectNotice": "Serás redirigido a la tienda oficial.",
         "addFavorite": "Guardar",
         "removeFavorite": "Quitar",
         "share": "Compartir",
+        "shareText": "Mira este producto en Trendicore: {title}",
         "linkCopied": "¡Enlace copiado!"
     },
     "wishlist": {
@@ -113,7 +116,7 @@
         "viewProduct": "Ver producto"
     },
     "footer": {
-        "tagline": "Trendicore es la plataforma de referencia para descubrir tendencias en moda y tecnología. Curación experta, estilo real.",
+        "tagline": "Trendicore es la plataforma de referencia para descubrir tendencias en moda y tecnología. Selección experta, estilo real.",
         "explore": "Explorar",
         "home": "Empresa",
         "fashion": "Moda",
@@ -125,7 +128,8 @@
         "copyright": "Trendicore. Todos los derechos reservados.",
         "dailyDrops": "Novedades Diarias",
         "newsletterDesc": "Recibe las últimas tendencias directamente en tu feed.",
-        "subscribe": "Unirse"
+        "subscribe": "Unirse",
+        "newsletterSuccess": "¡Gracias por suscribirte!"
     },
     "regionSelector": {
         "title": "¿Dónde estás?",
@@ -182,7 +186,14 @@
             "saving": "Guardando...",
             "error_image": "Debes seleccionar una imagen",
             "send_review": "📨 Enviar a Revisión",
-            "preview": "Vista Previa"
+            "preview": "Vista Previa",
+            "sub_name": "Nombre",
+            "sub_name_placeholder": "Ej: Netflix Premium...",
+            "sub_link": "Enlace",
+            "period": "Periodo",
+            "sub_desc_placeholder": "Ej: Cuenta compartida, 4K, acceso completo...",
+            "image_url_placeholder": "O pega una URL de imagen aquí",
+            "image_credits_hint": "Pega aquí el enlace HTML o texto de atribución de derechos de autor. Aparecerá en la vista rápida."
         },
         "actions": {
             "edit": "Editar",
@@ -199,6 +210,8 @@
         "bulk": {
             "selected": "seleccionados",
             "remove": "Quitar",
+            "feature": "Destacar",
+            "unfeature": "Quitar destacado",
             "delete": "Eliminar",
             "deleting": "Borrando..."
         },
@@ -245,6 +258,18 @@
             "delete_any_product": "Borrar productos de otros",
             "delete_own_product": "Borrar sus propios productos",
             "manage_roles": "Gestionar Roles y Permisos"
+        },
+        "select_all": "Seleccionar todo",
+        "deselect_all": "Deseleccionar todo",
+        "worker_label": "Trabajador {id}",
+        "no_price": "Sin precio",
+        "clicks_label": "clics",
+        "delete_btn": "Eliminar",
+        "charts": {
+            "categoryDistribution": "Distribución por Categoría",
+            "clicksPerformance": "Rendimiento de Clics",
+            "affiliateSources": "Fuentes de Afiliado",
+            "unknown": "Desconocido"
         }
     },
     "affiliatePage": {
@@ -325,5 +350,31 @@
         "p4": "Trendicore actúa como plataforma de selección y recomendación de productos. No vendemos productos directamente ni garantizamos la disponibilidad, precio o calidad de los artículos enlazados. Toda transacción se realiza directamente con la tienda externa correspondiente.",
         "s5": "5. Modificaciones",
         "p5": "Trendicore se reserva el derecho de modificar estos términos en cualquier momento. Los cambios serán efectivos desde su publicación en esta página. Se recomienda revisar periódicamente estos términos."
+    },
+    "subscriptionsSection": {
+        "tag": "DIGITAL PASSES",
+        "title": "Suscripciones Premium",
+        "subtitle": "Acceso a tu entretenimiento favorito sin comprometer tu bolsillo.",
+        "viewAll": "Ver todas las suscripciones"
+    },
+    "cookieBanner": {
+        "title": "Utilizamos cookies",
+        "desc": "Usamos cookies esenciales para el funcionamiento del sitio y cookies analíticas para mejorar tu experiencia.",
+        "policyLink": "Política de Privacidad",
+        "reject": "Rechazar",
+        "accept": "Aceptar"
+    },
+    "notFound": {
+        "code": "404",
+        "title": "Parece que este estilo ya no es tendencia",
+        "description": "La página que buscas ha sido rebajada, eliminada o nunca existió en nuestra colección.",
+        "goHome": "Volver al inicio",
+        "exploreFashion": "Explorar moda"
+    },
+    "localeSelector": {
+        "header": "Seleccionar Región e Idioma"
+    },
+    "tienda": {
+        "applyFilters": "Aplicar filtros"
     }
 }

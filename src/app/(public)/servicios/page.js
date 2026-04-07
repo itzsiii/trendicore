@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale } from '@/components/providers/LocaleProvider';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import styles from './services.module.css';
 
@@ -30,32 +30,32 @@ export default function ServicesPage() {
         </div>
         
         <div className={styles.heroContent}>
-          <motion.span 
+          <m.span 
             className={styles.badge}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
           >
             Trendicore Solutions
-          </motion.span>
+          </m.span>
           
-          <motion.h1 
+          <m.h1 
             className={styles.title}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             {t('servicesPage.title')}
-          </motion.h1>
+          </m.h1>
           
-          <motion.p 
+          <m.p 
             className={styles.subtitle}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
             {t('servicesPage.subtitle')}
-          </motion.p>
+          </m.p>
         </div>
       </header>
 
@@ -63,7 +63,7 @@ export default function ServicesPage() {
       <main className={styles.content}>
         <div className={styles.partnersGrid}>
           {partners.map((partner, i) => (
-            <motion.div 
+            <m.div 
               key={i}
               className={styles.partnerCard}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -88,7 +88,7 @@ export default function ServicesPage() {
                   <ArrowUpRight size={18} />
                 </a>
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </main>

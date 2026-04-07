@@ -90,19 +90,23 @@
             "moda-hombre": "Men's Fashion",
             "moda-mujer": "Women's Fashion",
             "tech": "Tech",
-            "entretenimiento": "Entertainment"
+            "entretenimiento": "Entertainment",
+            "suscripciones": "Subscriptions"
         },
         "viewOn": "See current price on",
         "amazonCta": "View on Amazon",
         "sheinCta": "Get on Shein",
+        "otherCta": "View product",
         "quickView": "Quick View",
         "trending": "Trending",
-        "subscribeCta": "Subscribe",
+        "subscribeCta": "How to get it?",
+        "discoverCta": "See Price",
         "noDescription": "No description available for this item.",
         "redirectNotice": "You will be redirected to the affiliate store.",
         "addFavorite": "Save",
         "removeFavorite": "Remove",
         "share": "Share",
+        "shareText": "Check out this product on Trendicore: {title}",
         "linkCopied": "Link copied!"
     },
     "wishlist": {
@@ -112,7 +116,7 @@
         "viewProduct": "View product"
     },
     "footer": {
-        "tagline": "Trendicore is the go-to platform for discovering trends in fashion and technology. Expert curation, real style.",
+        "tagline": "Trendicore is the go-to platform for discovering trends in fashion and technology. Expert selection, real style.",
         "explore": "Explore",
         "home": "Company",
         "fashion": "Fashion",
@@ -124,7 +128,8 @@
         "copyright": "Trendicore. All rights reserved.",
         "dailyDrops": "Daily Drops",
         "newsletterDesc": "Get the latest trends directly in your feed.",
-        "subscribe": "Join"
+        "subscribe": "Join",
+        "newsletterSuccess": "Thanks for subscribing!"
     },
     "regionSelector": {
         "title": "Where are you?",
@@ -181,7 +186,14 @@
             "saving": "Saving...",
             "error_image": "You must select an image",
             "send_review": "📨 Send for Review",
-            "preview": "Live Preview"
+            "preview": "Live Preview",
+            "sub_name": "Name",
+            "sub_name_placeholder": "Ex: Netflix Premium...",
+            "sub_link": "Link",
+            "period": "Period",
+            "sub_desc_placeholder": "Ex: Shared account, 4K, full access...",
+            "image_url_placeholder": "Or paste an image URL here",
+            "image_credits_hint": "Paste the HTML link or copyright attribution text here. It will appear in the quick view."
         },
         "actions": {
             "edit": "Edit",
@@ -198,6 +210,8 @@
         "bulk": {
             "selected": "selected",
             "remove": "Remove",
+            "feature": "Feature",
+            "unfeature": "Unfeature",
             "delete": "Delete",
             "deleting": "Deleting..."
         },
@@ -244,6 +258,18 @@
             "delete_any_product": "Delete others' products",
             "delete_own_product": "Delete own products",
             "manage_roles": "Manage Roles & Permissions"
+        },
+        "select_all": "Select all",
+        "deselect_all": "Deselect all",
+        "worker_label": "Worker {id}",
+        "no_price": "No price",
+        "clicks_label": "clicks",
+        "delete_btn": "Delete",
+        "charts": {
+            "categoryDistribution": "Category Distribution",
+            "clicksPerformance": "Clicks Performance",
+            "affiliateSources": "Affiliate Sources",
+            "unknown": "Unknown"
         }
     },
     "affiliatePage": {
@@ -324,5 +350,31 @@
         "p4": "Trendicore acts as a product selection and recommendation platform. We do not sell products directly nor guarantee the availability, price, or quality of linked items. All transactions are conducted directly with the corresponding external store.",
         "s5": "5. Modifications",
         "p5": "Trendicore reserves the right to modify these terms at any time. Changes will be effective upon publication on this page. It is recommended to review these terms periodically."
+    },
+    "subscriptionsSection": {
+        "tag": "DIGITAL PASSES",
+        "title": "Premium Subscriptions",
+        "subtitle": "Access your favorite entertainment without breaking the bank.",
+        "viewAll": "View all subscriptions"
+    },
+    "cookieBanner": {
+        "title": "We use cookies",
+        "desc": "We use essential cookies for site functionality and analytical cookies to improve your experience.",
+        "policyLink": "Privacy Policy",
+        "reject": "Reject",
+        "accept": "Accept"
+    },
+    "notFound": {
+        "code": "404",
+        "title": "Looks like this style is no longer trending",
+        "description": "The page you're looking for has been marked down, removed, or never existed in our collection.",
+        "goHome": "Back to home",
+        "exploreFashion": "Explore fashion"
+    },
+    "localeSelector": {
+        "header": "Select Region & Language"
+    },
+    "tienda": {
+        "applyFilters": "Apply filters"
     }
 }

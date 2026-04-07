@@ -11,12 +11,29 @@ export default function Footer() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
-  const handleNewsletterSubmit = (e) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
-    if (email && email.includes('@')) {
-      setSubscribed(true);
-      setEmail('');
-      setTimeout(() => setSubscribed(false), 4000);
+    if (!email || !email.includes('@') || submitting) return;
+
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+
+      if (res.ok) {
+        setSubscribed(true);
+        setEmail('');
+        setTimeout(() => setSubscribed(false), 5000);
+      }
+    } catch (err) {
+      console.error('Newsletter submit error:', err);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -72,7 +89,7 @@ export default function Footer() {
             <h4 className={styles.columnTitle}>{t('footer.dailyDrops')}</h4>
             <p className={styles.newsletterText}>{t('footer.newsletterDesc')}</p>
             {subscribed ? (
-              <p className={styles.newsletterSuccess}>✓ ¡Gracias por suscribirte!</p>
+              <p className={styles.newsletterSuccess}>✓ {t('footer.newsletterSuccess')}</p>
             ) : (
               <form className={styles.newsletterForm} onSubmit={handleNewsletterSubmit}>
                 <input 

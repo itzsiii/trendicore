@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import { useProducts } from '@/hooks/useProducts';
 import { TAG_MAP, HOME_SERVICES } from '@/config/constants';
 import ProductCard from '@/components/product/ProductCard';
+import { ProductErrorBoundary } from '@/components/product/ProductErrorBoundary';
 import QuickViewModal from '@/components/product/QuickViewModal';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
@@ -73,7 +74,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
 
 
         <div className={styles.heroContent}>
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -93,9 +94,9 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
             <p className={styles.heroSubtitle}>
               {t('hero.subtitle')}
             </p>
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             className={styles.heroCtas}
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
@@ -120,12 +121,12 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
             >
               {t('hero.ctaTech')}
             </Button>
-          </motion.div>
+          </m.div>
 
 
         </div>
 
-        <motion.div
+        <m.div
           className={styles.statsBar}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -145,14 +146,14 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
             <span className={styles.statNumber}>24h</span>
             <span className={styles.statLabel}>{t('stats.update')}</span>
           </div>
-        </motion.div>
+        </m.div>
       </section>
 
       {/* Services Overview Section */}
       <section className={styles.servicesSection}>
         <div className={styles.servicesGrid}>
           {HOME_SERVICES.map((svc, i) => (
-            <motion.div 
+            <m.div 
               key={i}
               className={styles.serviceItem}
               initial={{ opacity: 0, y: 20 }}
@@ -167,7 +168,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
                 <h3>{t(svc.titleKey)}</h3>
                 <p>{t(svc.descKey)}</p>
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </section>
@@ -181,6 +182,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
               <h2 className={styles.sectionTitle}>{t('sections.trendingTitle')}</h2>
               <p className={styles.sectionSubtitle}>{t('sections.trendingSubtitle')}</p>
             </div>
+            <ProductErrorBoundary>
             <div className={styles.grid}>
               {featured.map((product, i) => (
                 <ProductCard
@@ -191,6 +193,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
                 />
               ))}
             </div>
+            </ProductErrorBoundary>
           </section>
         )}
 
@@ -200,10 +203,10 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
             <div className={styles.sectionHeader} style={{ marginBottom: '2rem' }}>
               <div className={styles.sectionTag} style={{ color: 'var(--accent)' }}>
                 <Film size={12} strokeWidth={3} style={{ display: 'inline', marginBottom: '-2px' }} /> 
-                DIGITAL PASSES
+                {t('subscriptionsSection.tag')}
               </div>
-              <h2 className={styles.sectionTitle}>Suscripciones Premium</h2>
-              <p className={styles.sectionSubtitle}>Acceso a tu entretenimiento favorito sin comprometer tu bolsillo.</p>
+              <h2 className={styles.sectionTitle}>{t('subscriptionsSection.title')}</h2>
+              <p className={styles.sectionSubtitle}>{t('subscriptionsSection.subtitle')}</p>
             </div>
 
             {subsLoading ? (
@@ -221,6 +224,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
                </div>
             ) : (
               <>
+                <ProductErrorBoundary>
                 <div className={styles.grid}>
                   {subscriptions.map((product, i) => (
                     <ProductCard
@@ -231,10 +235,11 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
                     />
                   ))}
                 </div>
+                </ProductErrorBoundary>
                 {subscriptions.length > 0 && (
                   <div style={{ textAlign: 'center', marginTop: '2.5rem', display: 'flex', justifyContent: 'center' }}>
                     <Button href="/tienda?c=suscripciones" variant="secondary" iconRight={<ArrowRight size={18} />}>
-                      Ver todas las suscripciones
+                      {t('subscriptionsSection.viewAll')}
                     </Button>
                   </div>
                 )}
@@ -273,6 +278,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
                 ))}
               </div>
             ) : (
+              <ProductErrorBoundary>
               <div className={styles.grid}>
                 {latest.map((product, i) => (
                   <ProductCard
@@ -283,6 +289,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
                   />
                 ))}
               </div>
+              </ProductErrorBoundary>
             )}
           </section>
         )}
@@ -294,7 +301,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
           </div>
           <div className={styles.categoryGrid}>
             <Link href="/tienda" className={styles.categoryBanner}>
-              <motion.div
+              <m.div
                 className={`${styles.categoryCard} ${styles.modaCard}`}
                 whileHover={{ scale: 1.02, y: -5 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
@@ -312,11 +319,11 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
                   </span>
                 </div>
                 <div className={styles.categoryPattern}></div>
-              </motion.div>
+              </m.div>
             </Link>
 
             <Link href="/servicios" className={styles.categoryBanner}>
-              <motion.div
+              <m.div
                 className={`${styles.categoryCard} ${styles.serviciosCard}`}
                 whileHover={{ scale: 1.02, y: -5 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
@@ -334,7 +341,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
                   </span>
                 </div>
                 <div className={styles.categoryPattern}></div>
-              </motion.div>
+              </m.div>
             </Link>
           </div>
         </section>

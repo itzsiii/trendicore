@@ -6,6 +6,7 @@ import { useLocale } from '@/components/providers/LocaleProvider';
 import { useProducts } from '@/hooks/useProducts';
 import { TIENDA_CATEGORIES, TIENDA_SOURCES, SORT_OPTIONS } from '@/config/constants';
 import ProductCard from '@/components/product/ProductCard';
+import { ProductErrorBoundary } from '@/components/product/ProductErrorBoundary';
 import QuickViewModal from '@/components/product/QuickViewModal';
 import styles from './tienda.module.css';
 
@@ -140,7 +141,7 @@ export default function TiendaClient({ initialProducts = [], serverRegion = 'es'
             className={styles.sidebarClose}
             onClick={() => setSidebarOpen(false)}
           >
-            {t('common.apply') || 'Aplicar filtros'}
+            {t('tienda.applyFilters')}
           </button>
         </aside>
 
@@ -212,6 +213,7 @@ export default function TiendaClient({ initialProducts = [], serverRegion = 'es'
               </button>
             </div>
           ) : (
+            <ProductErrorBoundary>
             <div className={styles.productsGrid}>
               {products.map((product, i) => (
                 <ProductCard 
@@ -222,6 +224,7 @@ export default function TiendaClient({ initialProducts = [], serverRegion = 'es'
                 />
               ))}
             </div>
+            </ProductErrorBoundary>
           )}
         </main>
       </div>

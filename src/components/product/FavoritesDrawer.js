@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { X, Heart, ShoppingBag, Trash2, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { useLocale } from '@/components/providers/LocaleProvider';
@@ -16,7 +16,7 @@ export default function FavoritesDrawer({ isOpen, onClose }) {
       {isOpen && (
         <>
           {/* Backdrop */}
-          <motion.div 
+          <m.div 
             className={styles.backdrop}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -25,7 +25,7 @@ export default function FavoritesDrawer({ isOpen, onClose }) {
           />
 
           {/* Drawer */}
-          <motion.div 
+          <m.div 
             className={styles.drawer}
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
@@ -101,7 +101,7 @@ export default function FavoritesDrawer({ isOpen, onClose }) {
                 </button>
               </div>
             )}
-          </motion.div>
+          </m.div>
         </>
       )}
     </AnimatePresence>

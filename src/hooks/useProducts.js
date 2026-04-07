@@ -49,7 +49,9 @@ export function useProducts(filters = {}, dependencyArray = [], initialData = nu
     } finally {
       setIsFirstMount(false);
     }
-  }, [JSON.stringify(filters), initialData, isFirstMount]);
+  }, [filters.region, filters.category, filters.categories, filters.featured, 
+      filters.limit, filters.search, filters.affiliate_source, filters.sortBy,
+      filters.status, initialData, isFirstMount]);
 
   useEffect(() => {
     const controller = new AbortController();

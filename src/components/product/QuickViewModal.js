@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, X, ExternalLink } from 'lucide-react';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import styles from './QuickViewModal.module.css';
@@ -18,14 +18,14 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
+        <m.div
           className={styles.overlay}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
         >
-          <motion.div
+          <m.div
             className={styles.modal}
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -58,9 +58,9 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
 
                 <div className={styles.actions}>
                   <a
-                    href={product.affiliate_link}
+                    href={`/api/track-click?id=${product.id}`}
                     target="_blank"
-                    rel="noopener noreferrer nofollow"
+                    rel="noopener noreferrer nofollow sponsored"
                     className={`${styles.primaryCta} ${sourceClass}`}
                   >
                     <ShoppingBag size={20} />
@@ -78,8 +78,8 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                 </div>
               </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

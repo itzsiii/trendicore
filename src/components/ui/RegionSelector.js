@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import styles from './RegionSelector.module.css';
 
@@ -14,7 +14,7 @@ export default function RegionSelector() {
 
     return (
         <AnimatePresence>
-            <motion.div
+            <m.div
                 className={styles.overlay}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -22,7 +22,7 @@ export default function RegionSelector() {
                 transition={{ duration: 0.4 }}
             >
                 <div className={styles.backdrop} />
-                <motion.div
+                <m.div
                     className={styles.modal}
                     initial={{ opacity: 0, scale: 0.9, y: 30 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -40,7 +40,7 @@ export default function RegionSelector() {
                     </div>
 
                     <div className={styles.options}>
-                        <motion.button
+                        <m.button
                             className={styles.option}
                             onClick={() => selectCountry('us')}
                             whileHover={{ scale: 1.03, y: -2 }}
@@ -52,9 +52,9 @@ export default function RegionSelector() {
                                 <span className={styles.optionDesc}>Shop in English</span>
                             </div>
                             <span className={styles.arrow}>→</span>
-                        </motion.button>
+                        </m.button>
 
-                        <motion.button
+                        <m.button
                             className={styles.option}
                             onClick={() => selectCountry('es')}
                             whileHover={{ scale: 1.03, y: -2 }}
@@ -66,10 +66,10 @@ export default function RegionSelector() {
                                 <span className={styles.optionDesc}>Comprar en Español</span>
                             </div>
                             <span className={styles.arrow}>→</span>
-                        </motion.button>
+                        </m.button>
                     </div>
-                </motion.div>
-            </motion.div>
+                </m.div>
+            </m.div>
         </AnimatePresence>
     );
 }

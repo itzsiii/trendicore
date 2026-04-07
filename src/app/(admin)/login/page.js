@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './login.module.css';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
@@ -43,7 +43,7 @@ export default function LoginPage() {
       {/* Background Glow */}
       <div className={styles.bgGlow}></div>
 
-      <motion.div 
+      <m.div 
         className={styles.card}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -81,7 +81,7 @@ export default function LoginPage() {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder="⬢⬢⬢⬢⬢⬢⬢⬢"
                 className={styles.input}
                 required
               />
@@ -96,13 +96,13 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <motion.p 
+            <m.p 
               className={styles.error}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
             >
               {error}
-            </motion.p>
+            </m.p>
           )}
 
           <Button
@@ -121,7 +121,7 @@ export default function LoginPage() {
           <ArrowLeft size={14} />
           Volver al sitio público
         </Link>
-      </motion.div>
+      </m.div>
     </div>
   );
 }

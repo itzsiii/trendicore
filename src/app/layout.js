@@ -16,17 +16,17 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "Trendicore — Curación Exclusiva Gen Z | Moda & Tech",
+  title: "Trendicore — Selección Exclusiva Gen Z | Moda & Tech",
   description:
-    "Trendicore es la plataforma definitiva de curación premium para la Gen Z. Descubre la selección más exclusiva de moda aesthetic y gadgets tech virales, verificados para ti.",
-  keywords: "moda gen z, tech gadgets, premium aesthetic, curated trends, moda exclusiva",
+    "Trendicore es la plataforma definitiva de selección premium para la Gen Z. Descubre la colección más exclusiva de moda aesthetic y gadgets tech virales, verificados para ti.",
+  keywords: "moda gen z, tech gadgets, premium aesthetic, curated trends, moda exclusiva, tendencias virales",
   metadataBase: new URL('https://trendicore.net'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'Trendicore — Curación Exclusiva Gen Z',
-    description: 'La selección más exclusiva de moda aesthetic y gadgets tech virales para la Gen Z.',
+    title: 'Trendicore — Selección Exclusiva Gen Z',
+    description: 'La colección más exclusiva de moda aesthetic y gadgets tech virales para la Gen Z.',
     url: 'https://trendicore.net',
     siteName: 'Trendicore',
     locale: 'es_ES',
@@ -43,10 +43,20 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+import { cookies } from 'next/headers';
+
+export default async function RootLayout({ children }) {
+  const cookieStore = await cookies();
+  const lang = cookieStore.get('trendicore-locale')?.value || 'es';
+
+  const themeInitScript = `(function(){try{var t=localStorage.getItem('trendicore-theme');if(t)document.documentElement.setAttribute('data-theme',t);else if(window.matchMedia('(prefers-color-scheme:light)').matches)document.documentElement.setAttribute('data-theme','light');else document.documentElement.setAttribute('data-theme','dark')}catch(e){}})();`;
+
   return (
-    <html lang="es" suppressHydrationWarning>
-      <body className={`${jakarta.variable} ${outfit.variable}`} suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className={`${jakarta.variable} ${outfit.variable}`}>
         <NoiseOverlay />
         <JsonLd />
         {children}

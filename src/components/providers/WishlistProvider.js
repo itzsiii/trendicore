@@ -9,7 +9,15 @@ export function WishlistProvider({ children }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('saved_products_v2') || '[]');
+    let saved = [];
+    try {
+      const raw = localStorage.getItem('saved_products_v2');
+      const parsed = JSON.parse(raw || '[]');
+      if (Array.isArray(parsed)) saved = parsed;
+    } catch {
+      // Corrupted localStorage data — reset silently
+      localStorage.removeItem('saved_products_v2');
+    }
     setWishlist(saved);
     setIsLoaded(true);
   }, []);

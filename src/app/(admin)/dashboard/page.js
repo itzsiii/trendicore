@@ -8,11 +8,16 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import { useTheme } from '@/components/ui/ThemeProvider';
-import { Globe, Plus, Search, LogOut, Package, Star, Trash2, AlertCircle, CheckCircle2, Clock, X, Sun, Moon, MousePointerClick, BarChart3, LayoutDashboard, ShieldCheck } from 'lucide-react';
+import { Globe, LogOut, Star, AlertCircle, CheckCircle2, Clock, Sun, Moon, MousePointerClick, LayoutDashboard } from 'lucide-react';
 import styles from './dashboard.module.css';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m } from 'framer-motion';
 import DashboardCharts from '@/components/admin/DashboardCharts';
 import Button from '@/components/ui/Button';
+
+import ProductFilters from '@/components/admin/ProductFilters';
+import ProductList from '@/components/admin/ProductList';
+import ProductForm from '@/components/admin/ProductForm';
+import BulkActions from '@/components/admin/BulkActions';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -318,7 +323,6 @@ export default function DashboardPage() {
     setSaving(true);
 
     try {
-      // Retrieve fresh session to avoid expired token errors
       const { data: { session } } = await supabase.auth.getSession();
       const currentToken = session?.access_token;
 
@@ -506,15 +510,26 @@ export default function DashboardPage() {
       const currentToken = session?.access_token;
       if (!currentToken) throw new Error('Session expired');
 
-      for (const id of selectedIds) {
-        const res = await fetch(`/api/admin/products?id=${id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${currentToken}` },
-        });
-        if (!res.ok) throw new Error('Error en borrado masivo');
-      }
+      const results = await Promise.allSettled(
+        selectedIds.map(id =>
+          fetch(`/api/admin/products?id=${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${currentToken}` },
+          }).then(res => {
+            if (!res.ok) throw new Error(`Failed to delete ${id}`);
+            return res;
+          })
+        )
+      );
 
-      showToast(`${selectedIds.length} ${t('admin.toast.deleted')}`);
+      const succeeded = results.filter(r => r.status === 'fulfilled').length;
+      const failed = results.filter(r => r.status === 'rejected').length;
+
+      if (failed > 0) {
+        showToast(`${succeeded} eliminados, ${failed} fallaron`, 'error');
+      } else {
+        showToast(`${succeeded} ${t('admin.toast.deleted')}`);
+      }
       setSelectedIds([]);
       fetchProducts();
     } catch (err) {
@@ -534,7 +549,6 @@ export default function DashboardPage() {
       const currentToken = session?.access_token;
       if (!currentToken) throw new Error('Session expired');
 
-      console.log('Actualizando destacados masivamente:', status, selectedIds);
       for (const id of selectedIds) {
         const res = await fetch('/api/admin/products', {
           method: 'PUT',
@@ -583,7 +597,6 @@ export default function DashboardPage() {
   const handleLogout = async () => {
     try {
       await fetch('/api/admin/logout', { method: 'POST' });
-      // No need for supabase.auth.signOut() if we are decoupled
       router.push('/login');
     } catch (err) {
       console.error('Logout error:', err);
@@ -748,7 +761,7 @@ export default function DashboardPage() {
 
         {/* Overview Tab Content: Stats & Charts */}
         {activeTab === 'overview' && (
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
@@ -817,7 +830,7 @@ export default function DashboardPage() {
             {(currentUser?.role === 'admin' || currentUser?.role === 'co-admin') && (
               <DashboardCharts products={products} />
             )}
-          </motion.div>
+          </m.div>
         )}
 
         {activeTab === 'roles' ? (
@@ -897,586 +910,51 @@ export default function DashboardPage() {
           null
         ) : (
           <>
-            {/* Action Bar */}
-            <div className={styles.actionBar}>
-          <div className={styles.filtersGroup}>
-            <button
-              onClick={toggleSelectAll}
-              className={`${styles.selectAllBtn} ${selectedIds.length > 0 && selectedIds.length === filteredProducts.length ? styles.active : ''}`}
-            >
-              {selectedIds.length > 0 && selectedIds.length === filteredProducts.length ? t('nav.categoryAll') : t('nav.categoryAll')}
-            </button>
-            <div className={styles.searchWrapper}>
-              <Search size={18} className={styles.searchIcon} />
-              <input
-                type="text"
-                placeholder={t('admin.search_placeholder')}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className={styles.searchInput}
+            <ProductFilters
+              searchTerm={searchTerm} setSearchTerm={setSearchTerm}
+              filterCategory={filterCategory} setFilterCategory={setFilterCategory}
+              filterPlatform={filterPlatform} setFilterPlatform={setFilterPlatform}
+              filterStaff={filterStaff} setFilterStaff={setFilterStaff}
+              selectedIds={selectedIds} filteredProducts={filteredProducts}
+              toggleSelectAll={toggleSelectAll}
+              showForm={showForm} setShowForm={setShowForm}
+              resetForm={resetForm}
+              CATEGORIES={CATEGORIES} SOURCES={SOURCES}
+              products={products} currentUser={currentUser}
+            />
+
+            {showForm && (
+              <ProductForm 
+                form={form} errors={errors} register={register} setValue={setValue}
+                handleFormSubmit={handleFormSubmit} onSubmit={onSubmit} resetForm={resetForm}
+                editingId={editingId} saving={saving} imagePreview={imagePreview}
+                handleImageChange={handleImageChange} setImageFile={setImageFile}
+                setImagePreview={setImagePreview} isExtracting={isExtracting}
+                handleAutoFill={handleAutoFill} products={products} currentUser={currentUser}
+                CATEGORIES={CATEGORIES} SOURCES={SOURCES}
               />
-            </div>
-            <select
-              value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
-              className={styles.filterSelect}
-            >
-              <option value="all">{t('admin.all_categories')}</option>
-              {CATEGORIES.map((c) => (
-                <option key={c.value} value={c.value}>{c.label}</option>
-              ))}
-            </select>
-            <select
-              value={filterPlatform}
-              onChange={(e) => setFilterPlatform(e.target.value)}
-              className={styles.filterSelect}
-            >
-              <option value="all">{t('admin.all_platforms')}</option>
-              {SOURCES.map((s) => (
-                <option key={s.value} value={s.value}>{s.label}</option>
-              ))}
-            </select>
-            <select
-              value={filterStaff}
-              onChange={(e) => setFilterStaff(e.target.value)}
-              className={styles.filterSelect}
-            >
-              <option value='all'>{t('admin.all_staff')}</option>
-              {[...new Set(products.filter(p => p.created_by).map(p => p.created_by))].map((uid) => (
-                <option key={uid} value={uid}>
-                  {uid === currentUser?.id ? t('admin.roles.me') : `Trabajador ${uid.slice(0, 4)}`}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button
-            onClick={() => { resetForm(); setShowForm(!showForm); }}
-            className={styles.addBtn}
-          >
-            {showForm ? <X size={18} /> : <Plus size={18} />}
-            {showForm ? t('admin.close') : t('admin.new_product')}
-          </button>
-        </div>
-
-        {/* Product Form */}
-        {showForm && (
-          <div className={styles.formCard}>
-            <h2 className={styles.formTitle}>
-              {editingId ? t('admin.edit_product_title') : t('admin.new_product_title')}
-            </h2>
-            <button
-              type="button"
-              onClick={resetForm}
-              className={styles.formCloseBtn}
-              aria-label={t('admin.close')}
-            >
-              <X size={20} />
-            </button>
-            <form onSubmit={handleFormSubmit(onSubmit)} className={styles.formLayout}>
-              {/* LEFT COLUMN — Form Fields */}
-              <div className={styles.formLeft}>
-                {/* Title */}
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>
-                    {form?.category === 'suscripciones' ? 'Nombre' : t('admin.form.title')}
-                  </label>
-                  <input
-                    type="text"
-                    {...register('title')}
-                    placeholder={form?.category === 'suscripciones' ? 'Ej: Netflix Premium...' : t('admin.form.title_placeholder')}
-                    className={styles.formInput}
-                  />
-                  {errors.title && <span className={styles.formError} style={{ color: '#ff4b2b', fontSize: '12px', marginTop: '4px' }}>{errors.title.message}</span>}
-                </div>
-
-                {/* Category + Source in a row */}
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>{t('admin.form.category')}</label>
-                    <div className={styles.categoryGrid}>
-                      {CATEGORIES.map((c) => (
-                        <button
-                          key={c.value}
-                          type="button"
-                          className={`${styles.selectorOption} ${form?.category === c.value ? styles.active : ''}`}
-                          onClick={() => setValue('category', c.value, { shouldValidate: true })}
-                        >
-                          <span>{c.icon}</span>
-                          <span>{c.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {form?.category !== 'suscripciones' && (
-                    <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>{t('admin.form.platform')}</label>
-                      <div className={styles.platformSelector}>
-                        {SOURCES.map((s) => (
-                          <button
-                            key={s.value}
-                            type="button"
-                            className={`${styles.selectorOption} ${form?.affiliate_source === s.value ? styles.active : ''}`}
-                            onClick={() => setValue('affiliate_source', s.value, { shouldValidate: true })}
-                          >
-                            <span>{s.icon}</span>
-                            <span>{s.label}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Region + Featured in a row */}
-                <div className={styles.formRow}>
-                  {form?.category !== 'suscripciones' && (
-                    <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>{t('admin.form.region')}</label>
-                      <div className={styles.regionSelector}>
-                        <button
-                          type="button"
-                          className={`${styles.regionOption} ${form?.region === 'es' ? styles.activeRegion : ''}`}
-                          onClick={() => setValue('region', 'es', { shouldValidate: true })}
-                        >
-                          <img src="/images/flags/es.svg" alt="Spain" />
-                          <span>{t('regionSelector.es')}</span>
-                        </button>
-                        <button
-                          type="button"
-                          className={`${styles.regionOption} ${form?.region === 'us' ? styles.activeRegion : ''}`}
-                          onClick={() => setValue('region', 'us', { shouldValidate: true })}
-                        >
-                          <img src="/images/flags/us.svg" alt="USA" />
-                          <span>{t('regionSelector.us')}</span>
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {currentUser?.role === 'admin' && (
-                    <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>{t('admin.form.featured')}</label>
-                      <div className={styles.switchContainer} onClick={() => setValue('featured', !form?.featured, { shouldValidate: true })}>
-                        <label className={styles.switch}>
-                          <input type="checkbox" checked={form?.featured || false} readOnly />
-                          <span className={styles.slider}></span>
-                        </label>
-                        <span className={styles.checkboxLabel}>
-                          <Star size={16} color={form?.featured ? 'var(--accent)' : 'var(--text-muted)'} />
-                          {t('admin.form.featured')}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Price + Period Row — ONLY for subscriptions */}
-                {form?.category === 'suscripciones' && (
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>{t('admin.form.price')}</label>
-                      <div className={styles.priceInputWrapper}>
-                        <span className={styles.currencySymbol}>€</span>
-                        <input
-                          type="number"
-                          step="0.01"
-                          {...register('price')}
-                          className={styles.formInput}
-                          placeholder="0.00"
-                        />
-                      </div>
-                      {errors.price && <span className={styles.formError}>{errors.price.message}</span>}
-                    </div>
-                    <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>Periodo</label>
-                      <div className={styles.periodSelector}>
-                        {[
-                          { value: 'dia', label: '/ Día' },
-                          { value: 'mes', label: '/ Mes' },
-                          { value: 'año', label: '/ Año' },
-                        ].map((p) => (
-                          <button
-                            key={p.value}
-                            type="button"
-                            className={`${styles.periodOption} ${form?.price_period === p.value ? styles.activePeriod : ''}`}
-                            onClick={() => setValue('price_period', p.value, { shouldValidate: true })}
-                          >
-                            {p.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Description — ONLY for subscriptions */}
-                {form?.category === 'suscripciones' && (
-                  <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>{t('admin.form.description') || 'Descripción'}</label>
-                    <textarea
-                      {...register('description')}
-                      placeholder="Ej: Cuenta compartida, 4K, acceso completo..."
-                      className={styles.urlTextarea}
-                      rows={3}
-                    />
-                  </div>
-                )}
-
-                <div className={styles.formGroup}>
-                  <div className={styles.labelWithAction}>
-                    <label className={styles.formLabel}>
-                      {form?.category === 'suscripciones' ? 'Enlace' : t('admin.form.affiliate_link')}
-                    </label>
-                    {form?.category !== 'suscripciones' && (
-                      <button 
-                        type="button" 
-                        className={styles.magicButton}
-                        onClick={handleAutoFill}
-                        disabled={isExtracting || !form?.affiliate_link}
-                        title={t('admin.magic_btn')}
-                      >
-                        {isExtracting ? <Clock size={14} className={styles.spin} /> : '🪄'} 
-                        <span>{isExtracting ? t('admin.extracting') : t('admin.magic_btn')}</span>
-                      </button>
-                    )}
-                  </div>
-                  <textarea
-                    {...register('affiliate_link')}
-                    placeholder={t('admin.form.link_placeholder')}
-                    className={styles.urlTextarea}
-                    rows={3}
-                  />
-                  {errors.affiliate_link && <span className={styles.formError} style={{ color: '#ff4b2b', fontSize: '12px', marginTop: '4px' }}>{errors.affiliate_link.message}</span>}
-                  {form?.affiliate_link && !errors.affiliate_link && (
-                    <div className={styles.urlPreview}>
-                      <span className={styles.urlDomain}>
-                        {(() => { try { return new URL(form.affiliate_link).hostname; } catch { return '—'; } })()}
-                      </span>
-                      <span className={styles.urlLength}>{form.affiliate_link.length} chars</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Image Upload */}
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>{t('admin.form.image')}</label>
-                  <div className={styles.imageUpload}>
-                    {imagePreview ? (
-                      <div className={styles.imagePreviewBox}>
-                        <img 
-                          src={imagePreview} 
-                          alt="Preview" 
-                          className={`${styles.previewImg} ${form?.category === 'suscripciones' ? styles.containImage : ''}`} 
-                        />
-                        <button
-                          type="button"
-                          onClick={() => { setImageFile(null); setImagePreview(''); }}
-                          className={styles.removeImageBtn}
-                          title={t('admin.form.remove_tag')}
-                        >
-                          <X size={16} />
-                        </button>
-                      </div>
-                    ) : (
-                      <label className={styles.uploadLabel}>
-                        <Package size={32} className={styles.uploadIcon} />
-                        <span>{t('admin.form.image_click')}</span>
-                        <span className={styles.uploadHint}>{t('admin.form.image_hint')}</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageChange}
-                          className={styles.fileInput}
-                        />
-                      </label>
-                    )}
-                  </div>
-                  <input 
-                    type="url"
-                    className={styles.formInput}
-                    style={{ marginTop: '12px' }}
-                    placeholder={t('admin.form.image_url_placeholder') === 'admin.form.image_url_placeholder' ? 'O pega una URL de imagen aquí' : t('admin.form.image_url_placeholder')}
-                    value={typeof imagePreview === 'string' ? imagePreview : ''}
-                    onChange={(e) => {
-                      setImagePreview(e.target.value);
-                      setImageFile(null); // Clear file if URL is provided
-                    }}
-                  />
-                </div>
-
-                {/* Image Credits — ONLY for subscriptions */}
-                {form?.category === 'suscripciones' && (
-                  <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>{t('admin.form.image_credits') || 'Créditos de Imagen (Opcional)'}</label>
-                    <textarea
-                      {...register('image_credits')}
-                      placeholder='Ej: <a href="https://www.flaticon.es/iconos-gratis/netflix">Netflix iconos creados por berkahicon...</a>'
-                      className={styles.urlTextarea}
-                      rows={2}
-                    />
-                    <span className={styles.formHint} style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px', display: 'block' }}>
-                      Pega aquí el enlace de HTML o texto de atribución de derechos de autor. Aparecerá en la vista rápida.
-                    </span>
-                  </div>
-                )}
-
-                {/* Form Actions */}
-                <div className={styles.formActions}>
-                  <Button variant="secondary" onClick={resetForm} disabled={saving} size="large" fullWidth>
-                    {t('admin.form.cancel')}
-                  </Button>
-                  <Button variant="primary" type="submit" loading={saving} size="large" fullWidth>
-                    {saving
-                      ? t('admin.form.saving')
-                      : editingId
-                        ? t('admin.form.save_update')
-                        : currentUser?.role === 'admin' 
-                          ? t('admin.form.save_new') 
-                          : t('admin.form.send_review')}
-                  </Button>
-                </div>
-              </div>
-
-              {/* RIGHT COLUMN — Rich Preview */}
-              <div className={styles.formRight}>
-                <label className={styles.formLabel}>{t('admin.form.preview') || 'Vista Previa'}</label>
-                <div className={styles.previewCardRich}>
-                  {/* Preview Image */}
-                  <div className={styles.previewImageRich}>
-                    {imagePreview || (editingId && products.find(p => p.id === editingId)?.image_url) ? (
-                      <img src={imagePreview || products.find(p => p.id === editingId)?.image_url} alt="Preview" />
-                    ) : (
-                      <div className={styles.previewPlaceholder}>
-                        <Package size={48} />
-                        <span>{t('admin.form.image_click')}</span>
-                      </div>
-                    )}
-                    {/* Badges on image */}
-                    <div className={styles.previewRegionBadge}>
-                      <img src={`/images/flags/${form.region}.svg`} alt={form.region} />
-                      <span>{form.region.toUpperCase()}</span>
-                    </div>
-                    <div className={`${styles.previewStatusBadge}`}>✅ {t('admin.tabs.published')}</div>
-                    {form?.category !== 'suscripciones' && (
-                      <div className={`${styles.previewSourceBadge} ${styles[form.affiliate_source]}`}>
-                        {form.affiliate_source === 'amazon' ? '🟠' : form.affiliate_source === 'shein' ? '🟣' : '🔵'} {form.affiliate_source === 'amazon' ? 'Amazon' : form.affiliate_source === 'shein' ? 'Shein' : 'Otros'}
-                      </div>
-                    )}
-                    {form.featured && (
-                      <div className={styles.previewFeaturedBadge}>
-                        <Star size={12} fill="#f1c40f" color="#f1c40f" />
-                      </div>
-                    )}
-                  </div>
-                  {/* Preview Info */}
-                  <div className={styles.previewInfoRich}>
-                    <h4 className={styles.previewTitleRich}>
-                      {form.title || t('admin.form.title_placeholder')}
-                    </h4>
-                    <div className={styles.previewMetaRich}>
-                      <span className={styles.previewCategoryBadge}>
-                        {CATEGORIES.find(c => c.value === form.category)?.icon} {CATEGORIES.find(c => c.value === form.category)?.label}
-                      </span>
-                    </div>
-                    <div className={styles.previewActionsPreview}>
-                      <span 
-                        className={styles.previewEditBtn} 
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => document.querySelector('input[name="title"]')?.focus()}
-                      >
-                        ✏️ {t('admin.actions.edit')}
-                      </span>
-                      <span className={styles.previewDeleteBtn}>🗑️</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* URL Check */}
-                {form.affiliate_link && (
-                  <div className={styles.previewUrlCheck}>
-                    <span className={styles.previewUrlLabel}>🔗 {t('admin.form.affiliate_link')}</span>
-                    <a 
-                      href={form.affiliate_link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className={styles.previewUrlLink}
-                    >
-                      {(() => { try { return new URL(form.affiliate_link).hostname; } catch { return form.affiliate_link.substring(0, 40); } })()}
-                    </a>
-                  </div>
-                )}
-
-                {/* Checklist */}
-                <div className={styles.previewChecklist}>
-                  <div className={`${styles.checkItem} ${form.title ? styles.checkDone : ''}`}>
-                    {form.title ? '✅' : '⬜'} {t('admin.form.title')}
-                  </div>
-                  <div className={`${styles.checkItem} ${form.affiliate_link ? styles.checkDone : ''}`}>
-                    {form.affiliate_link ? '✅' : '⬜'} {t('admin.form.affiliate_link')}
-                  </div>
-                  <div className={`${styles.checkItem} ${(imagePreview || (editingId && products.find(p => p.id === editingId)?.image_url)) ? styles.checkDone : ''}`}>
-                    {(imagePreview || (editingId && products.find(p => p.id === editingId)?.image_url)) ? '✅' : '⬜'} {t('admin.form.image')}
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {loading ? (
-          <div className={styles.productsGrid}>
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className={styles.skeletonCard}>
-                <div className={styles.skeletonImage}></div>
-                <div className={styles.skeletonInfo}>
-                  <div className={styles.skeletonTitle}></div>
-                  <div className={styles.skeletonMeta}></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : filteredProducts.length === 0 ? (
-          <div className={styles.empty}>
-            {/* Force HMR V2 */}
-            <span className={styles.emptyIcon}>📦</span>
-            <h3>{t('admin.empty_title')}</h3>
-            <p>{t('admin.empty_text')}</p>
-          </div>
-        ) : (
-          <div className={styles.productsGrid}>
-            {filteredProducts.map((product) => (
-              <div 
-                key={product.id} 
-                className={`${styles.productCard} ${selectedIds.includes(product.id) ? styles.selected : ''} ${product.status === 'published' ? styles.publishedCard : styles.pendingCard}`}
-              >
-                <div className={styles.productImageCover}>
-                  <div className={styles.selectionOverlay} onClick={() => toggleSelect(product.id)}>
-                    <div className={`${styles.checkbox} ${selectedIds.includes(product.id) ? styles.checked : ''}`}>
-                      {selectedIds.includes(product.id) && <CheckCircle2 size={16} />}
-                    </div>
-                  </div>
-                  <img src={product.image_url} alt={product.title} />
-                  
-                  {/* Status Badge */}
-                  <div className={`${styles.statusBadge} ${product.status === 'draft' ? styles.draft : styles.published}`}>
-                    {product.status === 'published' ? t('admin.state_published') : t('admin.state_pending')}
-                  </div>
-
-                  {currentUser?.role === 'admin' && (
-                    <button 
-                      className={`${styles.featuredToggle} ${product.featured ? styles.active : ''}`}
-                      onClick={() => handleToggleFeatured(product.id, product.featured)}
-                      title={product.featured ? t('admin.featured_remove_title') : t('admin.featured_add_title')}
-                    >
-                      <Star size={14} fill={product.featured ? 'currentColor' : 'none'} />
-                    </button>
-                  )}
-                  <span className={`${styles.sourceBadge} ${styles[product.affiliate_source]}`}>
-                    {product.affiliate_source === 'amazon' ? '🟠 Amazon' : product.affiliate_source === 'shein' ? '🟣 Shein' : '🔵 Otros'}
-                  </span>
-                  <span className={styles.regionFlag}>
-                    <img
-                      src={`/images/flags/${product.region === 'us' ? 'us' : 'es'}.svg`}
-                      alt={product.region === 'us' ? 'US' : 'ES'}
-                    />
-                    {product.region === 'us' ? 'US' : 'ES'}
-                  </span>
-                </div>
-                <div className={styles.productInfo}>
-                  <h3 className={styles.productTitle}>{product.title}</h3>
-                  <div className={styles.productMeta}>
-                    <span className={styles.productCategory}>
-                      {CATEGORIES.find((c) => c.value === product.category)?.icon} {CATEGORIES.find((c) => c.value === product.category)?.label}
-                    </span>
-                    <span className={styles.productAuthor}>
-                      <MousePointerClick size={14} style={{ marginRight: '4px' }} />
-                      {product.clicks || 0} clics
-                    </span>
-                    {product.created_by && (
-                      <span className={styles.productAuthor}>
-                        👤 {currentUser?.id === product.created_by ? t('admin.roles.me') : 'Staff'}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className={styles.productActions}>
-                  {activeTab === 'pending' && currentUser?.role === 'admin' && (
-                    <Button
-                      variant="primary"
-                      onClick={() => handlePublish(product.id)}
-                      style={{ flex: 1 }}
-                    >
-                      {t('admin.actions.publish')}
-                    </Button>
-                  )}
-                  <Button
-                    variant="secondary"
-                    onClick={() => handleEdit(product)}
-                    style={{ flex: 1 }}
-                  >
-                    {t('admin.edit_btn')}
-                  </Button>
-                  <Button
-                    variant="glass"
-                    onClick={() => {
-                      const isOwner = product.created_by === currentUser?.id;
-                      const isAdmin = currentUser?.role === 'admin';
-                      const userPerms = dynamicPermissions[currentUser?.role] || [];
-                      const canDeleteAny = isAdmin || userPerms.includes('delete_any_product');
-                      const canDeleteOwn = isAdmin || userPerms.includes('delete_own_product');
-                      
-                      if (canDeleteAny || (isOwner && canDeleteOwn)) {
-                        setDeleteConfirm({ id: product.id, title: product.title });
-                      } else {
-                        showToast(t('admin.toast.error_delete'), 'error');
-                      }
-                    }}
-                    style={{ width: '44px', padding: '0', display: 'flex', justifyContent: 'center' }}
-                  >
-                    <Trash2 size={16} color="var(--danger)" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </>
-    )}
-  </main>
-
-      {/* Bulk Action Floating Bar */}
-      {selectedIds.length > 0 && (
-        <motion.div
-          className={styles.bulkBar}
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
-        >
-          <div className={styles.bulkInfo}>
-            <span className={styles.bulkCount}>{selectedIds.length}</span>
-            <span className={styles.bulkLabel}>{t('admin.bulk.selected')}</span>
-          </div>
-          <div className={styles.bulkActions}>
-            {currentUser?.role === 'admin' && (
-              <>
-                <button onClick={() => handleBulkFeatured(true)} className={styles.bulkActionBtn}>
-                  <Star size={16} fill="currentColor" /> {t('admin.stats.featured')}
-                </button>
-                <button onClick={() => handleBulkFeatured(false)} className={styles.bulkActionBtn}>
-                  <Star size={16} /> {t('admin.bulk.remove')}
-                </button>
-              </>
             )}
-            <button onClick={handleBulkDelete} className={styles.bulkDeleteBtn} disabled={isBulkDeleting}>
-              <Trash2 size={16} /> {isBulkDeleting ? t('admin.bulk.deleting') : t('admin.bulk.delete')}
-            </button>
-            <button onClick={() => setSelectedIds([])} className={styles.bulkCancelBtn}>
-              <X size={16} />
-            </button>
-          </div>
-        </motion.div>
-      )}
+
+            <ProductList
+              loading={loading}
+              filteredProducts={filteredProducts}
+              selectedIds={selectedIds}
+              toggleSelect={toggleSelect}
+              currentUser={currentUser}
+              handleToggleFeatured={handleToggleFeatured}
+              handlePublish={handlePublish}
+              handleEdit={handleEdit}
+              setDeleteConfirm={setDeleteConfirm}
+            />
+
+            <BulkActions
+              selectedIds={selectedIds}
+              handleBulkDelete={handleBulkDelete}
+              handleBulkFeatured={handleBulkFeatured}
+            />
+          </>
+        )}
+      </main>
     </div>
   );
 }

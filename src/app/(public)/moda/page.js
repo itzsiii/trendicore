@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import ProductCard from '@/components/product/ProductCard';
 import QuickViewModal from '@/components/product/QuickViewModal';
@@ -52,7 +52,7 @@ export default function ModaPage() {
   return (
     <div className={styles.page}>
       <section className={styles.header}>
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -62,7 +62,7 @@ export default function ModaPage() {
           <p className={styles.subtitle}>
             {t('fashionPage.subtitle')}
           </p>
-        </motion.div>
+        </m.div>
 
         <div className={styles.tabs}>
           {tabs.map((tab) => (
