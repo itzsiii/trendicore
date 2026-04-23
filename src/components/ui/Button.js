@@ -1,5 +1,4 @@
 import React from 'react';
-import { m } from 'framer-motion';
 import Link from 'next/link';
 import styles from './Button.module.css';
 
@@ -33,31 +32,23 @@ export default function Button({
     </>
   );
 
-  const motionProps = {
-    whileHover: !disabled && !loading ? { scale: 1.02, y: -1 } : {},
-    whileTap: !disabled && !loading ? { scale: 0.98 } : {},
-    transition: { type: 'spring', stiffness: 400, damping: 25 }
-  };
-
   if (href && !disabled) {
-    const MotionLink = m(Link);
     return (
-      <MotionLink href={href} className={baseClass} {...motionProps} {...props}>
+      <Link href={href} className={baseClass} {...props}>
         {content}
-      </MotionLink>
+      </Link>
     );
   }
 
   return (
-    <m.button
+    <button
       type={type}
       className={baseClass}
       onClick={!loading && !disabled ? onClick : undefined}
       disabled={disabled || loading}
-      {...motionProps}
       {...props}
     >
       {content}
-    </m.button>
+    </button>
   );
 }

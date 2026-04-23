@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, X, SlidersHorizontal, Clock, TrendingUp } from 'lucide-react';
+import { Search, X, Clock, TrendingUp, Flame, Heart, Sparkles } from 'lucide-react';
 import { useLocale } from '@/components/providers/LocaleProvider';
+import { useAuth } from '@/components/providers/AuthProvider';
 import { useProducts } from '@/hooks/useProducts';
-import { TIENDA_CATEGORIES, TIENDA_SOURCES, SORT_OPTIONS } from '@/config/constants';
 import ProductCard from '@/components/product/ProductCard';
 import { ProductErrorBoundary } from '@/components/product/ProductErrorBoundary';
 import QuickViewModal from '@/components/product/QuickViewModal';
@@ -12,50 +12,74 @@ import styles from './tienda.module.css';
 
 export default function TiendaClient({ initialProducts = [], serverRegion = 'es' }) {
   const { t, region } = useLocale();
-  const [searchQuery, setSearchQuery] = useState('');
+  const { isAuthenticated, profile } = useAuth();
+
+  const [searchQuery, setSearchQuery] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('q') || '';
+    }
+    return '';
+  });
   const [activeCategory, setActiveCategory] = useState('all');
-  const [activeSource, setActiveSource] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const categories = useMemo(() => TIENDA_CATEGORIES(t), [t]);
-  const sources = useMemo(() => TIENDA_SOURCES(t), [t]);
-  const sortOptions = useMemo(() => SORT_OPTIONS(t), [t]);
+  const categories = useMemo(() => [
+    { id: 'all', label: t('shop.cat.all'), emoji: '✦' },
+    { id: 'moda-mujer', label: t('shop.cat.women'), emoji: '🦋' },
+    { id: 'moda-hombre', label: t('shop.cat.men'), emoji: '☕' },
+    { id: 'tech', label: t('shop.cat.tech'), emoji: '💻' },
+    { id: 'entretenimiento', label: t('shop.cat.entertainment'), emoji: '🎟️' },
+    { id: 'suscripciones', label: t('shop.cat.digital'), emoji: '🎧' },
+  ], [t]);
 
-  // 1. Data Fetching Hook (Centralized)
-  const query = useMemo(() => ({
-    region: region || serverRegion,
-    limit: 50,
-    category: activeCategory !== 'all' ? activeCategory : undefined,
-    search: searchQuery || undefined,
-    source: activeSource !== 'all' ? activeSource : undefined,
-    sortBy: sortBy
-  }), [region, serverRegion, activeCategory, searchQuery, activeSource, sortBy]);
+  const sortOptions = useMemo(() => {
+    const opts = [
+      { id: 'newest', label: t('shop.filters.newest'), icon: <Clock size={14} /> },
+      { id: 'popular', label: t('shop.filters.popular'), icon: <TrendingUp size={14} /> },
+      { id: 'trending', label: t('shop.filters.trending'), icon: <Flame size={14} /> },
+    ];
+    if (isAuthenticated && profile?.onboarding_completed) {
+      opts.push({ id: 'forYou', label: t('shop.filters.forYou'), icon: <Heart size={14} /> });
+    }
+    return opts;
+  }, [t, isAuthenticated, profile]);
+
+  const query = useMemo(() => {
+    const defaultQuery = {
+      region: region || serverRegion,
+      limit: 50,
+      category: activeCategory !== 'all' ? activeCategory : undefined,
+      search: searchQuery || undefined,
+      sortBy: sortBy
+    };
+
+    if (sortBy === 'forYou' && profile?.favorite_categories?.length > 0) {
+      defaultQuery.preferredCategories = profile.favorite_categories.join(',');
+    }
+
+    return defaultQuery;
+  }, [region, serverRegion, activeCategory, searchQuery, sortBy, profile]);
 
   const { products, loading } = useProducts(
     query, 
-    [region, activeCategory, searchQuery, activeSource, sortBy],
+    [region, activeCategory, searchQuery, sortBy],
     (region === serverRegion && activeCategory === 'all' && !searchQuery) ? initialProducts : null
   );
 
-  const activeFilterCount = (activeCategory !== 'all' ? 1 : 0) + (activeSource !== 'all' ? 1 : 0);
-
   return (
-    <div className={styles.shopPage}>
-      <div className={styles.bgDecor}>
-        <div className={styles.orb1}></div>
-        <div className={styles.orb2}></div>
-      </div>
+    <div className={styles.feedPage}>
 
-      <header className={styles.shopHeader}>
-        <div className={styles.headerContent}>
-          <div className={styles.headerLeft}>
-            <h1 className={styles.shopTitle}>{t('shop.title')}</h1>
-            <p className={styles.shopSubtitle}>{t('shop.subtitle')}</p>
+      {/* Compact Header */}
+      <header className={styles.feedHeader}>
+        <div className={styles.headerInner}>
+          <div className={styles.headerTop}>
+            <h1 className={styles.feedTitle}>{t('shop.title')}</h1>
+            <p className={styles.feedSubtitle}>{t('shop.subtitle')}</p>
           </div>
+
           <div className={styles.searchBox}>
-            <Search className={styles.searchIcon} size={16} />
+            <Search className={styles.searchIcon} size={18} />
             <input 
               type="text" 
               placeholder={t('shop.searchPlaceholder')}
@@ -72,162 +96,99 @@ export default function TiendaClient({ initialProducts = [], serverRegion = 'es'
         </div>
       </header>
 
-      <div className={styles.shopLayout}>
-        <button 
-          className={styles.mobileFilterBtn} 
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-        >
-          <SlidersHorizontal size={16} />
-          {t('shop.filters.title')}
-          {activeFilterCount > 0 && (
-            <span className={styles.filterBadge}>{activeFilterCount}</span>
-          )}
-        </button>
+      {/* Categories */}
+      <div className={styles.chipsWrapper}>
+        <div className={styles.chipsRow}>
+          {categories.map(cat => (
+            <button 
+              key={cat.id}
+              className={`${styles.chip} ${activeCategory === cat.id ? styles.chipActive : ''}`}
+              onClick={() => setActiveCategory(cat.id)}
+            >
+              <span className={styles.chipEmoji}>{cat.emoji}</span>
+              {cat.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
-        <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
-          <div className={styles.sidebarHeader}>
-            <h3 className={styles.sidebarTitle}>{t('shop.filters.title')}</h3>
-            {activeFilterCount > 0 && (
-              <button 
-                className={styles.clearFilters}
-                onClick={() => { setActiveCategory('all'); setActiveSource('all'); }}
+      {/* Content Area */}
+      <main className={styles.mainContent}>
+        {/* Toolbar: results + sort */}
+        <div className={styles.toolbar}>
+          <span className={styles.resultsInfo}>
+            {products.length} {t('shop.results.found')}
+          </span>
+
+          <div className={styles.sortGroup}>
+            {sortOptions.map(opt => (
+              <button
+                key={opt.id}
+                className={`${styles.sortPill} ${sortBy === opt.id ? styles.sortActive : ''}`}
+                onClick={() => setSortBy(opt.id)}
               >
-                {t('shop.filters.clear')}
+                {opt.icon} {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Active Filters */}
+        {(activeCategory !== 'all' || searchQuery) && (
+          <div className={styles.activeFilters}>
+            {activeCategory !== 'all' && (
+              <button className={styles.filterTag} onClick={() => setActiveCategory('all')}>
+                {categories.find(c => c.id === activeCategory)?.label} <X size={11} />
+              </button>
+            )}
+            {searchQuery && (
+              <button className={styles.filterTag} onClick={() => setSearchQuery('')}>
+                &ldquo;{searchQuery}&rdquo; <X size={11} />
               </button>
             )}
           </div>
-
-          <div className={styles.filterGroup}>
-            <div className={styles.filterGroupHeader}>
-              <span>{t('shop.filters.category')}</span>
-            </div>
-            <div className={styles.filterOptions}>
-              {categories.map(cat => (
-                <button
-                  key={cat.id}
-                  className={`${styles.filterOption} ${activeCategory === cat.id ? styles.filterActive : ''}`}
-                  onClick={() => setActiveCategory(cat.id)}
-                >
-                  <span className={styles.radio}>
-                    {activeCategory === cat.id && <span className={styles.radioDot} />}
-                  </span>
-                  {cat.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.filterGroup}>
-            <div className={styles.filterGroupHeader}>
-              <span>{t('shop.filters.source')}</span>
-            </div>
-            <div className={styles.filterOptions}>
-              {sources.map(src => (
-                <button
-                  key={src.id}
-                  className={`${styles.filterOption} ${activeSource === src.id ? styles.filterActive : ''}`}
-                  onClick={() => setActiveSource(src.id)}
-                >
-                  <span className={styles.radio}>
-                    {activeSource === src.id && <span className={styles.radioDot} />}
-                  </span>
-                  {src.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <button 
-            className={styles.sidebarClose}
-            onClick={() => setSidebarOpen(false)}
-          >
-            {t('tienda.applyFilters')}
-          </button>
-        </aside>
-
-        {sidebarOpen && (
-          <div className={styles.sidebarBackdrop} onClick={() => setSidebarOpen(false)} />
         )}
 
-        <main className={styles.mainContent}>
-          <div className={styles.topBar}>
-            <span className={styles.resultsInfo}>
-              {products.length} {t('shop.results.found')}
-            </span>
-
-            <div className={styles.topBarRight}>
-              {sortOptions.map(opt => (
-                <button
-                  key={opt.id}
-                  className={`${styles.sortPill} ${sortBy === opt.id ? styles.sortActive : ''}`}
-                  onClick={() => setSortBy(opt.id)}
-                >
-                  {opt.icon} {opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {(activeCategory !== 'all' || activeSource !== 'all' || searchQuery) && (
-            <div className={styles.activeFilters}>
-              {activeCategory !== 'all' && (
-                <button className={styles.filterTag} onClick={() => setActiveCategory('all')}>
-                  {t(`product.categoryLabels.${activeCategory}`)} <X size={11} />
-                </button>
-              )}
-              {activeSource !== 'all' && (
-                <button className={styles.filterTag} onClick={() => setActiveSource('all')}>
-                  {activeSource} <X size={11} />
-                </button>
-              )}
-              {searchQuery && (
-                <button className={styles.filterTag} onClick={() => setSearchQuery('')}>
-                  &ldquo;{searchQuery}&rdquo; <X size={11} />
-                </button>
-              )}
-            </div>
-          )}
-
-          {loading ? (
-            <div className={styles.productsGrid}>
-              {[...Array(8)].map((_, i) => (
-                <div key={i} className={styles.skeletonCard}>
-                  <div className={styles.skeletonImage}></div>
-                  <div className={styles.skeletonInfo}>
-                    <div className={styles.skeletonLine} style={{ width: '40%' }}></div>
-                    <div className={styles.skeletonLine} style={{ width: '85%' }}></div>
-                    <div className={styles.skeletonLine} style={{ width: '55%' }}></div>
-                  </div>
+        {/* Product Grid */}
+        {loading ? (
+          <div className={styles.productsGrid}>
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className={styles.skeletonCard}>
+                <div className={styles.skeletonImage}></div>
+                <div className={styles.skeletonInfo}>
+                  <div className={styles.skeletonLine} style={{ width: '40%' }}></div>
+                  <div className={styles.skeletonLine} style={{ width: '85%' }}></div>
+                  <div className={styles.skeletonLine} style={{ width: '55%' }}></div>
                 </div>
-              ))}
-            </div>
-          ) : products.length === 0 ? (
-            <div className={styles.emptyState}>
-              <div className={styles.emptyIconWrap}>
-                <Search size={32} className={styles.emptyIcon} />
               </div>
-              <h2 className={styles.emptyTitle}>{t('shop.results.noResults')}</h2>
-              <p className={styles.emptyText}>{t('shop.results.tryAgain')}</p>
-              <button className={styles.emptyReset} onClick={() => { setActiveCategory('all'); setSearchQuery(''); setActiveSource('all'); }}>
-                {t('shop.filters.clear') || 'Limpiar filtros'}
-              </button>
+            ))}
+          </div>
+        ) : products.length === 0 ? (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIconWrap}>
+              <Search size={28} className={styles.emptyIcon} />
             </div>
-          ) : (
-            <ProductErrorBoundary>
-            <div className={styles.productsGrid}>
-              {products.map((product, i) => (
-                <ProductCard 
-                  key={product.id} 
-                  product={product} 
-                  index={i}
-                  onQuickView={setSelectedProduct}
-                />
-              ))}
-            </div>
-            </ProductErrorBoundary>
-          )}
-        </main>
-      </div>
+            <h2 className={styles.emptyTitle}>{t('shop.results.noResults')}</h2>
+            <p className={styles.emptyText}>{t('shop.results.tryAgain')}</p>
+            <button className={styles.emptyReset} onClick={() => { setActiveCategory('all'); setSearchQuery(''); }}>
+              {t('shop.filters.clear') || 'Limpiar filtros'}
+            </button>
+          </div>
+        ) : (
+          <ProductErrorBoundary>
+          <div className={styles.productsGrid}>
+            {products.map((product, i) => (
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                index={i}
+                onQuickView={setSelectedProduct}
+              />
+            ))}
+          </div>
+          </ProductErrorBoundary>
+        )}
+      </main>
 
       <QuickViewModal 
         product={selectedProduct} 

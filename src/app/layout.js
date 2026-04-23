@@ -16,17 +16,17 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "Trendicore — Selección Exclusiva Gen Z | Moda & Tech",
+  title: "Trendicore — Trend Intelligence Platform | AI + Human Curation",
   description:
-    "Trendicore es la plataforma definitiva de selección premium para la Gen Z. Descubre la colección más exclusiva de moda aesthetic y gadgets tech virales, verificados para ti.",
-  keywords: "moda gen z, tech gadgets, premium aesthetic, curated trends, moda exclusiva, tendencias virales",
+    "Trendicore es la primera plataforma que combina selección humana experta con inteligencia artificial para predecir tendencias en moda y tecnología. Descubre lo que será trending antes que nadie.",
+  keywords: "trend intelligence, AI trends, moda gen z, tech gadgets, predicción de tendencias, social commerce, trend analytics",
   metadataBase: new URL('https://trendicore.net'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'Trendicore — Selección Exclusiva Gen Z',
-    description: 'La colección más exclusiva de moda aesthetic y gadgets tech virales para la Gen Z.',
+    title: 'Trendicore — Trend Intelligence Platform',
+    description: 'La primera plataforma de inteligencia de tendencias con IA para la Gen Z. Descubre, verifica y compra lo que será trending mañana.',
     url: 'https://trendicore.net',
     siteName: 'Trendicore',
     locale: 'es_ES',
@@ -34,8 +34,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Trendicore — Tendencias Gen Z',
-    description: 'Moda aesthetic y gadgets tech virales.',
+    title: 'Trendicore — Descubre tendencias antes que nadie',
+    description: 'IA + Selección humana experta para predecir tendencias en moda y tech.',
   },
   robots: {
     index: true,

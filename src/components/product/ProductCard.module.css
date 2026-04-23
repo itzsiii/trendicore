@@ -1,20 +1,19 @@
 .card {
   position: relative;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
   overflow: hidden;
-  transition: all var(--transition-fast);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
   height: 100%;
-  box-shadow: var(--shadow-sm);
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  border-color: var(--border-hover);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.08);
   z-index: 10;
 }
 
@@ -33,7 +32,7 @@
 /* Image */
 .imageWrap {
   position: relative;
-  aspect-ratio: 2 / 3;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
   background: var(--bg-secondary);
 }
@@ -42,11 +41,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.5s ease;
 }
 
 .card:hover .image:not(.containImage) {
-  transform: scale(1.05); /* Zoom only non-contain images */
+  transform: scale(1.06);
 }
 
 .containImage {
@@ -60,13 +59,13 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 40%, transparent 60%);
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 35%, transparent 60%);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 1rem 0.8rem 2.8rem;
   opacity: 0;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.4s ease;
 }
 
 .overlayButtons {
@@ -74,7 +73,7 @@
   flex-direction: column;
   gap: 0.6rem;
   transform: translateY(20px);
-  transition: transform 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card:hover .overlay {
@@ -87,8 +86,8 @@
 
 .ctaButton {
   width: 100%;
-  padding: 0.5rem;
-  border-radius: 10px;
+  padding: 0.55rem;
+  border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 700;
   display: flex;
@@ -96,7 +95,9 @@
   justify-content: center;
   gap: 0.5rem;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  transition: all 0.2s;
 }
 
 .ctaButton.amazon {
@@ -109,12 +110,25 @@
   color: #fff;
 }
 
+.ctaButton.otros {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ctaButton.suscripciones {
+  background: linear-gradient(135deg, #7C3AED, #06B6D4);
+  color: #fff;
+}
+
 .quickViewBtn {
   width: 100%;
   padding: 0.5rem;
-  border-radius: var(--radius-sm);
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: var(--text-primary);
   font-size: 0.75rem;
   font-weight: 600;
@@ -123,7 +137,7 @@
   opacity: 0;
   position: relative;
   pointer-events: auto;
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   font-family: inherit;
   display: flex;
   align-items: center;
@@ -137,60 +151,22 @@
 }
 
 .quickViewBtn:hover {
-  background: var(--bg-primary);
-  border-color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
-/* Badges and Labels */
-.categoryRow {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin-bottom: 0.2rem;
-}
-
-.trendingIcon {
-  color: #ff4b2b;
-  filter: drop-shadow(0 0 6px rgba(255, 75, 43, 0.3));
-  animation: icon-pulse 2s infinite alternate;
-}
-
-@keyframes icon-pulse {
-  from { transform: scale(1); opacity: 0.8; }
-  to { transform: scale(1.15); opacity: 1; }
-}
-
-.badgeIcon {
-  color: #fff;
-}
-
-.sourcePill {
+/* Trend Badge */
+.trendBadgeWrap {
   position: absolute;
-  top: 0.7rem;
+  bottom: 0.7rem;
   left: 0.7rem;
-  font-size: 0.65rem;
-  font-weight: 500;
-  padding: 0.3rem 0.6rem;
-  border-radius: var(--radius-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  z-index: 2;
-  box-shadow: var(--shadow-sm);
-  background: var(--bg-card);
-  color: var(--text-secondary);
-  border: 1px solid var(--border);
+  z-index: 5;
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
-.amazonPill {
-  border-left: 3px solid var(--amazon);
-}
-
-.sheinPill {
-  border-left: 3px solid var(--shein);
-}
-
-.otrosPill {
-  border-left: 3px solid #64748b;
+.card:hover .trendBadgeWrap {
+  opacity: 0;
 }
 
 /* Action Buttons */
@@ -200,10 +176,10 @@
   right: 0.7rem;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.5rem;
   z-index: 10;
   opacity: 0;
-  transform: translateX(10px);
+  transform: translateX(8px);
   transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -213,34 +189,35 @@
 }
 
 .actionBtn {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-fast);
-  box-shadow: var(--shadow-sm);
+  transition: all 0.25s ease;
 }
 
 .actionBtn:hover {
-  background: var(--bg-primary);
-  transform: scale(1.05);
-  color: var(--text-primary);
-  border-color: var(--border-hover);
+  background: rgba(0, 0, 0, 0.7);
+  transform: scale(1.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .actionBtn.saved {
   color: var(--pink);
-  border-color: var(--pink);
+  border-color: rgba(236, 72, 153, 0.4);
+  background: rgba(236, 72, 153, 0.15);
 }
 
 .actionBtn.saved:hover {
-  background: var(--pink-glow);
+  background: rgba(236, 72, 153, 0.25);
 }
 
 /* Toast inside card */
@@ -250,53 +227,58 @@
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   color: #fff;
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
+  padding: 0.4rem 0.9rem;
+  border-radius: 100px;
   font-size: 0.65rem;
   font-weight: 600;
   z-index: 20;
   pointer-events: none;
   white-space: nowrap;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-/* Info */
+/* ==========================================
+   Info Section — Editorial Style
+   ========================================== */
 .info {
   position: relative;
-  padding: 0.7rem 0.8rem 0.8rem;
+  padding: 0.8rem 0.9rem 0.9rem;
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
+.categoryRow {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.25rem;
+}
+
 .category {
   display: inline-block;
-  font-size: 0.58rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--accent);
-}
-
-[data-theme="dark"] .category {
-  color: var(--accent-light);
+  color: var(--accent-light, var(--accent));
+  opacity: 0.8;
 }
 
 .title {
   font-family: inherit;
   font-size: 0.85rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.4;
-  margin: 0.3rem 0 auto 0;
+  margin: 0.2rem 0 auto 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  height: 2.5rem; /* Ensure consistent height for 2 lines */
+  height: 2.4rem;
   color: var(--text-primary);
 }
 
@@ -305,19 +287,20 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--border);
+  padding-top: 0.55rem;
+  margin-top: 0.3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .price {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-primary);
 }
 
 .pricePeriod {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 500;
   color: var(--text-muted);
 }
@@ -326,43 +309,29 @@
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: 0.7rem;
+  font-weight: 600;
   letter-spacing: 0.02em;
-  transition: opacity var(--transition-fast);
-  opacity: 0.8;
+  color: var(--text-muted);
+  transition: all 0.25s ease;
+  text-decoration: none;
 }
 
 .card:hover .ctaMini {
-  opacity: 1;
+  color: var(--accent-light, var(--accent));
 }
 
 .miniIcon {
-  transition: transform var(--transition-spring);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card:hover .miniIcon {
-  transform: translateX(3px) translateY(-3px);
+  transform: translateX(2px) translateY(-2px);
 }
 
-.ctaMini.amazon {
-  color: var(--amazon);
-}
-
-.ctaMini.shein {
-  color: var(--shein);
-}
-
-.ctaMini.otros {
-  color: #64748b;
-}
-
-.ctaButton.otros {
-  background: #64748b;
-  color: #fff;
-}
-
-/* Responsive */
+/* ==========================================
+   Responsive
+   ========================================== */
 @media (max-width: 768px) {
   .card:hover {
     transform: translateY(-3px);
@@ -373,17 +342,21 @@
     display: none;
   }
 
+  .topActions {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
   .info {
-    padding: 0.8rem 1rem 1rem;
+    padding: 0.8rem;
   }
 
   .title {
-    font-size: 0.85rem;
-    padding-bottom: 0.6rem;
+    font-size: 0.82rem;
   }
 
   .price {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 }
 
@@ -393,55 +366,33 @@
   }
 
   .info {
-    padding: 0.8rem;
+    padding: 0.7rem;
   }
 
   .category {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
   }
 
   .title {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     -webkit-line-clamp: 2;
     line-clamp: 2;
   }
 
   .price {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .bottom {
-    gap: 0.3rem;
+    gap: 0.25rem;
   }
 
   .ctaMini {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
   }
 
-  .overlayButtons {
-    padding: 0 0.8rem;
-    gap: 0.5rem;
-  }
-
-  .ctaButton {
-    padding: 0.55rem 1rem;
-    font-size: 0.75rem;
-  }
-
-  .quickViewBtn {
-    padding: 0.5rem 0.8rem;
-    font-size: 0.72rem;
-    max-width: 130px;
-  }
-
-  .featuredBadge {
-    font-size: 0.6rem;
-    padding: 0.25rem 0.6rem;
-  }
-
-  .sourcePill {
-    font-size: 0.55rem;
-    padding: 0.2rem 0.5rem;
+  .actionBtn {
+    width: 30px;
+    height: 30px;
   }
 }
-

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trendicore OS™ - Flujo de Trabajo</title>
+    <style>
+        :root {
+            --bg-dark: #0f0a19;
+            --card-bg: #1a1423;
+            --accent: #7c3aed;
+            --accent-glow: rgba(124, 58, 237, 0.4);
+            --pink: #ec4899;
+            --green: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .badge {
+            background: rgba(124, 58, 237, 0.15);
+            color: #a78bfa;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        h1 span {
+            background: linear-gradient(135deg, var(--accent), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .funnel-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .funnel-card.green-theme {
+            border-top: 4px solid var(--green);
+        }
+
+        .funnel-card.purple-theme {
+            border-top: 4px solid var(--accent);
+        }
+
+        .funnel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .funnel-title h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .funnel-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .price-tag {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .green-text {
+            color: var(--green);
+        }
+
+        .purple-text {
+            color: var(--accent);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .step {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--bg-dark);
+            border: 2px solid var(--text-muted);
+            z-index: 2;
+        }
+
+        .step.action::before {
+            border-color: var(--pink);
+            background: var(--pink);
+        }
+
+        .step.client::before {
+            border-color: var(--green);
+            background: var(--green);
+        }
+
+        .step.auto::before {
+            border-color: #3b82f6;
+            background: #3b82f6;
+        }
+
+        .step-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .tag-action {
+            background: rgba(236, 72, 153, 0.15);
+            color: #f472b6;
+        }
+
+        .tag-client {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        .tag-auto {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+
+        .step h3 {
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+        }
+
+        .step p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .energy-meter {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .energy-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+        }
+
+        .fill-high {
+            background: var(--pink);
+            width: 85%;
+        }
+
+        .fill-low {
+            background: var(--green);
+            width: 25%;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="badge">MANUAL DE OPERACIONES</div>
+        <h1>Tu día a día en <span>Trendicore OS™</span></h1>
+        <p class="subtitle">Cómo se ve tu flujo de trabajo como dueña manejando ambos planes. Alta rentabilidad, cero
+            estrés.</p>
+    </div>
+
+    <div class="container">
+        <!-- PLAN 1: INFORME -->
+        <div class="funnel-card green-theme">
+            <div class="funnel-header">
+                <div class="funnel-title">
+                    <h2><span class="green-text">1.</span> Informe de Lanzamiento</h2>
+                    <p>Puerta de entrada. Esfuerzo concentrado, cobro rápido.</p>
+                </div>
+                <div class="price-tag green-text">€297</div>
+            </div>
+
+            <div class="timeline">
+                <div class="step client">
+                    <span class="step-tag tag-client">Cliente</span>
+                    <h3>Día 0: Compra & Onboarding</h3>
+                    <p>El cliente paga en Stripe. Automáticamente se le envía un formulario (Typeform o Calendly)
+                        preguntando: URL de su tienda, nicho y competidores principales.</p>
+                </div>
+
+                <div class="step action">
+                    <span class="step-tag tag-action">Tu Trabajo</span>
+                    <h3>Día 1: Curación Profunda (2 horas)</h3>
+                    <p>Te sientas a auditar su nicho. Usas tu método SVET para encontrar 15 productazos. Abres tu
+                        plantilla de Canva/Notion, copias y pegas fotos, links y pones los Trendicore Scores.</p>
+                </div>
+
+                <div class="step action">
+                    <span class="step-tag tag-action">Tu Trabajo</span>
+                    <h3>Día 2: Llamada de Entrega (30 min)</h3>
+                    <p>Te conectas a Google Meet (agendado vía Calendly). Le muestras el reporte en vivo: <i>"Mira, esto
+                            es lo que falta en tu tienda"</i>. Se lo envías en PDF al terminar.</p>
+                </div>
+
+                <div class="step auto">
+                    <span class="step-tag tag-auto">El Upsell</span>
+                    <h3>Día 2: El gancho al Mensual</h3>
+                    <p>Al final de la llamada le dices: <i>"Si quieres mantener este catálogo actualizado, nuestro plan
+                            mensual te da esto mismo todas las semanas por €199."</i> Alta tasa de conversión.</p>
+                </div>
+            </div>
+
+            <div class="energy-meter">
+                <div class="energy-header">
+                    <span>Carga de trabajo para ti:</span>
+                    <span class="green-text">Fuerte pero rápida (2.5h total)</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill fill-high"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAN 2: MENSUAL -->
+        <div class="funnel-card purple-theme">
+            <div class="funnel-header">
+                <div class="funnel-title">
+                    <h2><span class="purple-text">2.</span> Trendicore OS™ Mensual</h2>
+                    <p>Ingreso recurrente. Mantenimiento pasivo, alto valor.</p>
+                </div>
+                <div class="price-tag purple-text">€199<span style="font-size: 0.9rem; color: #94a3b8;">/mes</span>
+                </div>
+            </div>
+
+            <div class="timeline">
+                <div class="step auto">
+                    <span class="step-tag tag-auto">Automático</span>
+                    <h3>Setup Inicial</h3>
+                    <p>El cliente ya pasó por el "Informe de Lanzamiento". Le duplicas una plantilla privada de Notion
+                        (su "Dashboard") donde quedará todo su historial guardado.</p>
+                </div>
+
+                <div class="step action">
+                    <span class="step-tag tag-action">Tu Trabajo</span>
+                    <h3>La Rutina del Lunes (15 min / cliente)</h3>
+                    <p>El lunes haces una ronda de curación rápida. Encuentras 4-5 nuevas tendencias para el cliente.
+                        Las añades a su Notion. Listo.</p>
+                </div>
+
+                <div class="step auto">
+                    <span class="step-tag tag-auto">Notificación</span>
+                    <h3>Email Automático</h3>
+                    <p>Substack o Resend le envía un ping: <i>"Tus tendencias de la semana ya están cargadas en
+                            Trendicore OS. Échale un ojo al producto X que está subiendo."</i></p>
+                </div>
+
+                <div class="step action">
+                    <span class="step-tag tag-action">Tu Trabajo</span>
+                    <h3>Llamada Mensual (30 min / mes)</h3>
+                    <p>A final de mes agendan una llamada. Revisan qué productos funcionaron mejor de los que subieron a
+                        la tienda y ajustan el radar para el mes siguiente.</p>
+                </div>
+            </div>
+
+            <div class="energy-meter">
+                <div class="energy-header">
+                    <span>Carga de trabajo para ti:</span>
+                    <span class="purple-text">Ligera y Pasiva (1.5h al MES)</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill fill-low"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -68,7 +68,7 @@ export default function Footer() {
             <h4 className={styles.columnTitle}>{t('footer.home')}</h4>
             <Link href="/" className={styles.footerLink}>{t('nav.home')}</Link>
             <Link href="/sobre-nosotros" className={styles.footerLink}>{t('nav.about')}</Link>
-            <Link href="/servicios" className={styles.footerLink}>{t('nav.services')}</Link>
+            <Link href="/para-marcas" className={styles.footerLink}>{t('nav.brands')}</Link>
           </div>
 
           <div className={styles.column}>

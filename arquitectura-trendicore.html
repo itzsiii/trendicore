@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trendicore — Arquitectura & Diseño</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================
+       DOCUMENT DESIGN SYSTEM
+       ========================================== */
+    :root {
+      --bg: #0A0A0F;
+      --bg-card: #12121A;
+      --bg-card-hover: #1A1A25;
+      --bg-code: #0D0D14;
+      --text: #EAEAEF;
+      --text-secondary: #9D9DAA;
+      --text-muted: #5A5A6E;
+      --accent: #7C3AED;
+      --accent-light: #A78BFA;
+      --accent-glow: rgba(124, 58, 237, 0.12);
+      --pink: #F43F5E;
+      --cyan: #0EA5E9;
+      --green: #10B981;
+      --amber: #F59E0B;
+      --border: rgba(255, 255, 255, 0.06);
+      --border-hover: rgba(255, 255, 255, 0.12);
+      --radius: 12px;
+      --radius-lg: 16px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.3);
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-display: 'Outfit', 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--accent), var(--pink));
+      border-radius: 100px;
+    }
+
+    a { color: var(--accent-light); text-decoration: none; transition: color 0.2s; }
+    a:hover { color: var(--accent); }
+
+    /* ==========================================
+       LAYOUT
+       ========================================== */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ==========================================
+       HERO HEADER
+       ========================================== */
+    .doc-hero {
+      position: relative;
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .doc-hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .doc-hero::after {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -200px;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(244,63,94,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .doc-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .doc-hero h1 span {
+      background: linear-gradient(135deg, var(--pink), var(--accent), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .doc-hero .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .doc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.4rem 1.2rem;
+      border-radius: 4px;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .doc-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; box-shadow: 0 0 6px var(--green); }
+      50% { opacity: 1; box-shadow: 0 0 14px var(--green); }
+    }
+
+    /* ==========================================
+       TABLE OF CONTENTS
+       ========================================== */
+    .toc {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem 2.5rem;
+      margin: 3rem auto;
+      max-width: 700px;
+    }
+
+    .toc h2 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    .toc ol {
+      list-style: none;
+      counter-reset: toc-counter;
+    }
+
+    .toc li {
+      counter-increment: toc-counter;
+      margin-bottom: 0.5rem;
+    }
+
+    .toc li a {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.5rem 0.8rem;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .toc li a:hover {
+      background: rgba(124,58,237,0.08);
+      color: var(--accent-light);
+    }
+
+    .toc li a::before {
+      content: counter(toc-counter, decimal-leading-zero);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--accent-glow);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      min-width: 28px;
+      text-align: center;
+    }
+
+    /* ==========================================
+       SECTIONS
+       ========================================== */
+    .section {
+      padding: 4rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.35rem 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      border: 1px solid;
+    }
+
+    .tag-purple {
+      color: var(--accent-light);
+      background: var(--accent-glow);
+      border-color: rgba(124,58,237,0.2);
+    }
+
+    .tag-pink {
+      color: var(--pink);
+      background: rgba(244,63,94,0.1);
+      border-color: rgba(244,63,94,0.2);
+    }
+
+    .tag-cyan {
+      color: var(--cyan);
+      background: rgba(14,165,233,0.1);
+      border-color: rgba(14,165,233,0.2);
+    }
+
+    .tag-green {
+      color: var(--green);
+      background: rgba(16,185,129,0.1);
+      border-color: rgba(16,185,129,0.2);
+    }
+
+    .tag-amber {
+      color: var(--amber);
+      background: rgba(245,158,11,0.1);
+      border-color: rgba(245,158,11,0.2);
+    }
+
+    .section h2 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .section h3 {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 2rem 0 1rem;
+      color: var(--text);
+    }
+
+    .section h4 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 1.5rem 0 0.5rem;
+      color: var(--accent-light);
+    }
+
+    .section p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      max-width: 800px;
+    }
+
+    .section-intro {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    /* ==========================================
+       CARDS & GRIDS
+       ========================================== */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.2rem;
+      margin: 1.5rem 0;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.8rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+    }
+
+    .card h4 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: var(--text);
+    }
+
+    .card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ==========================================
+       CODE BLOCKS
+       ========================================== */
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      background: var(--bg-code);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--accent-light);
+    }
+
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin: 1rem 0 1.5rem;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .code-block::before {
+      content: attr(data-lang);
+      position: absolute;
+      top: 0.6rem;
+      right: 0.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.04);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .code-block pre {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      white-space: pre;
+    }
+
+    .code-block .kw { color: var(--pink); }
+    .code-block .str { color: var(--green); }
+    .code-block .fn { color: var(--cyan); }
+    .code-block .cm { color: var(--text-muted); font-style: italic; }
+    .code-block .var { color: var(--accent-light); }
+    .code-block .num { color: var(--amber); }
+    .code-block .tag { color: var(--pink); }
+    .code-block .attr { color: var(--cyan); }
+    .code-block .val { color: var(--green); }
+
+    /* ==========================================
+       ARCHITECTURE DIAGRAMS
+       ========================================== */
+    .diagram {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      margin: 2rem 0;
+      overflow-x: auto;
+    }
+
+    .tree {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.9;
+      color: var(--text-secondary);
+    }
+
+    .tree .folder { color: var(--cyan); font-weight: 600; }
+    .tree .file { color: var(--text-muted); }
+    .tree .highlight { color: var(--accent-light); font-weight: 600; }
+    .tree .comment { color: var(--text-muted); font-style: italic; }
+
+    /* ==========================================
+       FLOW DIAGRAM
+       ========================================== */
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin: 1.5rem 0;
+    }
+
+    .flow-node {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .flow-node:hover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .flow-arrow {
+      color: var(--accent);
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    /* ==========================================
+       COLOR PALETTE
+       ========================================== */
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .swatch {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: transform 0.2s;
+    }
+
+    .swatch:hover {
+      transform: translateY(-3px);
+    }
+
+    .swatch-color {
+      height: 80px;
+      width: 100%;
+    }
+
+    .swatch-info {
+      padding: 0.7rem 0.8rem;
+      background: var(--bg-card);
+    }
+
+    .swatch-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.15rem;
+    }
+
+    .swatch-value {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================
+       TABLES
+       ========================================== */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.88rem;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 0.8rem 1rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+
+    .data-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+
+    .data-table tr:hover td {
+      background: rgba(124,58,237,0.04);
+    }
+
+    .data-table td:first-child {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ==========================================
+       BADGES IN TABLE
+       ========================================== */
+    .tech-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      margin-right: 0.3rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .tb-next { background: rgba(0,0,0,0.3); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+    .tb-react { background: rgba(97,218,251,0.1); color: #61DAFB; border: 1px solid rgba(97,218,251,0.2); }
+    .tb-supabase { background: rgba(62,207,142,0.1); color: #3ECF8E; border: 1px solid rgba(62,207,142,0.2); }
+    .tb-stripe { background: rgba(99,91,255,0.1); color: #635BFF; border: 1px solid rgba(99,91,255,0.2); }
+    .tb-css { background: rgba(14,165,233,0.1); color: var(--cyan); border: 1px solid rgba(14,165,233,0.2); }
+    .tb-framer { background: rgba(244,63,94,0.1); color: var(--pink); border: 1px solid rgba(244,63,94,0.2); }
+
+    /* ==========================================
+       LAYER DIAGRAM
+       ========================================== */
+    .layers {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin: 2rem 0;
+    }
+
+    .layer {
+      border-radius: var(--radius);
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: transform 0.2s;
+    }
+
+    .layer:hover { transform: translateX(6px); }
+
+    .layer-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      min-width: 100px;
+      flex-shrink: 0;
+    }
+
+    .layer-content {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    .layer-content code {
+      background: rgba(0,0,0,0.3);
+      border: none;
+    }
+
+    .l-presentation {
+      background: linear-gradient(135deg, rgba(124,58,237,0.12) 0%, rgba(167,139,250,0.06) 100%);
+      border: 1px solid rgba(124,58,237,0.15);
+    }
+    .l-presentation .layer-label { color: var(--accent-light); }
+
+    .l-application {
+      background: linear-gradient(135deg, rgba(14,165,233,0.1) 0%, rgba(14,165,233,0.04) 100%);
+      border: 1px solid rgba(14,165,233,0.15);
+    }
+    .l-application .layer-label { color: var(--cyan); }
+
+    .l-domain {
+      background: linear-gradient(135deg, rgba(244,63,94,0.1) 0%, rgba(244,63,94,0.04) 100%);
+      border: 1px solid rgba(244,63,94,0.15);
+    }
+    .l-domain .layer-label { color: var(--pink); }
+
+    .l-infra {
+      background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.04) 100%);
+      border: 1px solid rgba(16,185,129,0.15);
+    }
+    .l-infra .layer-label { color: var(--green); }
+
+    /* ==========================================
+       PROVIDER CHAIN
+       ========================================== */
+    .provider-chain {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 1.5rem 0;
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .provider-chain::before {
+      content: '';
+      position: absolute;
+      left: 0.7rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--accent), var(--pink), var(--cyan), var(--green));
+      border-radius: 2px;
+    }
+
+    .provider-item {
+      position: relative;
+      padding: 0.6rem 1rem;
+      margin-left: 0;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .provider-item::before {
+      content: '';
+      position: absolute;
+      left: -1.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid;
+      background: var(--bg);
+    }
+
+    .provider-item:nth-child(1)::before { border-color: var(--accent); }
+    .provider-item:nth-child(2)::before { border-color: var(--accent-light); }
+    .provider-item:nth-child(3)::before { border-color: var(--pink); }
+    .provider-item:nth-child(4)::before { border-color: var(--cyan); }
+    .provider-item:nth-child(5)::before { border-color: var(--green); }
+    .provider-item:nth-child(6)::before { border-color: var(--amber); }
+    .provider-item:nth-child(7)::before { border-color: var(--text-muted); }
+
+    .provider-item code {
+      font-size: 0.8rem;
+    }
+
+    /* ==========================================
+       RESPONSIVE
+       ========================================== */
+    @media (max-width: 768px) {
+      .container { padding: 0 1rem; }
+      .doc-hero { padding: 3rem 1rem 2.5rem; }
+      .doc-hero h1 { font-size: 2rem; }
+      .section { padding: 2.5rem 0; }
+      .section h2 { font-size: 1.6rem; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .diagram { padding: 1.5rem; }
+      .toc { padding: 1.5rem; }
+      .flow { flex-direction: column; align-items: flex-start; }
+      .flow-arrow { transform: rotate(90deg); }
+      .data-table { font-size: 0.78rem; }
+      .layers { font-size: 0.82rem; }
+    }
+
+    /* ==========================================
+       FOOTER
+       ========================================== */
+    .doc-footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    .doc-footer strong {
+      color: var(--accent-light);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================
+       HERO
+       ========================================== -->
+  <header class="doc-hero">
+    <span class="doc-badge">
+      <span class="dot"></span>
+      DOCUMENTACIÓN TÉCNICA v2.0
+    </span>
+    <h1>Arquitectura &<br><span>Diseño de Trendicore</span></h1>
+    <p class="subtitle">
+      Plataforma de inteligencia de tendencias construida con Next.js 16, Clean Architecture y un design system premium con modo oscuro.
+    </p>
+  </header>
+
+  <!-- ==========================================
+       TABLE OF CONTENTS
+       ========================================== -->
+  <div class="container">
+    <nav class="toc">
+      <h2>Índice</h2>
+      <ol>
+        <li><a href="#overview">Visión General & Stack Tecnológico</a></li>
+        <li><a href="#architecture">Arquitectura del Proyecto</a></li>
+        <li><a href="#clean-arch">Clean Architecture & DDD</a></li>
+        <li><a href="#design-system">Design System</a></li>
+        <li><a href="#colors">Paleta de Colores</a></li>
+        <li><a href="#typography">Tipografía</a></li>
+        <li><a href="#components">Componentes UI</a></li>
+        <li><a href="#pages">Estructura de Páginas</a></li>
+        <li><a href="#providers">Context Providers</a></li>
+        <li><a href="#animations">Animaciones & Microinteracciones</a></li>
+        <li><a href="#responsive">Estrategia Responsive</a></li>
+        <li><a href="#api">API Routes & Backend</a></li>
+        <li><a href="#i18n">Internacionalización</a></li>
+        <li><a href="#seo">SEO & Rendimiento</a></li>
+      </ol>
+    </nav>
+
+    <!-- ==========================================
+         1. OVERVIEW
+         ========================================== -->
+    <section id="overview" class="section">
+      <span class="section-tag tag-purple">⚡ OVERVIEW</span>
+      <h2>Visión General & Stack Tecnológico</h2>
+      <p class="section-intro">
+        Trendicore es una plataforma de inteligencia de tendencias que combina selección humana experta con inteligencia artificial. La web funciona como un marketplace curado de productos trending con un modelo B2B para marcas.
+      </p>
+
+      <h3>Stack Principal</h3>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-icon" style="background: rgba(0,0,0,0.3); color: #fff;">▲</div>
+          <h4>Next.js 16.1.6</h4>
+          <p>Framework React con Turbopack, App Router, Server/Client Components y API Routes.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="background: rgba(97,218,251,0.1); color: #61DAFB;">⚛</div>
+          <h4>React 19.2.3</h4>
+          <p>Última versión estable con Hooks, Context API, Suspense y Server Components.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="background: rgba(62,207,142,0.1); color: #3ECF8E;">◆</div>
+          <h4>Supabase</h4>
+          <p>Backend-as-a-Service: PostgreSQL, Auth, Storage y Real-time. Base de datos y autenticación.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="background: rgba(99,91,255,0.1); color: #635BFF;">💳</div>
+          <h4>Stripe</h4>
+          <p>Pasarela de pagos para suscripciones premium y checkout sessions.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="background: rgba(244,63,94,0.1); color: var(--pink);">✦</div>
+          <h4>Framer Motion</h4>
+          <p>Animaciones declarativas con LazyMotion para rendimiento óptimo.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="background: rgba(14,165,233,0.1); color: var(--cyan);">✉</div>
+          <h4>Resend</h4>
+          <p>Servicio de email transaccional para newsletters y comunicaciones.</p>
+        </div>
+      </div>
+
+      <h3>Dependencias Adicionales</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Paquete</th>
+            <th>Versión</th>
+            <th>Uso</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>lucide-react</code></td>
+            <td>0.577.0</td>
+            <td>Iconografía vectorial consistente (Zap, Heart, ArrowRight, etc.)</td>
+          </tr>
+          <tr>
+            <td><code>react-hook-form</code> + <code>zod</code></td>
+            <td>7.71 / 4.3</td>
+            <td>Gestión de formularios con validación de esquemas</td>
+          </tr>
+          <tr>
+            <td><code>recharts</code></td>
+            <td>3.8.0</td>
+            <td>Gráficos y visualización de datos en el dashboard admin</td>
+          </tr>
+          <tr>
+            <td><code>dompurify</code></td>
+            <td>3.3.3</td>
+            <td>Sanitización de HTML para protección XSS</td>
+          </tr>
+          <tr>
+            <td><code>next/font</code></td>
+            <td>Integrado</td>
+            <td>Optimización de carga de fuentes Google (Plus Jakarta Sans, Outfit)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ==========================================
+         2. ARCHITECTURE
+         ========================================== -->
+    <section id="architecture" class="section">
+      <span class="section-tag tag-cyan">🏗️ ESTRUCTURA</span>
+      <h2>Arquitectura del Proyecto</h2>
+      <p class="section-intro">
+        El proyecto utiliza el <strong>App Router</strong> de Next.js 16 con una separación clara entre rutas públicas, admin y API. Los componentes siguen una arquitectura modular por dominio.
+      </p>
+
+      <div class="diagram">
+        <div class="tree">
+<pre><span class="folder">src/</span>
+├── <span class="folder">app/</span>                         <span class="comment">── App Router (rutas y layouts)</span>
+│   ├── <span class="folder">(public)/</span>                 <span class="comment">── Grupo de rutas públicas</span>
+│   │   ├── <span class="highlight">layout.js</span>            <span class="comment">── Layout público (Navbar + Footer)</span>
+│   │   ├── <span class="highlight">HomeClient.js</span>        <span class="comment">── Página principal (client)</span>
+│   │   ├── <span class="highlight">home.module.css</span>      <span class="comment">── Estilos del home</span>
+│   │   ├── <span class="folder">tienda/</span>              <span class="comment">── /tienda — Catálogo completo</span>
+│   │   ├── <span class="folder">moda/</span>                <span class="comment">── /moda — Categoría moda</span>
+│   │   ├── <span class="folder">tech/</span>                <span class="comment">── /tech — Categoría tech</span>
+│   │   ├── <span class="folder">entretenimiento/</span>     <span class="comment">── /entretenimiento</span>
+│   │   ├── <span class="folder">para-marcas/</span>         <span class="comment">── /para-marcas — Landing B2B</span>
+│   │   ├── <span class="folder">premium/</span>             <span class="comment">── /premium — Planes premium</span>
+│   │   ├── <span class="folder">servicios/</span>           <span class="comment">── /servicios — Página de servicios</span>
+│   │   ├── <span class="folder">sobre-nosotros/</span>      <span class="comment">── /sobre-nosotros — About</span>
+│   │   ├── <span class="folder">acceder/</span>             <span class="comment">── /acceder — Login/registro</span>
+│   │   ├── <span class="folder">perfil/</span>              <span class="comment">── /perfil — Perfil de usuario</span>
+│   │   ├── <span class="folder">mi-radar/</span>            <span class="comment">── /mi-radar — Alertas del usuario</span>
+│   │   ├── <span class="folder">legal/</span>               <span class="comment">── /legal/* — Páginas legales</span>
+│   │   └── <span class="folder">api-docs/</span>            <span class="comment">── /api-docs — Documentación API B2B</span>
+│   │
+│   ├── <span class="folder">(admin)/</span>                  <span class="comment">── Grupo de rutas admin</span>
+│   │   ├── <span class="highlight">layout.js</span>            <span class="comment">── Layout admin (protegido)</span>
+│   │   ├── <span class="folder">login/</span>               <span class="comment">── Login admin</span>
+│   │   └── <span class="folder">dashboard/</span>           <span class="comment">── Dashboard de gestión</span>
+│   │
+│   ├── <span class="folder">api/</span>                     <span class="comment">── API Routes (backend)</span>
+│   │   ├── <span class="folder">products/</span>            <span class="comment">── CRUD de productos</span>
+│   │   ├── <span class="folder">track-click/</span>         <span class="comment">── Tracking de clics (afiliados)</span>
+│   │   ├── <span class="folder">checkout_sessions/</span>   <span class="comment">── Stripe checkout</span>
+│   │   ├── <span class="folder">webhooks/</span>            <span class="comment">── Stripe webhooks</span>
+│   │   ├── <span class="folder">newsletter/</span>          <span class="comment">── Suscripción newsletter</span>
+│   │   ├── <span class="folder">admin/</span>               <span class="comment">── Endpoints admin</span>
+│   │   ├── <span class="folder">v1/</span>                  <span class="comment">── API pública v1 (B2B)</span>
+│   │   └── <span class="folder">mock-checkout/</span>       <span class="comment">── Checkout de pruebas</span>
+│   │
+│   ├── <span class="highlight">globals.css</span>              <span class="comment">── Design System global</span>
+│   ├── <span class="highlight">layout.js</span>                <span class="comment">── Root Layout (fonts + meta)</span>
+│   └── <span class="highlight">sitemap.js</span>               <span class="comment">── Generador de sitemap</span>
+│
+├── <span class="folder">components/</span>                  <span class="comment">── Componentes React</span>
+│   ├── <span class="folder">ui/</span>                      <span class="comment">── Componentes de interfaz</span>
+│   ├── <span class="folder">product/</span>                 <span class="comment">── Componentes de producto</span>
+│   ├── <span class="folder">admin/</span>                   <span class="comment">── Componentes del dashboard</span>
+│   ├── <span class="folder">providers/</span>               <span class="comment">── Context Providers</span>
+│   ├── <span class="folder">seo/</span>                     <span class="comment">── Componentes SEO (JsonLd)</span>
+│   └── <span class="folder">user/</span>                    <span class="comment">── Componentes de usuario</span>
+│
+├── <span class="folder">core/</span>                        <span class="comment">── Clean Architecture (dominio)</span>
+│   ├── <span class="folder">product/</span>                 <span class="comment">── Dominio de producto</span>
+│   │   ├── <span class="folder">domain/</span>              <span class="comment">── Entidades, Errors, Interfaces</span>
+│   │   ├── <span class="folder">application/</span>         <span class="comment">── Casos de uso</span>
+│   │   └── <span class="folder">infrastructure/</span>      <span class="comment">── Adaptadores y servicios</span>
+│   ├── <span class="folder">shared/</span>                  <span class="comment">── Dominio compartido</span>
+│   ├── <span class="folder">storage/</span>                 <span class="comment">── Dominio de almacenamiento</span>
+│   └── <span class="folder">user/</span>                    <span class="comment">── Dominio de usuario</span>
+│
+├── <span class="folder">config/</span>                      <span class="comment">── Configuración y constantes</span>
+├── <span class="folder">hooks/</span>                       <span class="comment">── Custom hooks (useProducts)</span>
+├── <span class="folder">i18n/</span>                        <span class="comment">── Archivos de traducción</span>
+│   ├── <span class="highlight">es.json</span>                  <span class="comment">── Español (32KB)</span>
+│   └── <span class="highlight">en.json</span>                  <span class="comment">── Inglés (30KB)</span>
+└── <span class="folder">lib/</span>                         <span class="comment">── Librerías y clientes</span>
+    ├── <span class="highlight">supabase.js</span>              <span class="comment">── Cliente Supabase (público)</span>
+    ├── <span class="highlight">supabase-admin.js</span>        <span class="comment">── Cliente Supabase (admin)</span>
+    └── <span class="highlight">email.js</span>                 <span class="comment">── Servicio de email (Resend)</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         3. CLEAN ARCHITECTURE
+         ========================================== -->
+    <section id="clean-arch" class="section">
+      <span class="section-tag tag-pink">🎯 CLEAN ARCH</span>
+      <h2>Clean Architecture & DDD</h2>
+      <p class="section-intro">
+        El directorio <code>src/core/</code> implementa Clean Architecture con Domain-Driven Design, separando la lógica de negocio del framework y la infraestructura.
+      </p>
+
+      <div class="layers">
+        <div class="layer l-presentation">
+          <span class="layer-label">PRESENTACIÓN</span>
+          <span class="layer-content"><code>components/</code> + <code>app/</code> — React Components, Pages, Layouts. Dependen de Application.</span>
+        </div>
+        <div class="layer l-application">
+          <span class="layer-label">APLICACIÓN</span>
+          <span class="layer-content"><code>core/*/application/</code> — Use Cases: <code>CreateProductUseCase</code>, <code>GetProductsUseCase</code>, <code>TrackClickUseCase</code>, etc.</span>
+        </div>
+        <div class="layer l-domain">
+          <span class="layer-label">DOMINIO</span>
+          <span class="layer-content"><code>core/*/domain/</code> — Entidades (<code>Product</code>), Errors (<code>ProductErrors</code>), Interfaces (<code>IProductRepository</code>).</span>
+        </div>
+        <div class="layer l-infra">
+          <span class="layer-label">INFRAESTRUCTURA</span>
+          <span class="layer-content"><code>core/*/infrastructure/</code> — Adaptadores Supabase, servicios HTTP, storage. Implementan las interfaces del dominio.</span>
+        </div>
+      </div>
+
+      <h3>Flujo de Datos</h3>
+      <div class="flow">
+        <span class="flow-node">🖥 UI Component</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">🪝 Custom Hook</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">📁 API Route</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">⚙️ Use Case</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">🔌 Repository</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">🗄 Supabase</span>
+      </div>
+
+      <h3>Dominios Implementados</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Dominio</th>
+            <th>Entidades</th>
+            <th>Use Cases</th>
+            <th>Responsabilidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Product</td>
+            <td><code>Product</code>, <code>ProductErrors</code></td>
+            <td>Create, Get, Update, Delete, TrackClick</td>
+            <td>CRUD de productos, tracking de clics afiliados, validaciones de negocio</td>
+          </tr>
+          <tr>
+            <td>User</td>
+            <td>User profile</td>
+            <td>Auth, Profile</td>
+            <td>Autenticación, perfiles, roles</td>
+          </tr>
+          <tr>
+            <td>Storage</td>
+            <td>Image assets</td>
+            <td>Upload, Delete</td>
+            <td>Gestión de imágenes de producto (Supabase Storage)</td>
+          </tr>
+          <tr>
+            <td>Shared</td>
+            <td>Domain errors</td>
+            <td>—</td>
+            <td>Errores y utilidades compartidas entre dominios</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ==========================================
+         4. DESIGN SYSTEM
+         ========================================== -->
+    <section id="design-system" class="section">
+      <span class="section-tag tag-purple">🎨 DESIGN SYSTEM</span>
+      <h2>Design System</h2>
+      <p class="section-intro">
+        El design system está definido en <code>globals.css</code> y usa <strong>CSS Custom Properties</strong> (variables CSS) para mantener consistencia. El estilo general es <strong>editorial premium</strong> con temas light/dark automáticos.
+      </p>
+
+      <h3>Filosofía de Diseño</h3>
+      <div class="grid-2">
+        <div class="card">
+          <h4>🏛 Editorial Premium</h4>
+          <p>Bordes finos (<code>1px solid var(--border)</code>), sombras sutiles y arquitectónicas, radios contenidos, tipografía con tracking negativo. Inspiración en revistas de moda y plataformas SaaS.</p>
+        </div>
+        <div class="card">
+          <h4>🌗 Dual Theme</h4>
+          <p>Light mode con fondo crema (#F9F9F9) y dark mode profundo (#0A0A0A). Cambio automático via <code>data-theme</code> attribute con script anti-flash en <code>&lt;head&gt;</code>.</p>
+        </div>
+        <div class="card">
+          <h4>📐 CSS Modules</h4>
+          <p>Cada componente tiene su <code>.module.css</code> para encapsulación total de estilos. No hay utilidades globales tipo Tailwind — todo es CSS vanilla scoped.</p>
+        </div>
+        <div class="card">
+          <h4>✨ Vibrant Accents</h4>
+          <p>Acentos vibrantes (púrpura, rosa, cian) sobre fondos neutros. Gradientes animados en el hero y scrollbar. Glows sutiles en hover.</p>
+        </div>
+      </div>
+
+      <h3>Tokens del Design System</h3>
+      <div class="code-block" data-lang="CSS Variables">
+<pre><span class="cm">/* Spacing & Radius */</span>
+<span class="var">--radius-sm</span>: <span class="num">4px</span>;     <span class="cm">/* Badges, tags */</span>
+<span class="var">--radius-md</span>: <span class="num">8px</span>;     <span class="cm">/* Cards, inputs */</span>
+<span class="var">--radius-lg</span>: <span class="num">12px</span>;    <span class="cm">/* Modals, grandes cards */</span>
+<span class="var">--radius-xl</span>: <span class="num">16px</span>;    <span class="cm">/* Secciones hero */</span>
+<span class="var">--radius-pill</span>: <span class="num">9999px</span>; <span class="cm">/* Botones pill, chips */</span>
+
+<span class="cm">/* Shadows (Arquitectónicas, sutiles) */</span>
+<span class="var">--shadow-sm</span>:   <span class="num">0 1px 2px</span> <span class="fn">rgba(0,0,0,0.04)</span>;
+<span class="var">--shadow-md</span>:   <span class="num">0 4px 12px</span> <span class="fn">rgba(0,0,0,0.04)</span>;
+<span class="var">--shadow-lg</span>:   <span class="num">0 12px 32px</span> <span class="fn">rgba(0,0,0,0.06)</span>;
+<span class="var">--shadow-card</span>: <span class="num">0 1px 3px</span> <span class="fn">rgba(0,0,0,0.04)</span>, <span class="num">0 4px 12px</span> <span class="fn">rgba(0,0,0,0.02)</span>;
+
+<span class="cm">/* Transitions (Cubic-bezier premium) */</span>
+<span class="var">--transition-fast</span>:   <span class="num">0.15s</span> <span class="fn">cubic-bezier(0.4, 0, 0.2, 1)</span>;
+<span class="var">--transition</span>:        <span class="num">0.25s</span> <span class="fn">cubic-bezier(0.4, 0, 0.2, 1)</span>;
+<span class="var">--transition-slow</span>:   <span class="num">0.5s</span> <span class="fn">cubic-bezier(0.4, 0, 0.2, 1)</span>;
+<span class="var">--transition-spring</span>: <span class="num">0.4s</span> <span class="fn">cubic-bezier(0.175, 0.885, 0.32, 1.1)</span>;</pre>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         5. COLORS
+         ========================================== -->
+    <section id="colors" class="section">
+      <span class="section-tag tag-pink">🎨 COLORES</span>
+      <h2>Paleta de Colores</h2>
+
+      <h3>Modo Oscuro (Deep Space)</h3>
+      <div class="palette">
+        <div class="swatch">
+          <div class="swatch-color" style="background: #0A0A0A;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bg-primary</div>
+            <div class="swatch-value">#0A0A0A</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #121212;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bg-secondary</div>
+            <div class="swatch-value">#121212</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #171717;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bg-card</div>
+            <div class="swatch-value">#171717</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #FAFAFA;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">text-primary</div>
+            <div class="swatch-value">#FAFAFA</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #A3A3A3;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">text-secondary</div>
+            <div class="swatch-value">#A3A3A3</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #737373;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">text-muted</div>
+            <div class="swatch-value">#737373</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Modo Claro (Bespoke Editorial)</h3>
+      <div class="palette">
+        <div class="swatch">
+          <div class="swatch-color" style="background: #F9F9F9;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bg-primary</div>
+            <div class="swatch-value">#F9F9F9</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #F3F4F6;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bg-secondary</div>
+            <div class="swatch-value">#F3F4F6</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #FFFFFF; border: 1px solid #e5e5e5;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bg-card</div>
+            <div class="swatch-value">#FFFFFF</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #171717;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">text-primary</div>
+            <div class="swatch-value">#171717</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #525252;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">text-secondary</div>
+            <div class="swatch-value">#525252</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #A3A3A3;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">text-muted</div>
+            <div class="swatch-value">#A3A3A3</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Colores de Acento</h3>
+      <div class="palette">
+        <div class="swatch">
+          <div class="swatch-color" style="background: linear-gradient(135deg, #7C3AED, #6D28D9);"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Accent (Principal)</div>
+            <div class="swatch-value">#7C3AED → #6D28D9</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: linear-gradient(135deg, #F43F5E, #DB2777);"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Pink (Secundario)</div>
+            <div class="swatch-value">#F43F5E</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: linear-gradient(135deg, #0EA5E9, #06B6D4);"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Cyan (Terciario)</div>
+            <div class="swatch-value">#0EA5E9</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: linear-gradient(135deg, #D97706, #F59E0B);"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Amazon CTA</div>
+            <div class="swatch-value">#D97706</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: linear-gradient(135deg, #BE185D, #DB2777);"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Shein CTA</div>
+            <div class="swatch-value">#BE185D</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: linear-gradient(135deg, #059669, #10B981);"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Success</div>
+            <div class="swatch-value">#059669</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         6. TYPOGRAPHY
+         ========================================== -->
+    <section id="typography" class="section">
+      <span class="section-tag tag-amber">🔤 TIPOGRAFÍA</span>
+      <h2>Tipografía</h2>
+      <p class="section-intro">
+        Las fuentes se cargan con <code>next/font/google</code> y se inyectan como CSS variables en el <code>&lt;body&gt;</code>. No hay flash de fuentes (FOUT).
+      </p>
+
+      <div class="grid-2">
+        <div class="card">
+          <h4 style="font-family: 'Inter', sans-serif; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.8rem;">Plus Jakarta Sans</h4>
+          <p style="margin-bottom: 0.5rem;">Variable: <code>--font-sans</code></p>
+          <p style="margin-bottom: 0.5rem;">Uso: <strong>Cuerpo de texto</strong>, párrafos, botones, labels, navegación.</p>
+          <p>Estilo: Geométrica, moderna, altamente legible. Pesos: 400–900.</p>
+        </div>
+        <div class="card">
+          <h4 style="font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 0.8rem;">Outfit</h4>
+          <p style="margin-bottom: 0.5rem;">Variable: <code>--font-display</code></p>
+          <p style="margin-bottom: 0.5rem;">Uso: <strong>Títulos</strong>, hero, sección headers, estadísticas, precios.</p>
+          <p>Estilo: Display sans-serif con personalidad. Pesos: 400–900.</p>
+        </div>
+      </div>
+
+      <h3>Escala Tipográfica</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Elemento</th>
+            <th>Font</th>
+            <th>Tamaño</th>
+            <th>Peso</th>
+            <th>Otros</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Hero Title</td>
+            <td>Outfit</td>
+            <td>clamp(2.8rem, 7vw, 4.8rem)</td>
+            <td>900</td>
+            <td>letter-spacing: -0.02em</td>
+          </tr>
+          <tr>
+            <td>Section Title</td>
+            <td>Outfit</td>
+            <td>2.2rem</td>
+            <td>700</td>
+            <td>letter-spacing: -0.02em</td>
+          </tr>
+          <tr>
+            <td>Card Title</td>
+            <td>Outfit</td>
+            <td>1.25rem</td>
+            <td>700</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>Body Text</td>
+            <td>Plus Jakarta Sans</td>
+            <td>0.95–1rem</td>
+            <td>500</td>
+            <td>line-height: 1.7</td>
+          </tr>
+          <tr>
+            <td>Labels/Tags</td>
+            <td>Plus Jakarta Sans</td>
+            <td>0.7–0.75rem</td>
+            <td>600–700</td>
+            <td>uppercase, letter-spacing: 0.05–0.08em</td>
+          </tr>
+          <tr>
+            <td>Stats Numbers</td>
+            <td>Outfit</td>
+            <td>1.8–2.2rem</td>
+            <td>700–800</td>
+            <td>Gradient text con background-clip</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ==========================================
+         7. COMPONENTS
+         ========================================== -->
+    <section id="components" class="section">
+      <span class="section-tag tag-cyan">🧩 COMPONENTES</span>
+      <h2>Componentes UI</h2>
+      <p class="section-intro">
+        Los componentes están organizados por dominio: <code>ui/</code> para interfaz global, <code>product/</code> para catálogo, <code>admin/</code> para dashboard, y <code>providers/</code> para gestión de estado global.
+      </p>
+
+      <h3>Componentes de Interfaz (<code>ui/</code>)</h3>
+      <div class="grid-3">
+        <div class="card">
+          <h4>Navbar</h4>
+          <p>Sticky, backdrop-blur, logo + links + actions. Hamburger menu para mobile con animación slide-down. Incluye login/avatar, wishlist badge y theme toggle.</p>
+        </div>
+        <div class="card">
+          <h4>Footer</h4>
+          <p>4 columnas: marca + redes, navegación, legal, y newsletter form. Incluye disclaimer de afiliados y copyright dinámico.</p>
+        </div>
+        <div class="card">
+          <h4>TrendingBar</h4>
+          <p>Barra horizontal con tags trending que enlazan a categorías. Scroll horizontal en mobile. Debajo del Navbar.</p>
+        </div>
+        <div class="card">
+          <h4>Button</h4>
+          <p>Componente reutilizable con variantes (primary, secondary), tamaños, iconos izquierda/derecha. Soporta <code>href</code> para Links.</p>
+        </div>
+        <div class="card">
+          <h4>SearchBar</h4>
+          <p>Input de búsqueda con icono, bordes sutiles y transición focus. Filtra productos en tiempo real.</p>
+        </div>
+        <div class="card">
+          <h4>LocaleSelector</h4>
+          <p>Selector de idioma (ES/EN) con dropdown animado. Persiste en cookie <code>trendicore-locale</code>.</p>
+        </div>
+        <div class="card">
+          <h4>RegionSelector</h4>
+          <p>Selector de región para personalizar productos según país. Controla filtros de catálogo por región.</p>
+        </div>
+        <div class="card">
+          <h4>ThemeProvider</h4>
+          <p>Context + toggle light/dark. Usa <code>localStorage</code> para persistir y script en <code>&lt;head&gt;</code> para evitar flash.</p>
+        </div>
+        <div class="card">
+          <h4>NoiseOverlay</h4>
+          <p>Overlay con textura de ruido sutil sobre toda la página. Efecto papel/grano para profundidad visual.</p>
+        </div>
+      </div>
+
+      <h3>Componentes de Producto (<code>product/</code>)</h3>
+      <div class="grid-3">
+        <div class="card">
+          <h4>ProductCard</h4>
+          <p>Card con imagen 3:4, hover overlay con CTAs (comprar + quick view), TrendBadge, botones de favorito/compartir, y mini CTA en la info section.</p>
+        </div>
+        <div class="card">
+          <h4>QuickViewModal</h4>
+          <p>Modal de vista rápida con imagen grande, detalles del producto, trend score, y botón CTA directo a la tienda.</p>
+        </div>
+        <div class="card">
+          <h4>TrendBadge</h4>
+          <p>Badge visual que muestra el Trend Score (🔥 1–100). Colores dinámicos según nivel: bajo (gris) → medio (amarillo) → alto (rosa/fuego).</p>
+        </div>
+        <div class="card">
+          <h4>FavoritesDrawer</h4>
+          <p>Panel lateral tipo drawer que muestra la wishlist del usuario. Slide-in desde la derecha con backdrop oscuro.</p>
+        </div>
+        <div class="card">
+          <h4>ProductErrorBoundary</h4>
+          <p>Error boundary React que captura errores de renderizado en las cards y muestra un fallback en lugar de romper la página.</p>
+        </div>
+      </div>
+
+      <h3>Componentes Admin (<code>admin/</code>)</h3>
+      <div class="grid-3">
+        <div class="card">
+          <h4>ProductForm</h4>
+          <p>Formulario completo de creación/edición de producto con react-hook-form + zod. Upload de imagen, categorías, trend score, fuente de afiliado.</p>
+        </div>
+        <div class="card">
+          <h4>ProductList</h4>
+          <p>Tabla/lista de productos con acciones (editar, eliminar, toggle featured). Soporta filtros y bulk actions.</p>
+        </div>
+        <div class="card">
+          <h4>DashboardCharts</h4>
+          <p>Gráficos con Recharts: tendencias de clics, productos populares, métricas de rendimiento.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         8. PAGES
+         ========================================== -->
+    <section id="pages" class="section">
+      <span class="section-tag tag-green">📄 PÁGINAS</span>
+      <h2>Estructura de Páginas</h2>
+      <p class="section-intro">
+        La aplicación tiene dos layouts principales: público (con Navbar/Footer) y admin (protegido). Las páginas públicas siguen un flujo de marketing: captación → credibilidad → educación → conversión.
+      </p>
+
+      <h3>Flujo de la Homepage</h3>
+      <div class="flow">
+        <span class="flow-node">🎯 Hero + CTAs</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">📊 Stats Bar</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">⚡ Cómo Funciona</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">🔥 Productos HOT</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">🏢 Banner B2B</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node">📬 Footer</span>
+      </div>
+
+      <h3>Mapa de Páginas</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Ruta</th>
+            <th>Tipo</th>
+            <th>Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>/</code></td>
+            <td>SSR + Client</td>
+            <td>Homepage con hero, "cómo funciona", productos destacados y B2B banner</td>
+          </tr>
+          <tr>
+            <td><code>/tienda</code></td>
+            <td>Client</td>
+            <td>Catálogo completo con filtros (categoría, fuente, orden), búsqueda y grid masonry</td>
+          </tr>
+          <tr>
+            <td><code>/moda</code></td>
+            <td>Client</td>
+            <td>Productos de moda filtrados por subcategorías (mujer/hombre)</td>
+          </tr>
+          <tr>
+            <td><code>/tech</code></td>
+            <td>Client</td>
+            <td>Gadgets y tecnología trending</td>
+          </tr>
+          <tr>
+            <td><code>/entretenimiento</code></td>
+            <td>Client</td>
+            <td>Productos de entretenimiento, juegos, lifestyle</td>
+          </tr>
+          <tr>
+            <td><code>/para-marcas</code></td>
+            <td>Static</td>
+            <td>Landing B2B con propuesta de valor para marcas, servicios y CTA de contacto</td>
+          </tr>
+          <tr>
+            <td><code>/premium</code></td>
+            <td>Client</td>
+            <td>Planes de suscripción premium con integración Stripe</td>
+          </tr>
+          <tr>
+            <td><code>/acceder</code></td>
+            <td>Client</td>
+            <td>Login/registro con Supabase Auth (email magic link)</td>
+          </tr>
+          <tr>
+            <td><code>/perfil</code></td>
+            <td>Client (auth)</td>
+            <td>Perfil del usuario, historial, gestión de suscripción</td>
+          </tr>
+          <tr>
+            <td><code>/mi-radar</code></td>
+            <td>Client (auth)</td>
+            <td>Alertas de tendencias personalizadas del usuario</td>
+          </tr>
+          <tr>
+            <td><code>/dashboard</code></td>
+            <td>Client (admin)</td>
+            <td>Panel de administración: CRUD productos, analytics, gestión</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ==========================================
+         9. PROVIDERS
+         ========================================== -->
+    <section id="providers" class="section">
+      <span class="section-tag tag-amber">🔗 PROVIDERS</span>
+      <h2>Context Providers</h2>
+      <p class="section-intro">
+        La gestión de estado global se realiza con React Context API. Los providers envuelven el layout público en un orden específico de dependencias.
+      </p>
+
+      <h3>Cadena de Providers</h3>
+      <div class="provider-chain">
+        <div class="provider-item"><code>&lt;LazyMotion&gt;</code> — Framer Motion (carga lazy de animaciones)</div>
+        <div class="provider-item"><code>&lt;ThemeProvider&gt;</code> — Gestión de tema light/dark</div>
+        <div class="provider-item"><code>&lt;LocaleProvider&gt;</code> — Idioma (es/en) + función t() de traducción</div>
+        <div class="provider-item"><code>&lt;AuthProvider&gt;</code> — Autenticación Supabase + user + profile</div>
+        <div class="provider-item"><code>&lt;WishlistProvider&gt;</code> — Wishlist con persistencia localStorage</div>
+        <div class="provider-item"><code>&lt;Navbar /&gt;</code> + <code>&lt;TrendingBar /&gt;</code></div>
+        <div class="provider-item"><code>{children}</code> + <code>&lt;Footer /&gt;</code> + <code>&lt;CookieBanner /&gt;</code></div>
+      </div>
+
+      <h3>Hooks Públicos</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Hook</th>
+            <th>Provider</th>
+            <th>Retorna</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>useTheme()</code></td>
+            <td>ThemeProvider</td>
+            <td><code>{ theme, toggleTheme }</code></td>
+          </tr>
+          <tr>
+            <td><code>useLocale()</code></td>
+            <td>LocaleProvider</td>
+            <td><code>{ locale, region, t, setLocale, setRegion }</code></td>
+          </tr>
+          <tr>
+            <td><code>useAuth()</code></td>
+            <td>AuthProvider</td>
+            <td><code>{ isAuthenticated, user, profile, signOut }</code></td>
+          </tr>
+          <tr>
+            <td><code>useWishlist()</code></td>
+            <td>WishlistProvider</td>
+            <td><code>{ items, count, isInWishlist, toggleWishlist }</code></td>
+          </tr>
+          <tr>
+            <td><code>useProducts(query)</code></td>
+            <td>— (standalone)</td>
+            <td><code>{ products, loading, error }</code> — Fetches desde API con memoización</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ==========================================
+         10. ANIMATIONS
+         ========================================== -->
+    <section id="animations" class="section">
+      <span class="section-tag tag-pink">🎭 ANIMACIONES</span>
+      <h2>Animaciones & Microinteracciones</h2>
+      <p class="section-intro">
+        Las animaciones combinan CSS keyframes para efectos ambientales y Framer Motion para interacciones inteligentes (viewport-aware, stagger, springs).
+      </p>
+
+      <h3>Keyframes CSS Globales</h3>
+      <div class="grid-2">
+        <div class="card">
+          <h4>gradient-shift</h4>
+          <p>Anima el fondo del body con gradientes radiales sutiles que se mueven lentamente (20s, infinite alternate). Crea un efecto de ambiente vivo.</p>
+        </div>
+        <div class="card">
+          <h4>float</h4>
+          <p>translateY suave de 15px arriba/abajo. Se usa en emojis y estados vacíos para efecto de levitación.</p>
+        </div>
+        <div class="card">
+          <h4>pulse-glow</h4>
+          <p>Pulso de opacidad 0.4→0.8 para el dot verde del badge "Live". Efecto de "en línea".</p>
+        </div>
+        <div class="card">
+          <h4>shimmer</h4>
+          <p>Loading skeleton: gradiente que se desplaza horizontalmente. Efecto de contenido cargando premium.</p>
+        </div>
+        <div class="card">
+          <h4>shine</h4>
+          <p>Gradiente del hero highlight (rosa→púrpura→cyan) que se desplaza. Texto que brilla en ciclo de 5s.</p>
+        </div>
+        <div class="card">
+          <h4>spin-slow</h4>
+          <p>Rotación 360° lenta para elementos decorativos. No se usa activamente pero disponible en el sistema.</p>
+        </div>
+      </div>
+
+      <h3>Framer Motion — Patrones</h3>
+      <div class="code-block" data-lang="React + Framer">
+<pre><span class="cm">// Entrada del Hero (fade-up con ease premium)</span>
+<span class="tag">&lt;m.div</span>
+  <span class="attr">initial</span>=<span class="val">{{ opacity: 0, y: 40 }}</span>
+  <span class="attr">animate</span>=<span class="val">{{ opacity: 1, y: 0 }}</span>
+  <span class="attr">transition</span>=<span class="val">{{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}</span>
+<span class="tag">/&gt;</span>
+
+<span class="cm">// Cards con scroll-triggered + stagger</span>
+<span class="tag">&lt;m.article</span>
+  <span class="attr">initial</span>=<span class="val">{{ opacity: 0, y: 30 }}</span>
+  <span class="attr">whileInView</span>=<span class="val">{{ opacity: 1, y: 0 }}</span>
+  <span class="attr">viewport</span>=<span class="val">{{ once: true, margin: '-50px' }}</span>
+  <span class="attr">transition</span>=<span class="val">{{ duration: 0.4, delay: index * 0.06 }}</span>
+<span class="tag">/&gt;</span>
+
+<span class="cm">// Steps con stagger progresivo</span>
+<span class="attr">transition</span>=<span class="val">{{ delay: i * 0.15, duration: 0.6 }}</span></pre>
+      </div>
+
+      <h3>Microinteracciones CSS</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Componente</th>
+            <th>Interacción</th>
+            <th>Efecto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ProductCard</td>
+            <td>hover</td>
+            <td>translateY(-6px), image scale(1.06), overlay fade-in, action buttons slide-in desde derecha</td>
+          </tr>
+          <tr>
+            <td>Navbar</td>
+            <td>scroll</td>
+            <td>Sticky con backdrop-blur(20px) + saturate(1.6). Efecto frosted glass.</td>
+          </tr>
+          <tr>
+            <td>Category Cards</td>
+            <td>hover</td>
+            <td>translateY(-4px), glow radial que aparece suavemente, flecha que se expande</td>
+          </tr>
+          <tr>
+            <td>Buttons CTA</td>
+            <td>hover</td>
+            <td>translateY(-2px), cambio de color, arrow translateX(4px) con spring easing</td>
+          </tr>
+          <tr>
+            <td>Favorites Btn</td>
+            <td>toggle</td>
+            <td>scale(1.1), color change rosa, border glow, toast notification animated</td>
+          </tr>
+          <tr>
+            <td>Stats Bar</td>
+            <td>hover</td>
+            <td>translateY(-2px), shadow elevation. Números con gradient text.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ==========================================
+         11. RESPONSIVE
+         ========================================== -->
+    <section id="responsive" class="section">
+      <span class="section-tag tag-green">📱 RESPONSIVE</span>
+      <h2>Estrategia Responsive</h2>
+      <p class="section-intro">
+        La estrategia responsive usa <strong>mobile-first refinements</strong> con 3 breakpoints principales. El layout pasa de grids multi-columna a stacks verticales progresivamente.
+      </p>
+
+      <h3>Breakpoints</h3>
+      <div class="grid-3">
+        <div class="card">
+          <h4 style="color: var(--cyan);">≤ 1024px — Tablet</h4>
+          <p>Hero padding reducido, secciones más compactas. Grids mantienen columnas pero con menos gap.</p>
+        </div>
+        <div class="card">
+          <h4 style="color: var(--amber);">≤ 768px — Mobile</h4>
+          <p>Navbar → hamburger menu. Grids → 1-2 columnas. CTAs → stack vertical full-width. Product overlay deshabilitado (tap directo).</p>
+        </div>
+        <div class="card">
+          <h4 style="color: var(--pink);">≤ 480px — Small</h4>
+          <p>Tipografía reducida. Hero mínimo (auto height). Grid 2 columnas tight. Stats en wrap. Touch targets ≥ 44px.</p>
+        </div>
+      </div>
+
+      <h3>Adaptaciones Clave</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Componente</th>
+            <th>Desktop</th>
+            <th>Mobile (≤768px)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Navbar</td>
+            <td>Links horizontales + actions</td>
+            <td>Hamburger → slide-down panel con backdrop</td>
+          </tr>
+          <tr>
+            <td>Product Grid</td>
+            <td>Masonry 4 columnas (CSS columns)</td>
+            <td>2 columnas, gap reducido</td>
+          </tr>
+          <tr>
+            <td>ProductCard Overlay</td>
+            <td>Hover overlay con CTAs</td>
+            <td><code>display: none</code> — tap en card navega directo</td>
+          </tr>
+          <tr>
+            <td>Hero CTAs</td>
+            <td>Flexbox horizontal</td>
+            <td>Stack vertical, full-width, max-width: 320px</td>
+          </tr>
+          <tr>
+            <td>Steps Grid</td>
+            <td>3 columnas</td>
+            <td>1 columna, max-width: 480px centrado</td>
+          </tr>
+          <tr>
+            <td>Metrics Grid</td>
+            <td>4 columnas</td>
+            <td>2 columnas</td>
+          </tr>
+          <tr>
+            <td>Footer</td>
+            <td>4 columnas</td>
+            <td>Stack vertical</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ==========================================
+         12. API
+         ========================================== -->
+    <section id="api" class="section">
+      <span class="section-tag tag-purple">🔌 API</span>
+      <h2>API Routes & Backend</h2>
+      <p class="section-intro">
+        El backend está implementado con Next.js API Routes (Route Handlers). Cada endpoint sigue la convención de archivo <code>route.js</code> dentro de su directorio.
+      </p>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Endpoint</th>
+            <th>Métodos</th>
+            <th>Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>/api/products</code></td>
+            <td>GET, POST, PUT, DELETE</td>
+            <td>CRUD de productos. GET soporta filtros (category, region, featured, source)</td>
+          </tr>
+          <tr>
+            <td><code>/api/track-click</code></td>
+            <td>GET</td>
+            <td>Registra clic de afiliado y redirige al producto. Tracking de conversión.</td>
+          </tr>
+          <tr>
+            <td><code>/api/checkout_sessions</code></td>
+            <td>POST</td>
+            <td>Crea sesión de checkout Stripe para suscripciones premium</td>
+          </tr>
+          <tr>
+            <td><code>/api/webhooks</code></td>
+            <td>POST</td>
+            <td>Webhooks de Stripe para confirmar pagos y activar suscripciones</td>
+          </tr>
+          <tr>
+            <td><code>/api/newsletter</code></td>
+            <td>POST</td>
+            <td>Suscripción a newsletter. Guarda email en Supabase + envía bienvenida via Resend.</td>
+          </tr>
+          <tr>
+            <td><code>/api/admin/*</code></td>
+            <td>Varios</td>
+            <td>Endpoints protegidos para gestión administrativa</td>
+          </tr>
+          <tr>
+            <td><code>/api/v1/*</code></td>
+            <td>GET</td>
+            <td>API pública B2B v1 para clientes empresariales. Trend intelligence data.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ==========================================
+         13. I18N
+         ========================================== -->
+    <section id="i18n" class="section">
+      <span class="section-tag tag-amber">🌍 I18N</span>
+      <h2>Internacionalización</h2>
+      <p class="section-intro">
+        La internacionalización se gestiona con archivos JSON de traducción y un <code>LocaleProvider</code> personalizado. El idioma se persiste en una cookie para SSR.
+      </p>
+
+      <div class="grid-2">
+        <div class="card">
+          <h4>Español (<code>es.json</code>)</h4>
+          <p>Idioma principal. ~32KB. Cubre toda la UI, incluyendo labels de categorías, CTAs, mensajes de error, textos legales y SEO.</p>
+        </div>
+        <div class="card">
+          <h4>Inglés (<code>en.json</code>)</h4>
+          <p>Traducción completa. ~30KB. Paridad 1:1 con español. Incluye traducciones de categorías de producto.</p>
+        </div>
+      </div>
+
+      <h3>Mecanismo</h3>
+      <div class="code-block" data-lang="Uso">
+<pre><span class="cm">// En cualquier componente client:</span>
+<span class="kw">const</span> { <span class="var">t</span>, <span class="var">locale</span>, <span class="var">region</span> } = <span class="fn">useLocale</span>();
+
+<span class="cm">// Acceso a traducciones con dot notation:</span>
+<span class="fn">t</span>(<span class="str">'hero.badge'</span>)           <span class="cm">// → "INTELLIGENCE EN DIRECTO"</span>
+<span class="fn">t</span>(<span class="str">'hero.ctaFashion'</span>)      <span class="cm">// → "Explorar Moda"</span>
+<span class="fn">t</span>(<span class="str">'product.categoryLabels.tech'</span>)  <span class="cm">// → "Tech & Gadgets"</span>
+
+<span class="cm">// La cookie 'trendicore-locale' se lee en el Root Layout</span>
+<span class="cm">// para setear el atributo lang del &lt;html&gt; en SSR</span></pre>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         14. SEO
+         ========================================== -->
+    <section id="seo" class="section">
+      <span class="section-tag tag-green">🔍 SEO</span>
+      <h2>SEO & Rendimiento</h2>
+      <p class="section-intro">
+        La optimización SEO está integrada a nivel de framework con metadata exportada, JSON-LD estructurado y sitemap dinámico.
+      </p>
+
+      <div class="grid-2">
+        <div class="card">
+          <h4>Metadata Framework</h4>
+          <p>Cada página exporta un objeto <code>metadata</code> con title, description, keywords, OpenGraph y Twitter Cards. <code>metadataBase</code> apunta a <code>https://trendicore.net</code>.</p>
+        </div>
+        <div class="card">
+          <h4>JSON-LD</h4>
+          <p>Componente <code>&lt;JsonLd /&gt;</code> inyecta datos estructurados (Schema.org) en el Root Layout para Rich Snippets en buscadores.</p>
+        </div>
+        <div class="card">
+          <h4>Sitemap Dinámico</h4>
+          <p><code>sitemap.js</code> genera el sitemap automáticamente incluyendo todas las rutas públicas y productos.</p>
+        </div>
+        <div class="card">
+          <h4>Imágenes Optimizadas</h4>
+          <p><code>next/image</code> con atributos <code>fill</code>, <code>sizes</code> responsive y lazy loading automático. Fallback SVG para errores.</p>
+        </div>
+      </div>
+
+      <h3>Performance</h3>
+      <div class="grid-3">
+        <div class="card">
+          <h4>Turbopack</h4>
+          <p>Dev server con Turbopack para HMR instantáneo (~1.4s cold start).</p>
+        </div>
+        <div class="card">
+          <h4>LazyMotion</h4>
+          <p>Framer Motion con <code>domAnimation</code> para cargar solo las features necesarias (~60% menos bundle).</p>
+        </div>
+        <div class="card">
+          <h4>Font Optimization</h4>
+          <p><code>next/font/google</code> con <code>display: swap</code> y subsetting automático. Zero layout shift.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ==========================================
+       FOOTER
+       ========================================== -->
+  <footer class="doc-footer">
+    <p><strong>Trendicore</strong> — Arquitectura & Diseño • Documentación Técnica v2.0</p>
+    <p style="margin-top: 0.5rem;">Generado para Trendicore &copy; 2026 • Next.js 16 + React 19 + Supabase + Stripe</p>
+  </footer>
+
+</body>
+</html>

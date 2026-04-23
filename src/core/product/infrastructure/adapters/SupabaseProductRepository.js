@@ -37,6 +37,15 @@ export class SupabaseProductRepository {
 
     if (filters.sortBy === 'popular') {
       query = query.order('clicks', { ascending: false });
+    } else if (filters.sortBy === 'trending') {
+      query = query.order('trend_score', { ascending: false }).order('created_at', { ascending: false });
+    } else if (filters.sortBy === 'forYou') {
+      if (filters.preferredCategories && filters.preferredCategories.length > 0) {
+        // Fetch products matching user preferred categories first
+        query = query.in('category', filters.preferredCategories);
+      }
+      // Order by trend score as secondary sort
+      query = query.order('trend_score', { ascending: false }).order('created_at', { ascending: false });
     } else {
       query = query.order('created_at', { ascending: false });
     }

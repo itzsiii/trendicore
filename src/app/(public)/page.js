@@ -7,22 +7,21 @@ import { GetProductsUseCase } from '@/core/product/application/GetProductsUseCas
 export default async function HomePage() {
   const cookieStore = await cookies();
   const regionCookie = cookieStore.get('trendicore-region');
-  const region = regionCookie?.value || 'es'; // default to es
+  const region = regionCookie?.value || 'es';
 
-  const repository = new SupabaseProductRepository(supabase);
-  const useCase = new GetProductsUseCase(repository);
+  let initialFeatured = [];
 
-  const [initialFeatured, initialLatest, initialSubscriptions] = await Promise.all([
-    useCase.execute({ featured: true, region, limit: 6, status: 'published' }),
-    useCase.execute({ region, limit: 12, status: 'published' }),
-    useCase.execute({ category: 'suscripciones', region, limit: 6, status: 'published' })
-  ]);
+  try {
+    const repository = new SupabaseProductRepository(supabase);
+    const useCase = new GetProductsUseCase(repository);
+    initialFeatured = await useCase.execute({ featured: true, region, limit: 4, status: 'published' });
+  } catch (err) {
+    console.error('Home SSR fetch error:', err.message);
+  }
 
   return (
     <HomeClient
       initialFeatured={initialFeatured}
-      initialLatest={initialLatest}
-      initialSubscriptions={initialSubscriptions}
       serverRegion={region}
     />
   );

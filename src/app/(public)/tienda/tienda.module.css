@@ -1,100 +1,68 @@
-.shopPage {
+/* ==========================================
+   Collection Page — Clean Catalog Layout
+   ========================================== */
+.feedPage {
   min-height: 100vh;
-  position: relative;
-  overflow-x: hidden;
   background: var(--bg-primary);
-}
-
-/* Background Decor */
-.bgDecor {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.orb1 {
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, var(--accent-glow-strong), transparent 70%);
-  top: -8%;
-  left: -8%;
-  filter: blur(100px);
-  opacity: 0.1;
-}
-
-.orb2 {
-  position: absolute;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, var(--pink), transparent 70%);
-  bottom: 15%;
-  right: -5%;
-  filter: blur(100px);
-  opacity: 0.06;
 }
 
 /* ==========================================
    Compact Header
    ========================================== */
-.shopHeader {
-  position: relative;
-  z-index: 10;
-  padding: 6rem 1.5rem 1.5rem;
-  border-bottom: 1px solid var(--border);
+.feedHeader {
+  padding: 5.5rem 1.5rem 2rem;
 }
 
-.headerContent {
-  max-width: 1200px;
+.headerInner {
+  max-width: 700px;
   margin: 0 auto;
+  text-align: center;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
-.headerLeft {
-  flex-shrink: 0;
+.headerTop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.shopTitle {
+.feedTitle {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 6vw, 2.8rem);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  line-height: 0.95;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
   color: var(--text-primary);
 }
 
-.shopSubtitle {
-  font-size: 0.88rem;
-  font-weight: 500;
+.feedSubtitle {
+  font-size: 0.95rem;
   color: var(--text-muted);
-  margin-top: 0.4rem;
-  opacity: 0.8;
+  max-width: 440px;
+  line-height: 1.6;
 }
 
+/* Search */
 .searchBox {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  flex: 1;
-  max-width: 420px;
+  width: 100%;
+  max-width: 460px;
   padding: 0 1.2rem;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-pill);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: all 0.3s;
 }
 
 .searchBox:focus-within {
-  background: rgba(255, 255, 255, 0.06);
   border-color: var(--accent);
-  box-shadow: 0 0 25px rgba(124, 77, 255, 0.2), 0 0 0 1px rgba(124, 77, 255, 0.2);
-  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
 .searchIcon {
@@ -118,7 +86,7 @@
 }
 
 .clearBtn {
-  background: var(--border);
+  background: var(--bg-secondary);
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -138,170 +106,74 @@
 }
 
 /* ==========================================
-   Shop Layout (Sidebar + Grid)
+   Category Chips
    ========================================== */
-.shopLayout {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 0;
-  position: relative;
-  z-index: 10;
-  min-height: 60vh;
-}
-
-/* ==========================================
-   Sidebar
-   ========================================== */
-.sidebar {
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 1.5rem 1.5rem 3rem 1.5rem;
-  position: sticky;
-  top: 80px;
-  height: fit-content;
-  max-height: calc(100vh - 100px);
-  overflow-y: auto;
-  scrollbar-width: thin;
-  background: rgba(255, 255, 255, 0.01);
-  backdrop-filter: blur(20px);
-  margin-right: 1.5rem;
-  border-radius: 20px;
-  margin-top: 1.5rem;
-}
-
-.sidebarHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.sidebarTitle {
-  font-size: 0.9rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-primary);
-}
-
-.clearFilters {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--accent);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  transition: opacity 0.2s;
-}
-
-.clearFilters:hover {
-  opacity: 0.7;
-}
-
-/* Filter Groups */
-.filterGroup {
-  margin-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.filterGroupHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.chipsWrapper {
   width: 100%;
-  padding: 0.9rem 0;
-  background: none;
-  border: none;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  cursor: pointer;
-  font-family: inherit;
-  transition: color 0.2s;
-}
-
-.filterGroupHeader:hover {
-  color: var(--accent);
-}
-
-.chevron {
-  color: var(--text-muted);
-  transition: transform 0.25s ease;
-}
-
-.chevronOpen {
-  transform: rotate(180deg);
-}
-
-.filterOptions {
   overflow: hidden;
-  padding-bottom: 0.8rem;
 }
 
-.filterOption {
+.chipsRow {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0 1.5rem 1.5rem;
+  scrollbar-width: none;
+  max-width: 800px;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.chipsRow::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  width: 100%;
-  padding: 0.6rem 0.8rem;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid transparent;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
   font-size: 0.82rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
   cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  transition: all 0.2s;
   font-family: inherit;
-  transition: all 0.25s ease;
-  border-radius: 12px;
-  margin-bottom: 0.4rem;
 }
 
-.filterOption:hover {
-  background: rgba(255, 255, 255, 0.05);
+.chip:hover {
+  border-color: var(--border-hover);
   color: var(--text-primary);
-  transform: translateX(4px);
+  background: var(--bg-card);
 }
 
-.filterActive {
-  background: rgba(124, 77, 255, 0.1) !important;
-  border-color: rgba(124, 1, 255, 0.2) !important;
-  color: var(--accent-light) !important;
-  font-weight: 700;
-  box-shadow: 0 4px 15px rgba(124, 77, 255, 0.1);
+.chipActive {
+  background: var(--accent) !important;
+  color: #fff !important;
+  border-color: var(--accent) !important;
 }
 
-/* Radio buttons (hidden in new design or kept for subtlety) */
-.radio {
-  display: none;
-}
-
-/* Mobile filter button */
-.mobileFilterBtn {
-  display: none;
-}
-
-.sidebarClose {
-  display: none;
-}
-
-.sidebarBackdrop {
-  display: none;
+.chipEmoji {
+  font-size: 0.95rem;
 }
 
 /* ==========================================
    Main Content
    ========================================== */
 .mainContent {
-  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
   min-height: 60vh;
 }
 
-/* Top Bar */
-.topBar {
+/* Toolbar */
+.toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -311,24 +183,24 @@
 }
 
 .resultsInfo {
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.78rem;
+  font-weight: 600;
   color: var(--text-muted);
 }
 
-.topBarRight {
+.sortGroup {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .sortPill {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.45rem 0.9rem;
-  border-radius: var(--radius-pill);
-  font-size: 0.78rem;
+  gap: 0.3rem;
+  padding: 0.38rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
   font-weight: 600;
   border: 1px solid var(--border);
   background: transparent;
@@ -339,8 +211,9 @@
 }
 
 .sortPill:hover {
-  border-color: var(--accent);
+  border-color: var(--border-hover);
   color: var(--text-primary);
+  background: var(--bg-card);
 }
 
 .sortActive {
@@ -360,12 +233,12 @@
 .filterTag {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
   padding: 0.3rem 0.8rem;
-  background: var(--accent-glow);
+  background: rgba(124, 58, 237, 0.08);
   color: var(--accent);
-  border: 1px solid var(--accent-glow-strong);
-  border-radius: var(--radius-pill);
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  border-radius: 8px;
   font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
@@ -379,11 +252,13 @@
   border-color: var(--accent);
 }
 
-/* Products Grid */
+/* ==========================================
+   Products Grid
+   ========================================== */
 .productsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
 }
 
 /* ==========================================
@@ -392,15 +267,15 @@
 .skeletonCard {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: 16px;
   overflow: hidden;
 }
 
 .skeletonImage {
   aspect-ratio: 3 / 4;
-  background: linear-gradient(110deg, var(--bg-secondary) 0%, var(--bg-secondary) 40%, var(--bg-card) 50%, var(--bg-secondary) 60%, var(--bg-secondary) 100%);
+  background: linear-gradient(110deg, var(--bg-secondary) 0%, var(--bg-secondary) 40%, rgba(255,255,255,0.03) 50%, var(--bg-secondary) 60%, var(--bg-secondary) 100%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
+  animation: shimmer 1.8s ease-in-out infinite;
 }
 
 .skeletonInfo {
@@ -413,9 +288,9 @@
 .skeletonLine {
   height: 10px;
   border-radius: 5px;
-  background: linear-gradient(110deg, var(--bg-secondary) 0%, var(--bg-secondary) 40%, var(--bg-card) 50%, var(--bg-secondary) 60%, var(--bg-secondary) 100%);
+  background: linear-gradient(110deg, var(--bg-secondary) 0%, var(--bg-secondary) 40%, rgba(255,255,255,0.03) 50%, var(--bg-secondary) 60%, var(--bg-secondary) 100%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
+  animation: shimmer 1.8s ease-in-out infinite;
 }
 
 @keyframes shimmer {
@@ -428,19 +303,19 @@
    ========================================== */
 .emptyState {
   text-align: center;
-  padding: 6rem 2rem;
+  padding: 5rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.6rem;
 }
 
 .emptyIconWrap {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: var(--accent-glow);
-  border: 1px solid var(--accent-glow-strong);
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: rgba(124, 58, 237, 0.06);
+  border: 1px solid rgba(124, 58, 237, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -453,141 +328,51 @@
 
 .emptyTitle {
   font-family: var(--font-display);
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 700;
 }
 
 .emptyText {
   color: var(--text-muted);
-  font-size: 0.95rem;
-  max-width: 350px;
+  font-size: 0.9rem;
+  max-width: 300px;
 }
 
 .emptyReset {
   margin-top: 0.8rem;
-  padding: 0.6rem 1.8rem;
-  border-radius: var(--radius-pill);
+  padding: 0.55rem 1.6rem;
+  border-radius: 10px;
   background: var(--accent);
   color: #fff;
   border: none;
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
   font-family: inherit;
 }
 
 .emptyReset:hover {
-  background: var(--accent-dark);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px var(--accent-glow-strong);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.25);
 }
 
 /* ==========================================
    Responsive
    ========================================== */
-@media (max-width: 900px) {
-  .shopLayout {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 300px;
-    max-height: 100vh;
-    z-index: 500;
-    background: var(--bg-primary);
-    border-right: 1px solid var(--border);
-    box-shadow: var(--shadow-lg);
-    padding: 1.5rem;
-    overflow-y: auto;
-  }
-
-  [data-theme="dark"] .sidebar {
-    background: rgba(8, 8, 16, 0.98);
-  }
-
-  .sidebarOpen {
-    display: block;
-  }
-
-  .mobileFilterBtn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    padding: 0.8rem 1.8rem;
-    margin: 1.5rem auto;
-    background: rgba(124, 77, 255, 0.1);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(124, 77, 255, 0.2);
-    border-radius: var(--radius-pill);
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--accent-light);
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.3s;
-    box-shadow: 0 10px 25px rgba(124, 77, 255, 0.15);
-  }
-
-  .mobileFilterBtn:hover {
-    background: var(--accent);
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(124, 77, 255, 0.3);
-  }
-
-  .filterBadge {
-    background: var(--accent);
-    color: #fff;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    font-size: 0.65rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .sidebarClose {
-    display: block;
-    width: 100%;
-    padding: 0.9rem;
-    margin-top: 1.5rem;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-pill);
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-  }
-
-  .sidebarBackdrop {
-    display: block;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 499;
+@media (max-width: 1200px) {
+  .productsGrid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-@media (max-width: 768px) {
-  .shopHeader {
-    padding: 5rem 1rem 1.2rem;
+@media (max-width: 850px) {
+  .feedHeader {
+    padding: 4.5rem 1rem 1.5rem;
   }
 
-  .headerContent {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
+  .feedTitle {
+    font-size: 1.8rem;
   }
 
   .searchBox {
@@ -595,28 +380,37 @@
   }
 
   .mainContent {
-    padding: 1rem;
+    padding: 0 1rem 3rem;
   }
 
-  .topBar {
+  .toolbar {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.8rem;
+    gap: 0.6rem;
+  }
+
+  .sortGroup {
+    flex-wrap: wrap;
   }
 
   .productsGrid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.8rem;
+    gap: 1rem;
+  }
+
+  .chipsRow {
+    justify-content: flex-start;
+    padding: 0 1rem 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .shopTitle {
-    font-size: 1.3rem;
+  .feedTitle {
+    font-size: 1.5rem;
   }
 
-  .shopSubtitle {
-    font-size: 0.78rem;
+  .feedSubtitle {
+    font-size: 0.85rem;
   }
 
   .productsGrid {
@@ -624,7 +418,8 @@
     gap: 0.6rem;
   }
 
-  .mobileFilterBtn {
-    margin: 0.8rem 1rem 0;
+  .sortPill {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
   }
 }

@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { m, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Flame, Link as LinkIcon, Heart, Share2 } from 'lucide-react';
+import { ShoppingBag, Flame, Link as LinkIcon, Heart, Share2, ArrowUpRight, ExternalLink } from 'lucide-react';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import { useWishlist } from '@/components/providers/WishlistProvider';
+import TrendBadge from './TrendBadge';
 import styles from './ProductCard.module.css';
 
 export default function ProductCard({ product, index = 0, onQuickView }) {
@@ -89,6 +90,8 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
   }
   const categoryLabel = t(`product.categoryLabels.${product.category}`) || product.category;
 
+  const isSubscription = product.category === 'suscripciones';
+
   return (
     <m.article
       className={styles.card}
@@ -104,7 +107,7 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
             alt={product.title}
             fill
             sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-            className={`${styles.image} ${product.category === 'suscripciones' ? styles.containImage : ''}`}
+            className={`${styles.image} ${isSubscription ? styles.containImage : ''}`}
             onError={() => {
               setImgSrc('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iI2ZmZiIgYWxpZ249Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGR5PSIuM2VtIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4=');
             }}
@@ -155,19 +158,19 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
               </button>
             </div>
           </div>
-          
-          <span className={`${styles.sourcePill} ${styles[source.class + 'Pill']}`}>
-            {product.affiliate_source}
-          </span>
+
+          {/* Trend Score Badge */}
+          {product.trend_score > 0 && (
+            <div className={styles.trendBadgeWrap}>
+              <TrendBadge score={product.trend_score} size="sm" />
+            </div>
+          )}
         </div>
 
         {/* Info */}
         <div className={styles.info}>
           <div className={styles.categoryRow}>
             <span className={styles.category}>{categoryLabel}</span>
-            {product.featured && (
-              <Flame size={14} strokeWidth={3} className={styles.trendingIcon} />
-            )}
           </div>
           <h3 className={styles.title}>
             <a
@@ -184,14 +187,14 @@ export default function ProductCard({ product, index = 0, onQuickView }) {
               href={`/api/track-click?id=${product.id}`}
               target="_blank"
               rel="noopener noreferrer nofollow sponsored"
-              className={`${styles.ctaMini} ${styles[source.class]}`}
+              className={styles.ctaMini}
             >
-              {product.category === 'suscripciones'
+              {isSubscription
                 ? (t('product.subscribeCta') || '¿Cómo conseguirlo?')
                 : t('product.discoverCta')
-              } <LinkIcon size={14} className={styles.miniIcon} />
+              } <ArrowUpRight size={13} className={styles.miniIcon} />
             </a>
-            {product.category === 'suscripciones' && product.price > 0 && (
+            {isSubscription && product.price > 0 && (
               <span className={styles.price}>
                 {product.price}€<span className={styles.pricePeriod}>/{product.price_period === 'dia' ? 'día' : product.price_period === 'año' ? 'año' : 'mes'}</span>
               </span>

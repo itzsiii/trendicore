@@ -4,75 +4,35 @@ import { useState, useMemo } from 'react';
 import { m } from 'framer-motion';
 import { useLocale } from '@/components/providers/LocaleProvider';
 import { useProducts } from '@/hooks/useProducts';
-import { TAG_MAP, HOME_SERVICES } from '@/config/constants';
 import ProductCard from '@/components/product/ProductCard';
 import { ProductErrorBoundary } from '@/components/product/ProductErrorBoundary';
 import QuickViewModal from '@/components/product/QuickViewModal';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
-import { TrendingUp, Cpu, Sparkles, Flame, ArrowRight, Film } from 'lucide-react';
+import { TrendingUp, ArrowRight, Scan, ShieldCheck, ShoppingCart, Zap, Target } from 'lucide-react';
 import styles from './home.module.css';
 
 export default function HomeClient({ initialFeatured = [], initialLatest = [], initialSubscriptions = [], serverRegion = 'es' }) {
   const { region, t } = useLocale();
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [activeTag, setActiveTag] = useState(null);
 
-  // 1. Featured Products Hook
+  // Featured Products Hook (small showcase only)
   const featuredQuery = useMemo(() => ({
     featured: true,
     region: region,
-    limit: 6
+    limit: 4
   }), [region]);
 
   const { products: featured, loading: featuredLoading } = useProducts(
     featuredQuery, 
     [region],
-    region === serverRegion ? initialFeatured : null
+    region === serverRegion ? initialFeatured.slice(0, 4) : null
   );
-
-  // 2. Latest Products Hook
-  const latestQuery = useMemo(() => {
-    const query = { region, limit: 12 };
-    if (activeTag) {
-      if (TAG_MAP[activeTag]) {
-        query.category = TAG_MAP[activeTag];
-      } else {
-        query.search = activeTag;
-      }
-    }
-    return query;
-  }, [region, activeTag]);
-
-  const { products: latest, loading: latestLoading } = useProducts(
-    latestQuery,
-    [region, activeTag],
-    (region === serverRegion && !activeTag) ? initialLatest : null
-  );
-
-  // 3. Subscriptions Hook
-  const subsQuery = useMemo(() => ({
-    category: 'suscripciones',
-    region: region,
-    limit: 6
-  }), [region]);
-
-  const { products: subscriptions, loading: subsLoading } = useProducts(
-    subsQuery, 
-    [region],
-    (region === serverRegion && !activeTag) ? initialSubscriptions : null
-  );
-
-  const handleTagClick = (tag) => {
-    setActiveTag(activeTag === tag ? null : tag);
-  };
 
   return (
     <div className={styles.page}>
-      {/* Hero Section */}
+      {/* Hero Section — Clean, Bifurcated */}
       <section className={styles.hero}>
-
-
         <div className={styles.heroContent}>
           <m.div
             initial={{ opacity: 0, y: 40 }}
@@ -103,7 +63,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
             transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           >
             <Button
-              href="/moda"
+              href="/tienda"
               variant="primary"
               size="large"
               iconLeft={<TrendingUp size={18} strokeWidth={2} />}
@@ -113,17 +73,15 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
             </Button>
             
             <Button
-              href="/tech"
+              href="/para-marcas"
               variant="secondary"
               size="large"
-              iconLeft={<Cpu size={18} strokeWidth={2} />}
+              iconLeft={<Target size={18} strokeWidth={2} />}
               iconRight={<ArrowRight size={18} />}
             >
-              {t('hero.ctaTech')}
+              {t('brands.ctaSecondaryShort') || t('nav.brands')}
             </Button>
           </m.div>
-
-
         </div>
 
         <m.div
@@ -138,7 +96,7 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
           </div>
           <div className={styles.statDivider}></div>
           <div className={styles.stat}>
-            <span className={styles.statNumber}>2</span>
+            <span className={styles.statNumber}>5+</span>
             <span className={styles.statLabel}>{t('stats.platforms')}</span>
           </div>
           <div className={styles.statDivider}></div>
@@ -149,42 +107,70 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
         </m.div>
       </section>
 
-      {/* Services Overview Section */}
-      <section className={styles.servicesSection}>
-        <div className={styles.servicesGrid}>
-          {HOME_SERVICES.map((svc, i) => (
-            <m.div 
+      {/* How It Works Section */}
+      <section className={styles.howItWorksSection}>
+        <div className={styles.sectionHeaderCentered}>
+          <m.div
+            className={styles.sectionTag}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+          >
+            <Zap size={12} strokeWidth={3} /> {t('howItWorks.tag')}
+          </m.div>
+          <m.h2
+            className={styles.sectionTitle}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            {t('howItWorks.title')}
+          </m.h2>
+        </div>
+
+        <div className={styles.stepsGrid}>
+          {[
+            { icon: <Scan size={28} strokeWidth={1.5} />, titleKey: 'howItWorks.step1Title', descKey: 'howItWorks.step1Desc', color: 'var(--accent)' },
+            { icon: <ShieldCheck size={28} strokeWidth={1.5} />, titleKey: 'howItWorks.step2Title', descKey: 'howItWorks.step2Desc', color: 'var(--pink)' },
+            { icon: <ShoppingCart size={28} strokeWidth={1.5} />, titleKey: 'howItWorks.step3Title', descKey: 'howItWorks.step3Desc', color: 'var(--cyan)' },
+          ].map((step, i) => (
+            <m.div
               key={i}
-              className={styles.serviceItem}
-              initial={{ opacity: 0, y: 20 }}
+              className={styles.stepCard}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: i * 0.1 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ delay: i * 0.15, duration: 0.6 }}
             >
-              <div className={styles.serviceIcon} style={{ background: svc.iconBg, color: svc.iconColor }}>
-                {svc.icon}
+              <div className={styles.stepNumber}>{String(i + 1).padStart(2, '0')}</div>
+              <div className={styles.stepIcon} style={{ color: step.color, background: `${step.color}15` }}>
+                {step.icon}
               </div>
-              <div>
-                <h3>{t(svc.titleKey)}</h3>
-                <p>{t(svc.descKey)}</p>
-              </div>
+              <h3>{t(step.titleKey)}</h3>
+              <p>{t(step.descKey)}</p>
+              {i < 2 && <div className={styles.stepConnector}></div>}
             </m.div>
           ))}
         </div>
       </section>
 
       <div className={styles.catalogWrapper}>
-        {/* Featured Section */}
+        {/* Featured Section — Compact showcase */}
         {featured.length > 0 && (
           <section className={styles.section}>
             <div className={styles.sectionHeader}>
-              <div className={styles.sectionTag}><Flame size={12} strokeWidth={3} style={{ display: 'inline', marginBottom: '-2px' }} /> HOT</div>
-              <h2 className={styles.sectionTitle}>{t('sections.trendingTitle')}</h2>
-              <p className={styles.sectionSubtitle}>{t('sections.trendingSubtitle')}</p>
+              <div>
+                <div className={styles.sectionTag}><TrendingUp size={12} strokeWidth={3} style={{ display: 'inline', marginBottom: '-2px' }} /> HOT</div>
+                <h2 className={styles.sectionTitle}>{t('sections.trendingTitle')}</h2>
+                <p className={styles.sectionSubtitle}>{t('sections.trendingSubtitle')}</p>
+              </div>
+              <Button href="/tienda" variant="secondary" size="small" iconRight={<ArrowRight size={16} />}>
+                {t('categories.fashionCta')}
+              </Button>
             </div>
             <ProductErrorBoundary>
             <div className={styles.grid}>
-              {featured.map((product, i) => (
+              {featured.slice(0, 4).map((product, i) => (
                 <ProductCard
                   key={product.id}
                   product={product}
@@ -197,153 +183,31 @@ export default function HomeClient({ initialFeatured = [], initialLatest = [], i
           </section>
         )}
 
-        {/* Subscriptions Section */}
-        {(subsLoading || subscriptions.length > 0) && (
-          <section className={styles.section} style={{ marginTop: '3rem', marginBottom: '3rem', padding: '2.5rem', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-xl)' }}>
-            <div className={styles.sectionHeader} style={{ marginBottom: '2rem' }}>
-              <div className={styles.sectionTag} style={{ color: 'var(--accent)' }}>
-                <Film size={12} strokeWidth={3} style={{ display: 'inline', marginBottom: '-2px' }} /> 
-                {t('subscriptionsSection.tag')}
-              </div>
-              <h2 className={styles.sectionTitle}>{t('subscriptionsSection.title')}</h2>
-              <p className={styles.sectionSubtitle}>{t('subscriptionsSection.subtitle')}</p>
-            </div>
-
-            {subsLoading ? (
-               <div className={styles.loadingGrid}>
-                 {[...Array(4)].map((_, i) => (
-                   <div key={i} className={styles.skeleton}>
-                     <div className={styles.skeletonImage}></div>
-                     <div className={styles.skeletonInfo}>
-                       <div className={styles.skeletonLine} style={{ width: '40%' }}></div>
-                       <div className={styles.skeletonLine} style={{ width: '80%' }}></div>
-                       <div className={styles.skeletonLine} style={{ width: '60%' }}></div>
-                     </div>
-                   </div>
-                 ))}
-               </div>
-            ) : (
-              <>
-                <ProductErrorBoundary>
-                <div className={styles.grid}>
-                  {subscriptions.map((product, i) => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      index={i}
-                      onQuickView={setSelectedProduct}
-                    />
-                  ))}
-                </div>
-                </ProductErrorBoundary>
-                {subscriptions.length > 0 && (
-                  <div style={{ textAlign: 'center', marginTop: '2.5rem', display: 'flex', justifyContent: 'center' }}>
-                    <Button href="/tienda?c=suscripciones" variant="secondary" iconRight={<ArrowRight size={18} />}>
-                      {t('subscriptionsSection.viewAll')}
-                    </Button>
-                  </div>
-                )}
-              </>
-            )}
-          </section>
-        )}
-
-        {/* Latest Products */}
-        {(latestLoading || latest.length > 0) && (
-          <section className={styles.section}>
-            <div className={styles.sectionHeader}>
-              <div className={styles.sectionTag}>
-                <Sparkles size={12} strokeWidth={3} style={{ display: 'inline', marginBottom: '-2px' }} /> 
-                {t('sections.newTag')}
-              </div>
-              <h2 className={styles.sectionTitle}>
-                {t('sections.newTitle')}
-              </h2>
-              <p className={styles.sectionSubtitle}>
-                {t('sections.newSubtitle')}
-              </p>
-            </div>
-
-            {latestLoading ? (
-              <div className={styles.loadingGrid}>
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className={styles.skeleton}>
-                    <div className={styles.skeletonImage}></div>
-                    <div className={styles.skeletonInfo}>
-                      <div className={styles.skeletonLine} style={{ width: '40%' }}></div>
-                      <div className={styles.skeletonLine} style={{ width: '80%' }}></div>
-                      <div className={styles.skeletonLine} style={{ width: '60%' }}></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <ProductErrorBoundary>
-              <div className={styles.grid}>
-                {latest.map((product, i) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    index={i}
-                    onQuickView={setSelectedProduct}
-                  />
-                ))}
-              </div>
-              </ProductErrorBoundary>
-            )}
-          </section>
-        )}
-
-        {/* Category Banners */}
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{t('sections.categoriesTitle')}</h2>
-          </div>
-          <div className={styles.categoryGrid}>
-            <Link href="/tienda" className={styles.categoryBanner}>
-              <m.div
-                className={`${styles.categoryCard} ${styles.modaCard}`}
-                whileHover={{ scale: 1.02, y: -5 }}
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        {/* B2B Banner — replaces old category banners */}
+        <section className={styles.b2bBanner}>
+          <m.div
+            className={styles.b2bInner}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <div className={styles.b2bContent}>
+              <span className={styles.b2bTag}>
+                <Target size={14} /> {t('brands.badge')}
+              </span>
+              <h2 className={styles.b2bTitle}>{t('brands.heroLine1')} <span>{t('brands.heroHighlight')}</span></h2>
+              <p className={styles.b2bDesc}>{t('brands.heroSub')}</p>
+              <Button
+                href="/para-marcas"
+                variant="primary"
+                size="large"
+                iconRight={<ArrowRight size={18} />}
               >
-                <div className={styles.categoryGlow}></div>
-                <div className={styles.categoryContent}>
-                  <span className={styles.categoryEmoji}><TrendingUp size={40} strokeWidth={1.5} color="var(--pink)" /></span>
-                  <h3 className={styles.categoryTitle}>{t('categories.fashionTitle')}</h3>
-                  {t('categories.fashionDesc') && (
-                    <p className={styles.categoryDesc}>{t('categories.fashionDesc')}</p>
-                  )}
-                  <span className={styles.categoryArrow}>
-                    {t('categories.fashionCta')}
-                    <ArrowRight size={16} strokeWidth={2.5} />
-                  </span>
-                </div>
-                <div className={styles.categoryPattern}></div>
-              </m.div>
-            </Link>
-
-            <Link href="/servicios" className={styles.categoryBanner}>
-              <m.div
-                className={`${styles.categoryCard} ${styles.serviciosCard}`}
-                whileHover={{ scale: 1.02, y: -5 }}
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <div className={styles.categoryGlow}></div>
-                <div className={styles.categoryContent}>
-                  <span className={styles.categoryEmoji}><Sparkles size={40} strokeWidth={1.5} color="var(--pink)" /></span>
-                  <h3 className={styles.categoryTitle}>{t('categories.servicesTitle')}</h3>
-                  {t('categories.servicesDesc') && (
-                    <p className={styles.categoryDesc}>{t('categories.servicesDesc')}</p>
-                  )}
-                  <span className={styles.categoryArrow}>
-                    {t('categories.servicesCta')}
-                    <ArrowRight size={16} strokeWidth={2.5} />
-                  </span>
-                </div>
-                <div className={styles.categoryPattern}></div>
-              </m.div>
-            </Link>
-          </div>
+                {t('brands.ctaPrimary')}
+              </Button>
+            </div>
+          </m.div>
         </section>
       </div>
 

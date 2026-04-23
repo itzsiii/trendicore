@@ -3,6 +3,7 @@
 import { m, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, X, ExternalLink } from 'lucide-react';
 import { useLocale } from '@/components/providers/LocaleProvider';
+import TrendBadge from './TrendBadge';
 import styles from './QuickViewModal.module.css';
 
 export default function QuickViewModal({ product, isOpen, onClose }) {
@@ -47,7 +48,12 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
               </div>
 
               <div className={styles.infoSection}>
-                <span className={styles.category}>{t(`product.categoryLabels.${product.category}`)}</span>
+                <div className={styles.categoryRow}>
+                  <span className={styles.category}>{t(`product.categoryLabels.${product.category}`)}</span>
+                  {product.trend_score > 0 && (
+                    <TrendBadge score={product.trend_score} size="md" />
+                  )}
+                </div>
                 <h2 className={styles.title}>{product.title}</h2>
                 {isSubscription && product.price > 0 && (
                   <p className={styles.price}>{product.price}€<span className={styles.priceLabel}>/{product.price_period === 'dia' ? 'día' : product.price_period === 'año' ? 'año' : 'mes'}</span></p>

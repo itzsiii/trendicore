@@ -115,13 +115,20 @@
   flex-direction: column;
 }
 
+.categoryRow {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
 .category {
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: var(--accent);
-  margin-bottom: 1rem;
 }
 
 .title {

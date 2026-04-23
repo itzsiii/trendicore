@@ -45,6 +45,18 @@ export default function sitemap() {
       priority: 0.5,
     },
     {
+      url: `${baseUrl}/premium`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/api-docs`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
       url: `${baseUrl}/legal/privacy`,
       lastModified: new Date(),
       changeFrequency: 'monthly',

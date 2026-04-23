@@ -1,0 +1,155 @@
+/* ==========================================
+   TRENDING BAR — Auto-scrolling Terms Ticker
+   ========================================== */
+
+.bar {
+  display: flex;
+  align-items: center;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  height: 36px;
+}
+
+/* Gradient fade edges */
+.bar::before,
+.bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.bar::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg-secondary), transparent);
+}
+
+.bar::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg-secondary), transparent);
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 0.8rem 0 1rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  white-space: nowrap;
+  z-index: 6;
+  background: var(--bg-secondary);
+  height: 100%;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .label {
+  color: var(--accent-light);
+}
+
+.track {
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.chips {
+  display: flex;
+  gap: 0.45rem;
+  padding: 0 3rem 0 0.5rem;
+  white-space: nowrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-glow);
+  transform: translateY(-1px);
+}
+
+.chipHot {
+  border-color: rgba(255, 75, 43, 0.2);
+  color: var(--text-primary);
+}
+
+.chipHot:hover {
+  border-color: #ff4b2b;
+  color: #ff4b2b;
+  background: rgba(255, 75, 43, 0.08);
+}
+
+.chipEmoji {
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.hotIcon {
+  color: #ff4b2b;
+  animation: flicker 2s ease-in-out infinite alternate;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+
+@media (max-width: 768px) {
+  .label {
+    padding: 0 0.5rem 0 0.8rem;
+    font-size: 0.6rem;
+  }
+
+  .label span {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .bar {
+    height: 32px;
+  }
+
+  .chip {
+    font-size: 0.62rem;
+    padding: 0.2rem 0.5rem;
+  }
+}

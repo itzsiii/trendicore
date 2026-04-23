@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pitch Deck - Trendicore Executive Summary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #05050A;
+            --bg-secondary: #0A0A12;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --accent: #7C3AED;
+            --pink: #EC4899;
+            --cyan: #06B6D4;
+            --text-primary: #FFFFFF;
+            --text-muted: #9CA3AF;
+            --border: rgba(255, 255, 255, 0.08);
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.06) 0%, transparent 50%);
+        }
+
+        header {
+            text-align: center;
+            padding: 5rem 2rem 3rem;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(124, 58, 237, 0.1);
+            color: #A78BFA;
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #FFFFFF 0%, #A1A1AA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h1 span {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(124, 58, 237, 0.5);
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.1);
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #FFFFFF;
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            list-style-position: inside;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-box {
+            margin-top: 4rem;
+            padding: 3rem;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(236, 72, 153, 0.05) 100%);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            text-align: center;
+        }
+
+        .highlight-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--pink);
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            text-align: left;
+            margin-top: 2rem;
+        }
+
+        .step {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        .step-content h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        /* Utility specific colors for icons */
+        .c-tech {
+            color: #3B82F6;
+        }
+
+        .c-biz {
+            color: #10B981;
+        }
+
+        .c-pros {
+            color: #F59E0B;
+        }
+
+        .c-cons {
+            color: #EF4444;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="badge">Business Model Canvas</div>
+        <h1>Trendicore <span>Executive Summary</span></h1>
+        <p class="subtitle">Desglose estratégico y técnico del Motor de Inteligencia de Tendencias B2B2C diseñado para
+            predecir el comportamiento del consumidor Gen Z.</p>
+    </header>
+
+    <main>
+        <div class="grid">
+            <!-- Técnico -->
+            <div class="card">
+                <div class="icon-box c-tech">⚙️</div>
+                <h2>Funcionamiento Técnico</h2>
+                <p>Aplicación web moderna construida con "Arquitectura Limpia". Separa la interfaz de usuario (Next.js)
+                    del motor de base de datos (Supabase).</p>
+                <p>Al no estar acoplado, el sistema es extremadamente estable y puede escalar a millones de peticiones.
+                    Integra Stripe nativo para pagos seguros e i18n para expansión multi-idioma (ES/US).</p>
+            </div>
+
+            <!-- Negocio -->
+            <div class="card">
+                <div class="icon-box c-biz">💼</div>
+                <h2>El Modelo de Negocio</h2>
+                <p>Trendicore es un <strong>Trend Intelligence SaaS</strong>. Analiza qué estéticas de internet
+                    (Coquette, Y2K) están ganando clics y "likes".</p>
+                <ul>
+                    <li><strong>B2C (Consumidores):</strong> Pagos recurrentes por acceso temprano y un Radar de
+                        tendencias personal ($4.99/mes).</li>
+                    <li><strong>B2B (Marcas y Dropshippers):</strong> Suscripciones premium para "engancharse" a la API
+                        y extraer analíticas puras sobre qué vender ($14.99/mes).</li>
+                </ul>
+            </div>
+
+            <!-- Pros -->
+            <div class="card">
+                <div class="icon-box c-pros">🚀</div>
+                <h2>Ventajas Analíticas</h2>
+                <ul>
+                    <li><strong>Monetización Dual:</strong> Múltiples flujos de ingresos directos.</li>
+                    <li><strong>Gamificación:</strong> Al dar rangos y estatus a los usuarios activos, ellos mismos
+                        entrenan tu Inteligencia Artificial gratis.</li>
+                    <li><strong>Alta Escalabilidad:</strong> Vender "acceso a datos" mediante la API B2B cuesta 0€ extra
+                        por cada nuevo cliente corporativo.</li>
+                </ul>
+            </div>
+
+            <!-- Cons -->
+            <div class="card">
+                <div class="icon-box c-cons">⚠️</div>
+                <h2>Desafíos (Riesgos)</h2>
+                <ul>
+                    <li><strong>Cold Start (Arranque):</strong> El algoritmo carece de valor sin un volumen inicial alto
+                        de usuarios interactuando simultáneamente.</li>
+                    <li><strong>Adquisición B2B:</strong> Requerirá un músculo de ventas corporativo sólido para
+                        convencer a la primera ola de tiendas Shopify de confiar en la data.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Ciclo de Vida del Producto -->
+        <div class="highlight-box">
+            <h2 class="highlight-title">El Ciclo de Vida del Producto</h2>
+            <p style="font-size: 1.1rem">¿De dónde provienen los productos de la tienda y cómo se automatiza?</p>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Subida (Equipo Interno / Bots)</h3>
+                        <p>Los administradores (tú) utilizan un Panel Privado para añadir enlaces de afiliados de Amazon
+                            y Shein que identificaron en redes sociales. En la Fase 2, <strong>Scraping Bots</strong>
+                            automatizados escanearán internet para importar cientos de productos solos.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Interacción (Los Usuarios)</h3>
+                        <p>Los usuarios de la Gen Z no suben productos, entran a cazar productos. Navegan usando los
+                            <strong>Filtros Visuales Aesthetic</strong>. Cada vez que guardan algo en su
+                            <em>Wishlist</em> o tocan el link de compra, se activa un tracker en la base de datos.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Magia Algorítmica (El Trend Score)</h3>
+                        <p>El algoritmo de Trendicore recopila esos clics y empieza a mover los productos más deseados a
+                            la posición #1 de la web. Los usuarios que iniciaron la tendencia compran en Amazon
+                            (generando Comisiones) mientras las marcas compran estos datos recopilados por la plataforma
+                            mediante la API.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Trendicore Strategy Document © 2026. Diseñado para escalar.</p>
+    </footer>
+
+</body>
+
+</html>
